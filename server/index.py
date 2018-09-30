@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cors import CORS
 import requests
 import re
 import config
@@ -6,6 +7,7 @@ import config
 app = Flask(__name__)
 # 加载配置文件
 app.config.from_object(config)
+CORS(app, supports_credentials=True)
 
 '''
 首页：测试页面
@@ -20,6 +22,9 @@ def index ():
 @app.route('/novel/search/<name>')
 def search (name):
     target_url = 'https://www.biquge5200.com/modules/article/search.php?searchkey=' + name
+    print('>>>>>>>>>>>>')
+    print(target_url)
+    print('>>>>>>>>>>>>')
     try:
         r = requests.get(target_url)
         novel_source = r.text
