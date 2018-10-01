@@ -1,46 +1,74 @@
 <template>
-  <div id="app">
-    <div>
-      <input v-model="name" type="text" placeholder="请输入书名/作者名">
-      <button @click="queryNovel">查询</button>
-    </div>
+  <div class="container">
+    <Row type="flex" justify="center">
+      <Col>
+        <Input v-model="name" search enter-button 
+          placeholder="请输入书名/作者名" @on-search="queryNovel" 
+          style="width: 200px;"/>
+      </Col>
+    </Row>
 
-    <div v-show="isShowNovel" class="mgTop60">
-      <a @click="switchState('novel')">隐藏小说</a>
-      <div class="novel-list">
-        <div class="novel-item" 
+    <div v-show="isShowNovel" class="mgTop20">
+      <Row type="flex" justify="end">
+        <Col>
+          <a type="primary" @click="switchState('novel')">隐藏小说</a>
+        </Col>
+        <Col v-show="!isShowChapter && chapterList.length > 0" style="margin-left: 20px;">
+          <a type="primary" @click="switchState('chapter')">显示目录</a>
+        </Col>
+      </Row>
+      <Row>
+        <Col :xs="12" :sm="8" :md="6"
           v-for="novel in novelList" :key="novel[0]"
-          @click="queryChapter(novel[0])">
-          <h1>{{novel[1]}}</h1>
-          <h4>{{novel[2]}}</h4>
-        </div>
-      </div>
+          style="padding: 10px;">
+          <div @click="queryChapter(novel[0])" class="novel-item">
+            <h3>{{novel[1]}}</h3>
+            <h6>{{novel[2]}}</h6>
+          </div>
+        </Col>
+      </Row>
     </div>
     <div v-show="!isShowNovel && novelList.length > 0" class="mgTop20">
-      <a @click="switchState('novel')">显示小说</a>
+      <Row type="flex" justify="end">
+        <Col>
+          <a type="primary" @click="switchState('novel')">显示小说</a>
+        </Col>
+        <Col v-show="!isShowChapter && chapterList.length > 0" style="margin-left: 20px;">
+          <a type="primary" @click="switchState('chapter')">显示目录</a>
+        </Col>
+      </Row>
     </div>
 
-    <div v-if="isShowChapter" class="mgTop60">
-      <a @click="switchState('chapter')">隐藏目录</a>
-      <div class="chapter-list">
-        <div class="chapter-item" 
+    <div v-if="isShowChapter" class="mgTop20">
+      <Row type="flex" justify="end">
+        <Col>
+          <a type="primary" @click="switchState('chapter')">隐藏小说</a>
+        </Col>
+      </Row>
+      <Row>
+        <Col :xs="12" :sm="8" :md="6"
           v-for="chapter in chapterList" :key="chapter[0]"
-          @click="queryContent(chapter[0])">
-          {{chapter[1]}}
-        </div>
-      </div>
-    </div>
-    <div v-show="!isShowChapter && chapterList.length > 0">
-      <a @click="switchState('chapter')">显示目录</a>
+          style="padding: 5px;">
+          <div @click="queryContent(chapter[0])" class="novel-item">
+            {{chapter[1]}}
+          </div>
+        </Col>
+      </Row>
     </div>
 
-    <div v-if="detail.length > 0" class="detail">
-      <div v-html="detail[0]"></div>
-      <div>
-        <a v-if="~detail[1].indexOf('.html')" @click="queryContent(detail[1])">上一章</a>
-        &nbsp;&nbsp;&nbsp;
-        <a v-if="~detail[2].indexOf('.html')" @click="queryContent(detail[2])">下一章</a>
-      </div>
+    <hr>
+
+    <div v-if="detail.length > 0" class="mgTop20 detail">
+      <h3 style="text-align: center; margin-bottom: 20px;">{{detail[0]}}</h3>
+      <div v-html="detail[1]"></div>
+      <Row type="flex" justify="space-around" style="margin: 30px 0px;">
+        <Col>
+          <Button type="primary" v-if="~detail[2].indexOf('.html')" @click="queryContent(detail[2])">上一章</Button>
+        </Col>
+        <Col>
+          <Button type="primary" v-if="~detail[3].indexOf('.html')" @click="queryContent(detail[3])">下一章</Button>
+        </Col>
+      </Row>
     </div>
   </div>
 </template>
@@ -48,7 +76,8 @@
 <script>
 import axios from 'axios'
 
-const apiPrefix = 'http://localhost:5000'
+// const apiPrefix = 'http://localhost:5000'
+const apiPrefix = 'https://novel.dkvirus.top/api'
 
 export default {
   name: 'app',
@@ -112,73 +141,46 @@ export default {
 html, body{
   padding: 0;
   margin: 0;
-  height: 100vh;
+  height: 100%;
   position: relative;
   font-family: Georgia, serif;
   color: #111111;
-  background: #f5f5d5;
+  background: #f5f5d5!important;
+  line-height: 1.8;
 }
-a {
-  text-decoration: underline;
-  color: #42b983;
+.container {
+  padding-top: 40px;
 }
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  padding: 0 10%;
-}
-.novel {
-  margin-top: 60px;
-}
-.novel-list {
-  display: flex;
-  flex-wrap: wrap;
-}
+
 .novel-item {
-  border: 1px solid #ccc;
-  width: 25%;
-  box-sizing: border-box;
-}
-.chapter-list {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 30px 0;
-  border: 1px solid #ccc;
-}
-.chapter-item {
-  width: 20%;
-  box-sizing: border-box;
-  font-size: 16px;
-  padding: 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transform: scale(1);
-  transition: transform 1s;
-}
-.chapter-item:hover {
-  transform: scale(1.1);
-  background: pink;
+  border: 2px solid #ccc; 
   border-radius: 5px;
-  transition: transform 1s;
+  padding: 10px;
+  transform: scale(1);
+  transition: transform .5s;
 }
-.detail {
-  width: 80%;
-  border: 1px solid #ccc;
-  margin: 20px auto;
-  padding: 30px;
+.novel-item:hover {
+  background: pink;
+  color: #fff;
+  transform: scale(1.05);
+  transition: transform .5s;
 }
+
 .detail p {
-  text-align: left;
+  margin: 10px!important;
 }
+hr {
+  border: 1px solid #ccc;
+  margin-top: 10px;
+}
+
 .mgTop60 {
   margin-top: 60px;
 }
 .mgTop20 {
   margin-top: 20px;
+}
+.mgTop10 {
+  margin-top: 10px;
 }
 </style>
