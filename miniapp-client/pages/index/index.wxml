@@ -1,0 +1,17 @@
+<view class="wrapper">
+  <view class="search">
+    <view class="searchInput" bindtap="handleRedirectSearch">小说名/作者</view>
+  </view>
+
+  <view class="title">我的书架</view>
+
+  <view class="novelList">
+    <view class="novelItem" wx:for="{{novelList}}" wx:key="{{item.novelUrl}}">
+      <view class="novelWrapper" 
+        bindtap="handleRedirectRead" data-url="{{item.chapterUrl}}">
+        <view class="novelname line">{{item.novelName}}</view>
+        <view class="authorname line">{{item.authorName}}</view>
+      </view>
+    </view>
+  </view>
+</view>

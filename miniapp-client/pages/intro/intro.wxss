@@ -1,0 +1,44 @@
+.wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.intro {
+  background: #fff;
+  margin-bottom: 40rpx;
+  padding: 40rpx 80rpx;
+}
+.novelName {
+  font-size: 60rpx;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+.authorName {
+  font-size: 30rpx;
+  color: #888;
+  text-align: right;
+}
+
+.title{
+  margin: 30rpx 0;
+  padding: 0 50rpx;
+}
+.chapterList {
+  height: 700rpx;
+  background: #fff;
+}
+.chapterItem {
+  padding: 20rpx 40rpx;
+  color: #888;
+  font-size: 34rpx;
+  border-bottom: 1px solid #ccc
+}
+.chapterItem:last-child {
+  border-bottom: none;
+}
+
+.btns {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}

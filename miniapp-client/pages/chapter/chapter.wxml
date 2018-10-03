@@ -1,0 +1,7 @@
+<view class="wrapper">
+  <view class="chapterList">
+    <view class="chapterItem" bindtap="handleRedirectRead" data-url="{{item[0]}}"
+      wx:for="{{chapterList}}" wx:key="{{item[0]}}"
+      >{{item[1]}}</view>
+  </view>
+</view>

@@ -1,0 +1,35 @@
+<view class="wrapper">
+  <view class="search">
+    <view class="searchWrapper">
+      <input class="searchInput" bindinput="handleInputChange"
+      placeholder="小说名/作者" placeholder-class="searchInputPlac" />
+      <image class="searchIcon" 
+        src="../../images/search.png" bindtap="handleSearchNovel"/> 
+    </view>
+  </view>
+
+  <view class="novelList">
+    <view class="novelItem" wx:for="{{novelList}}" wx:key="{{item[0]}}">
+      <view class="novelWrapper" 
+        bindtap="handleRedirectIntro" data-url="{{item[0]}}"
+        data-novelname="{{item[1]}}" data-authorname="{{item[2]}}">
+        <view class="novelname line">{{item[1]}}</view>
+        <view class="authorname line">{{item[2]}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{novelList.length === 0}}">
+    <view class="title">推荐阅读</view>
+    <view class="novelListRem">
+      <view class="novelItem" wx:for="{{recomList}}" wx:key="{{item[0]}}">
+        <view class="novelWrapper" 
+          bindtap="handleRedirectIntro" data-url="{{item[0]}}"
+          data-novelname="{{item[1]}}" data-authorname="{{item[2]}}">
+          <view class="novelname line">{{item[1]}}</view>
+          <view class="authorname line">{{item[2]}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

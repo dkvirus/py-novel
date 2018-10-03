@@ -1,0 +1,14 @@
+<view class="wrapper">
+  <view>
+    <button bindtap="handleRedirectIndex">返回首页</button>
+  </view>
+  <view class="title">{{detail[0]}}</view>
+  <view class="content">
+    <rich-text nodes="{{detail[1]}}"></rich-text>
+  </view>
+  <view class="btns">
+    <button bindtap="handlePage" data-url="{{detail[2]}}" class="btn">上一章</button>
+    <button bindtap="handleRedirectChapter" class="btn">目录</button>
+    <button bindtap="handlePage" data-url="{{detail[3]}}" class="btn">下一章</button>
+  </view>
+</view>

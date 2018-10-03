@@ -1,0 +1,22 @@
+.wrapper {
+  height: 100%;
+}
+
+.title {
+  text-align: center;
+  margin: 50rpx;
+}
+.content {
+  font-size: 34rpx;
+  line-height: 70rpx;
+  margin: 30rpx 0 50rpx;
+  padding: 0 30rpx; 
+  min-height: 100vh;
+  color: #888;
+}
+.btns {
+  display: flex;
+}
+.btn {
+  width: 33.33%
+}

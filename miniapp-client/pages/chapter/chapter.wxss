@@ -1,0 +1,15 @@
+.wrapper {
+  height: 100%;
+}
+.chapterList {
+  background: #fff;
+}
+.chapterItem {
+  padding: 20rpx 40rpx;
+  color: #888;
+  font-size: 34rpx;
+  border-bottom: 1px solid #ccc
+}
+.chapterItem:last-child {
+  border-bottom: none;
+}

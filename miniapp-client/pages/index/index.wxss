@@ -1,0 +1,53 @@
+.search {
+  height: 120rpx;
+  background: rgb(158, 100, 49);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.searchInput {
+  padding: 0 40rpx;
+  width: 90%;
+  height: 100rpx;
+  line-height: 100rpx;
+  text-align: center;
+  border-radius: 80rpx;
+  background: #eee;
+  box-sizing: border-box;
+  font-size: 32rpx;
+  color: #888;
+}
+
+.title{
+  margin: 30rpx 0;
+  padding: 0 50rpx;
+}
+
+.novelList {
+  width: 90%;
+  margin: 0 auto;
+}
+.novelItem {
+  width: 50%;
+  padding: 10rpx;
+  box-sizing: border-box;
+  float: left;
+}
+.novelWrapper {
+  border: 1px solid #fff;
+  background: #fff;
+  padding: 10rpx 20rpx;
+  height: 100rpx;
+}
+.novelWrapper .novelname {
+  font-size: 36rpx;
+}
+.novelWrapper .authorname {
+  font-size: 28rpx;
+}
+.line {
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+}
+

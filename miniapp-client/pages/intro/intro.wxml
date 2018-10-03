@@ -1,0 +1,18 @@
+<view class="wrapper">
+  <view class="intro">
+    <view class="novelName">{{novelName}}</view>
+    <view class="authorName">作者：{{authorName}}</view>
+  </view>
+
+  <view class="title">目录</view>
+
+  <scroll-view class="chapterList" scroll-y>
+    <view class="chapterItem" 
+      wx:for="{{chapterList}}" wx:key="{{item[0]}}"
+      >{{item[1]}}</view>
+  </scroll-view>
+
+  <view class="btns">
+    <button bindtap="handleJoinShelf" class="btn-join">加入书架</button>
+  </view>
+</view>

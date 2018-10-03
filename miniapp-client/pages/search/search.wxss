@@ -1,0 +1,75 @@
+.wrapper {
+  width: 100%;
+}
+.search {
+  height: 120rpx;
+  background: rgb(158, 100, 49);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  text-align: center;
+}
+.searchWrapper {
+  width: 90%;
+  position: relative;
+}
+.searchIcon {
+  position: absolute;
+  right: 80rpx;
+  top: 30rpx;
+  width: 40rpx;
+  height: 40rpx;
+  z-index: 10;
+}
+.searchInput {
+  padding: 0 40rpx;
+  height: 100rpx;
+  border-radius: 80rpx;
+  background: #eee;
+  box-sizing: border-box;
+  font-size: 32rpx;
+  color: #333;
+}
+.searchInputPlac {
+  font-size: 32rpx;
+  color: #888;
+}
+
+.title{
+  margin: 30rpx 0;
+  padding: 0 50rpx;
+}
+.novelListRem {
+  width: 90%;
+  margin: 0 auto;
+}
+.novelList {
+  width: 90%;
+  margin: 60rpx auto;
+}
+.novelItem {
+  width: 50%;
+  padding: 10rpx;
+  box-sizing: border-box;
+  float: left;
+}
+.novelWrapper {
+  border: 1px solid #fff;
+  background: #fff;
+  padding: 10rpx 20rpx;
+}
+.novelWrapper .novelname {
+  font-size: 36rpx;
+}
+.novelWrapper .authorname {
+  font-size: 28rpx;
+}
+.line {
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  white-space: nowrap;
+}
+
+
+
