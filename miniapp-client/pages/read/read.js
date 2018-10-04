@@ -26,6 +26,15 @@ Page({
   },
 
   /**
+   * 离开页面时触发事件
+   */
+  onUnload: function () {
+    wx.reLaunch({
+      url: '../index/index',
+    })
+  },
+
+  /**
    * 生命周期函数--监听页面显示
    */
   onShow: function () {
@@ -73,7 +82,7 @@ Page({
    * 返回首页
    */
   handleRedirectIndex: function () {
-    wx.redirectTo({
+    wx.reLaunch({
       url: '../index/index',
     })
   },
