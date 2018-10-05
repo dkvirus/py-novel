@@ -14,45 +14,30 @@ Page({
         "兵者",
         "七品"
       ],
-      [
-        "https://www.biquge5200.cc/2_2041/",
-        "兵者为王",
-        "七品"
-      ],
-      [
-        "https://www.biquge5200.cc/54_54758/",
-        "兵者伐谋",
-        "秀发拂钢枪"
-      ],
-      [
-        "https://www.biquge5200.cc/80_80740/",
-        "兵者之王",
-        "血色弹头"
-      ]
     ],
     openId: '',
+    settingEnable: false,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var that = this
-    wx.cloud.callFunction({
-      name: 'getOpenid',
-      complete: res => {
-        that.setData({ 'openId': res.result })
-        wx.setStorage({ key: 'openId', data: res.result })
-      }
-    })
   },
 
   /**
    * 页面出现加载方法
    */
   onShow: function () {
-    var openId = this.data.openId
-    this.dbGetShelf(openId)
+    var that = this
+    wx.cloud.callFunction({
+      name: 'getOpenid',
+      complete: res => {
+        that.setData({ 'openId': res.result })
+        that.dbGetShelf(res.result)
+        wx.setStorage({ key: 'openId', data: res.result })
+      }
+    })
   },
 
   /**
@@ -76,6 +61,29 @@ Page({
   },
 
   /**
+   * 删除首页书架里的小说
+   */
+  handleRemoveNovel: function (e) {
+    var that = this
+    var id = e.currentTarget.dataset.id
+    this.dbRemoveShelf(id, function () {
+      wx.showToast({
+        title: '小说删除成功',
+      })
+      var openId = that.data.openId
+      that.handleSetting()
+      that.dbGetShelf(openId)
+    })
+  },
+
+  /**
+   * 设置
+   */
+  handleSetting: function () {
+    this.setData({ settingEnable: !this.data.settingEnable })
+  },
+
+  /**
    * 查询书架信息
    */
   dbGetShelf: function (openId) {
@@ -91,5 +99,16 @@ Page({
           wx.setStorageSync('novelList', shelf)
         }
       })
+  },
+
+  /**
+   * 删除小说
+   */
+  dbRemoveShelf: function (id, cb) {
+    db.collection('shelf').doc(id).remove({
+      success: function (res) {
+        if (typeof cb === 'function') cb(res) 
+      }
+    })
   },
 })

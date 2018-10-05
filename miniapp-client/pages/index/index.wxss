@@ -1,3 +1,7 @@
+.wrapper {
+  color: #777;
+}
+
 .search {
   height: 120rpx;
   background: rgb(158, 100, 49);
@@ -18,10 +22,74 @@
   color: #888;
 }
 
-.title{
+.tab{
   margin: 30rpx 0;
   padding: 0 50rpx;
+  display: flex;
+  justify-content: space-between;
 }
+.icon {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.shelf {
+  width: 90%;
+  margin: 20rpx auto;
+  padding: 20rpx;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 10rpx;
+}
+.shelf-item {
+  width: 50%;
+  box-sizing: border-box;
+  float: left;
+  position: relative;
+  margin-bottom: 40rpx;
+}
+.btn-remove {
+  position: absolute;
+  top: 0;
+  right: 30rpx;
+  width: 50rpx;
+  height: 50rpx;
+  background: #fff;
+  border-radius: 50%;
+}
+.shelf-wrapper {
+  padding: 20rpx 50rpx;
+  position: relative;
+}
+.shelf-plus {
+  border: 1px solid #ccc; 
+  height: 320rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.shelf-plus-image {
+  width: 200rpx; 
+  height: 200rpx;
+}
+.shelf-cover {
+  width: 100%;
+  height: 320rpx;
+  box-shadow: 6rpx 10rpx 6rpx #ccc;
+}
+.shelf-novelname {
+  font-size: 34rpx;
+  position: absolute;
+  left: 20%;
+  top: 25%;
+}
+.shelf-authorname {
+  font-size: 26rpx;
+  position: absolute;
+  top: 50%;
+  left: 40%;
+}
+
 
 .novelList {
   width: 90%;
@@ -36,14 +104,20 @@
 .novelWrapper {
   border: 1px solid #fff;
   background: #fff;
-  padding: 10rpx 20rpx;
+  padding: 10rpx 80rpx 10rpx 20rpx;
   height: 100rpx;
+  position: relative;
 }
 .novelWrapper .novelname {
   font-size: 36rpx;
 }
 .novelWrapper .authorname {
   font-size: 28rpx;
+}
+.novelWrapper .btn-close {
+  position: absolute;
+  top: 10rpx;
+  right: 10rpx;
 }
 .line {
   overflow: hidden;
