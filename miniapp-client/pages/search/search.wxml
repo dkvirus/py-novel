@@ -1,5 +1,9 @@
 <view class="wrapper">
   <view class="search">
+    <view class="back" bindtap="handleBack"
+      wx:if="{{novelList.length > 0}}">
+      <image class="btn-back" src="../../images/back.png"></image>
+    </view>
     <view class="searchWrapper">
       <input class="searchInput" bindinput="handleInputChange"
       placeholder="小说名/作者" placeholder-class="searchInputPlac" />
@@ -8,28 +12,54 @@
     </view>
   </view>
 
-  <view class="novelList">
-    <view class="novelItem" wx:for="{{novelList}}" wx:key="{{item[0]}}">
-      <view class="novelWrapper" 
+  <view class="tab" wx:if="{{novelList.length > 0}}">
+    <view>搜索结果</view>  
+  </view>
+  <view class="like" wx:if="{{novelList.length > 0}}">
+    <view class="like-item" wx:for="{{novelList}}" wx:key="{{item[0]}}">
+      <view class="like-wrapper"
         bindtap="handleRedirectIntro" data-url="{{item[0]}}"
         data-novelname="{{item[1]}}" data-authorname="{{item[2]}}">
-        <view class="novelname line">{{item[1]}}</view>
-        <view class="authorname line">{{item[2]}}</view>
+        <view class="cover">
+          <image class="cover-image" src="../../images/cover.png"></image>
+        </view>
+        <view class="intro">
+          <view class="novelname">{{item[1]}}</view>
+          <view class="authorname">{{item[2]}}</view>
+        </view>
       </view>
     </view>
   </view>
 
-  <view wx:if="{{novelList.length === 0}}">
-    <view class="title">推荐阅读</view>
-    <view class="novelListRem">
-      <view class="novelItem" wx:for="{{recomList}}" wx:key="{{item[0]}}">
-        <view class="novelWrapper" 
-          bindtap="handleRedirectIntro" data-url="{{item[0]}}"
-          data-novelname="{{item[1]}}" data-authorname="{{item[2]}}">
-          <view class="novelname line">{{item[1]}}</view>
-          <view class="authorname line">{{item[2]}}</view>
+  <view class="tab" wx:if="{{novelList.length === 0}}">
+    <view>猜您喜欢</view>  
+  </view>
+  <view class="like" wx:if="{{novelList.length === 0}}">
+    <view class="like-item" wx:for="{{recomList}}" wx:key="{{item[0]}}">
+      <view class="like-wrapper"
+        bindtap="handleRedirectIntro" data-url="{{item[0]}}"
+        data-novelname="{{item[1]}}" data-authorname="{{item[2]}}">
+        <view class="cover">
+          <image class="cover-image" src="../../images/cover.png"></image>
+        </view>
+        <view class="intro">
+          <view class="novelname">{{item[1]}}</view>
+          <view class="authorname">{{item[2]}}</view>
         </view>
       </view>
+    </view>
+  </view>
+
+  <view class="tab" wx:if="{{novelList.length === 0}}">
+    <view>搜索历史</view>
+    <!-- <view class="btn-empty" bindtap="handleEmpty">清空</view> -->
+  </view>
+  <view class="history" wx:if="{{novelList.length === 0}}">
+    <view class="hist-item" 
+      bindtap="handleSearchHist" data-value="{{item.value}}"
+      wx:for="{{histList}}" wx:key="{{item}}">
+      <image class="icon" src="../../images/search.png"></image>
+      <view class="hist-search-value">{{item}}</view>
     </view>
   </view>
 </view>

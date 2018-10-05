@@ -5,6 +5,7 @@
 .title {
   text-align: center;
   margin: 50rpx;
+  color: rgb(29, 29, 29);
 }
 .content {
   font-size: 34rpx;
@@ -12,7 +13,7 @@
   margin: 30rpx 0 50rpx;
   padding: 0 30rpx; 
   min-height: 100vh;
-  color: #888;
+  color: rgb(114, 114, 120);
 }
 .btns {
   display: flex;

@@ -13,6 +13,6 @@
   </scroll-view>
 
   <view class="btns">
-    <button bindtap="handleJoinShelf" class="btn-join">加入书架</button>
+    <button disabled="{{chapterList.length === 0}}" bindtap="handleJoinShelf" class="btn-join">加入书架</button>
   </view>
 </view>

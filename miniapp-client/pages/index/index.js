@@ -8,13 +8,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    novelList: [
-      [
-        "https://www.biquge5200.cc/98_98081/",
-        "兵者",
-        "七品"
-      ],
-    ],
+    novelList: [],
     openId: '',
     settingEnable: false,
   },

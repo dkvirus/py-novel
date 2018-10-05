@@ -1,9 +1,9 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/search/search",
     "pages/intro/intro",
     "pages/read/read",
-    "pages/search/search",
     "pages/chapter/chapter"
   ],
   "window": {
