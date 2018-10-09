@@ -4,7 +4,7 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -17,7 +17,7 @@
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
-  "cloudfunctionRoot": "./cloudfunctions/",
+	"cloudfunctionRoot": "cloudfunctions/",
 	"isGameTourist": false,
 	"condition": {
 		"search": {

@@ -1,7 +1,11 @@
 <view class="wrapper">
-  <!-- <view class="search">
-    <view class="searchInput" bindtap="handleRedirectSearch">小说名/作者</view>
-  </view> -->
+  <view class="self">
+    <view wx:if="{{userInfo.nickName}}" class="avatar">
+      <image class="avatar-image" src="{{userInfo.avatarUrl}}"></image>
+    </view>
+    <view wx:if="{{userInfo.nickName}}" class="nickname">{{userInfo.nickName}}</view>
+    <button wx:if="{{!userInfo.nickName}}" open-type="getUserInfo" bindgetuserinfo="handleUserinfo">点我更新为微信名称</button>
+  </view>
 
   <view class="tab">
     <view class="title">我的书架</view>

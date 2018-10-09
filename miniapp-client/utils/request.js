@@ -7,6 +7,7 @@ function request(opts) {
   wx.showLoading()
   if (!opts.url) return;
   opts.method = opts.method || 'GET'
+  opts.data = opts.data || {}
   var { url, data } = handleParam(opts)
 
   return new Promise(function (resolve, reject) {

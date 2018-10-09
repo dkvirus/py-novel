@@ -11,6 +11,7 @@ Page({
     novelList: [],
     openId: '',
     settingEnable: false,
+    userInfo: null,
   },
 
   /**
@@ -29,9 +30,27 @@ Page({
       complete: res => {
         that.setData({ 'openId': res.result })
         that.dbGetShelf(res.result)
-        wx.setStorage({ key: 'openId', data: res.result })
+        that.handleSearchUserinfo(res.result)
+        wx.setStorageSync('openId', res.result)
       }
     })
+  },
+
+  /**
+   * 根据 openId 查询用户信息
+   */
+  handleSearchUserinfo: function (openId) {
+    var that = this
+    db.collection('user')
+      .where({
+        _openid: openId,
+      })
+      .get({
+        success: function (res) {
+          var userInfo = res.data[0]
+          that.setData({ userInfo: userInfo })
+        }
+      })
   },
 
   /**
@@ -75,6 +94,22 @@ Page({
    */
   handleSetting: function () {
     this.setData({ settingEnable: !this.data.settingEnable })
+  },
+
+  /**
+   * 保存用户信息
+   */
+  handleUserinfo: function (res) {
+    var userInfo = res.detail.userInfo
+    this.setData({ userInfo })
+    userInfo.openId = this.data.openId
+    // 保存数据库
+    db.collection('user')
+      .add({
+        data: userInfo
+      })
+      .then(res => {
+      })
   },
 
   /**

@@ -1,0 +1,70 @@
+.wrapper {
+  padding-left: 20%;
+  overflow: hidden;
+}
+
+.left {
+  width: 20%;
+  box-sizing: border-box;
+  float: left;
+  background: #fff;
+  font-size: 34rpx;
+  color: #888;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+.classify-item {
+  padding: 20rpx 10rpx;
+}
+.active {
+  background: #0068C4;
+  color: #fff;
+}
+
+.right {
+  width: 100%;
+  box-sizing: border-box;
+  float: left;
+}
+.like {
+  padding: 10rpx;
+  overflow: hidden;
+  border-bottom: 1px solid rgb(236, 241, 244);
+}
+.like-item {
+  width: 48%;
+  height: 200rpx;
+  box-sizing: border-box;
+  float: left;
+  padding: 10rpx;
+  margin-bottom: 20rpx;
+}
+.like-wrapper {
+  padding: 10rpx;
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 10rpx;
+  height: 100%;
+}
+.cover {
+  width: 25%;
+}
+.cover-image {
+  width: 100%;
+  height: 120rpx;
+}
+.like .intro {
+  margin-left: 20rpx;
+}
+.like .novelname {
+  color: rgb(29, 29, 29);
+  font-size: 34rpx;
+  margin-bottom: 20rpx;
+}
+.like .authorname {
+  color: rgb(114, 114, 120);
+  font-size: 28rpx;
+}

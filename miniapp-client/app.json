@@ -1,5 +1,6 @@
 {
   "pages": [
+    "pages/classify/classify",
     "pages/index/index",
     "pages/search/search",
     "pages/intro/intro",
@@ -12,6 +13,22 @@
     "navigationBarTitleText": "公羊书屋",
     "navigationBarTextStyle": "white",
     "enablePullDownRefresh": true
+  },
+  "tabBar": {
+    "color": "#626567",
+    "selectedColor": "#2A8CE5",
+    "backgroundColor": "#FBFBFB",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "书架"
+      },
+      {
+        "pagePath": "pages/classify/classify",
+        "text": "书屋"
+      }
+    ]
   },
   "networkTimeout": {
     "request": 10000,

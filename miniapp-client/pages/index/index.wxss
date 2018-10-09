@@ -2,6 +2,27 @@
   color: #777;
 }
 
+.self {
+  height: 200rpx;
+  background: #0068C4;
+  padding: 20rpx 40rpx;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.avatar {
+  width: 20%;
+}
+.avatar-image {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+}
+.nickname {
+  width: 30%;
+  color: #fff;
+}
+
 .search {
   height: 120rpx;
   background: rgb(158, 100, 49);
