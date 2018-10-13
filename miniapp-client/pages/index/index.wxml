@@ -1,11 +1,5 @@
-<view class="wrapper">
-  <view class="self">
-    <view wx:if="{{userInfo.nickName}}" class="avatar">
-      <image class="avatar-image" src="{{userInfo.avatarUrl}}"></image>
-    </view>
-    <view wx:if="{{userInfo.nickName}}" class="nickname">{{userInfo.nickName}}</view>
-    <button wx:if="{{!userInfo.nickName}}" open-type="getUserInfo" bindgetuserinfo="handleUserinfo">点我更新为微信名称</button>
-  </view>
+<view class="wrapper padTop">
+  <view class="header"></view>
 
   <view class="tab">
     <view class="title">我的书架</view>
@@ -15,14 +9,15 @@
   </view>
 
   <view class="shelf">
-    <view class="shelf-item" wx:for="{{novelList}}" wx:key="{{item.chapterUrl}}">
-      <view class="shelf-wrapper" bindtap="handleRedirectRead" data-url="{{item.chapterUrl}}">
+    <view class="shelf-item" wx:for="{{novelList}}" wx:key="{{item.chapter_url}}">
+      <view class="shelf-wrapper" bindtap="handleRedirectRead" data-id="{{item.id}}"
+        data-url="{{item.chapter_url}}" data-bookname="{{item.book_name}}">
         <image class="shelf-cover" src="../../images/cover.png"></image>
-        <view class="shelf-novelname">{{item.novelName}}</view>
-        <view class="shelf-authorname">({{item.authorName}})</view>
+        <view class="shelf-novelname">{{item.book_name}}</view>
+        <view class="shelf-authorname">({{item.author_name}})</view>
       </view>
       <view class="btn-remove" wx:if="{{settingEnable}}" 
-        bindtap="handleRemoveNovel" data-id="{{item._id}}">
+        bindtap="handleRemoveNovel" data-id="{{item.id}}">
         <image class="icon" src="../../images/remove.png"></image>
       </view>
     </view>
@@ -34,4 +29,6 @@
       </view>
     </view>
   </view>
+
+  <mask loading="{{isLoading}}"/>  
 </view>

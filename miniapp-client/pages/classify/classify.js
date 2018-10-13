@@ -16,13 +16,6 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    
-  },
-
-  /**
-   * 页面出现加载事件
-   */
-  onShow: function () {
     this.handleSearchClassify()
   },
 
@@ -33,25 +26,24 @@ Page({
     var that = this
     // 查询数据
     request({
-      url: api.CLASSIFY,
+      url: api.GET_CLASSIFY,
     }).then(function (res) {
       that.setData({ classifyList: res })
-      that.handleSearchNovelByClassify(res[0].path)
+      that.handleSearchNovelByClassify(res[0].id)
     })
   },
 
   /**
    * 根据小说分类查询
    */
-  handleSearchNovelByClassify: function (path) {
-    console.log(path)
+  handleSearchNovelByClassify: function (id) {
     var that = this
     // 查询数据
     request({
-      url: api.novelByClassify,
-      data: { path: path },
+      url: api.GET_NOVEL,
+      data: { classify_id: id },
     }).then(function (res) {
-      that.setData({ novelList: res, selectedClassify: path })
+      that.setData({ novelList: res, selectedClassify: id })
     })
   },
 
@@ -59,8 +51,8 @@ Page({
    * 切换小说分类
    */
   handleSwitchClassify: function (e) {
-    var path = e.currentTarget.dataset.path
-    this.handleSearchNovelByClassify(path)
+    var id = e.currentTarget.dataset.id
+    this.handleSearchNovelByClassify(id)
   },
 
   /**
@@ -68,10 +60,10 @@ Page({
    */
   handleRedirectIntro: function (e) {
     var novelUrl = e.currentTarget.dataset.url
-    var novelName = e.currentTarget.dataset.novelname
+    var bookName = e.currentTarget.dataset.bookname
     var authorName = e.currentTarget.dataset.authorname
     wx.navigateTo({
-      url: `../intro/intro?novelUrl=${novelUrl}&novelName=${novelName}&authorName=${authorName}`,
+      url: `../intro/intro?novelUrl=${novelUrl}&bookName=${bookName}&authorName=${authorName}`,
     })
   },
 })

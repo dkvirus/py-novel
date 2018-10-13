@@ -1,8 +1,16 @@
 .wrapper {
   position: relative;
-  height: 100%;
+  height: 95vh;
 }
 
+.back {
+  width: 10%;
+  float: left;
+}
+.btn-back {
+  width: 50rpx;
+  height: 50rpx;
+}
 .intro {
   background: #fff;
   margin-bottom: 40rpx;
@@ -12,6 +20,7 @@
   font-size: 60rpx;
   color: #333;
   margin-bottom: 20rpx;
+  float: left;
 }
 .authorName {
   font-size: 30rpx;

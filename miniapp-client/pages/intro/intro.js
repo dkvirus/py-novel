@@ -11,38 +11,32 @@ Page({
    */
   data: {
     novelUrl: 'https://www.biquge5200.cc/98_98081/',
-    novelName: '兵者',
+    bookName: '兵者',
     authorName: '七品',
     chapterList: [],
     chapterUrl: '',
+    isLoading: false,     // 蒙版状态值
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var { novelUrl, novelName, authorName } = options
-    this.setData({ novelUrl, novelName, authorName })
-  },
-
-  /**
-   * 页面出现加载方法
-   */
-  onShow: function () {
-    var novelUrl = this.data.novelUrl
-    this.handleGetChapter(novelUrl)
+    var { novelUrl, bookName, authorName } = options
+    this.setData({ novelUrl, bookName, authorName, isLoading: true })
+    this.handleSearchChapter(novelUrl)
   },
 
   /**
    * 请求目录结构
    */
-  handleGetChapter: function (url) {
+  handleSearchChapter: function (url) {
     var that = this
     request({
-      url: api.CHAPTER,
-      data: { novelUrl: url }
+      url: api.GET_CHAPTER,
+      data: { url }
     }).then(function (res) {
-      that.setData({ chapterList: res, chapterUrl: res[0][0] })
+      that.setData({ chapterList: res, chapterUrl: res[0].url, isLoading: false })
     })  
   },
 
@@ -53,53 +47,45 @@ Page({
     var that = this
     var openId = wx.getStorageSync('openId')
     if (!openId) return
-    var { novelUrl, novelName, authorName, chapterUrl } = this.data
+    var { novelUrl, bookName, authorName, chapterUrl } = this.data
 
-    this.dbGetShelf(openId, function (novelList) {
-      novelList = novelList.filter(item => {
-        return item.novelName === novelName && item.authorName === authorName
-      })
-      if (novelList.length > 0) {
+    request({
+      url: api.GET_SHELF,
+      data: {
+        open_id: openId,
+        book_name: bookName,
+        author_name: authorName,
+      }
+    }).then(function (res) {
+      console.log('res is %o', res)
+      if (res.length > 0) {
         wx.showToast({
           title: '已加入书架',
         })
-        return
+        return  
       }
 
-      that.dbInsertShelf({ novelUrl, novelName, authorName, chapterUrl, openId })
-    })
-  },
-
-  /**
-   * 插入数据都书架表
-   */
-  dbInsertShelf: function (options) {
-    db.collection('shelf')
-      .add({
-        data: options
-      })
-      .then(res => {
+      request({
+        url: api.ADD_SHELF,
+        method: 'POST',
+        data: {
+          open_id: openId,
+          book_name: bookName,
+          author_name: authorName,
+          chapter_url: chapterUrl,
+        }
+      }).then(function (res2) {
         wx.showToast({
           title: '加入书架成功',
         })
-        wx.navigateTo({
-          url: '../index/index',
+        wx.switchTab({
+          url: '../index/index' 
         })
       })
+    })
   },
 
-  /**
-   * 查询书架内容
-   */
-  dbGetShelf: function (openId, cb) {
-    var that = this
-    db.collection('shelf').where({
-      _openid: openId,
-    })
-      .get({
-        success: function (res) {
-          cb(res.data)
-        }
-      })
-  }
+  handleBack: function () {
+    wx.navigateBack()
+  },
 })

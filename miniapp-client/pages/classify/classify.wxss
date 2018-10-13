@@ -12,7 +12,7 @@
   color: #888;
   position: fixed;
   left: 0;
-  top: 0;
+  top: 5vh;
 }
 .classify-item {
   padding: 20rpx 10rpx;

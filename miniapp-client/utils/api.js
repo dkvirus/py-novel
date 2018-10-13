@@ -1,10 +1,13 @@
-// var apiPrefix = 'https://novel.dkvirus.top/api'
-var apiPrefix = 'http://localhost:5000/api'
+var apiPrefix = 'https://novel.dkvirus.top/api'
+// var apiPrefix = 'http://localhost:5000/api'
 
 module.exports = {
-  NOVEL: `${apiPrefix}/novel/search/:inputValue`,    // 根据关键字查询
-  CHAPTER: `${apiPrefix}/novel/chapter/:novelUrl`,   // 根据小说url查章节
-  CONTENT: `${apiPrefix}/novel/content/:chapterUrl`, // 根据章节url查内容   
-  CLASSIFY: `${apiPrefix}/novel/classify`,           // 查询小说分类
-  novelByClassify: `${apiPrefix}/novel/classify/:path`,   // 根据小说分类查询小说
+  GET_NOVEL: `${apiPrefix}/gysw/novel`,                 // 根据关键字查询
+  GET_CLASSIFY: `${apiPrefix}/gysw/classify`,           // 查询小说分类
+  GET_CHAPTER: `${apiPrefix}/gysw/chapter/:url`,        // 根据小说url查章节
+  GET_CONTENT: `${apiPrefix}/gysw/content/:url`,        // 根据章节url查内容
+  DEL_SHELF: `${apiPrefix}/gysw/shelf/:id`,             // 删除书架中小说
+  GET_SHELF: `${apiPrefix}/gysw/shelf`,                 // 查询书架中小说列表
+  ADD_SHELF: `${apiPrefix}/gysw/shelf`,                 // 添加小说到书架中
+  EDIT_SHELF: `${apiPrefix}/gysw/shelf/:id`,              // 更新小说
 }

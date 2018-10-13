@@ -4,3 +4,16 @@ page {
   height: 100%;
   color: #333;
 }
+
+/* 头部 */
+.header {
+  background: rgb(15, 15, 15);
+  position: absolute;
+  height: 5vh;
+  width: 100vw;
+  z-index: 1;
+  top: 0;
+}
+.padTop {
+  padding-top: 5vh;
+}

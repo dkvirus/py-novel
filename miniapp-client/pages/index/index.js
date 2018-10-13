@@ -1,5 +1,7 @@
+var api = require('../../utils/api.js')
+var { request } = require('../../utils/request.js')
+
 wx.cloud.init({ traceUser: true })
-var db = wx.cloud.database()
 
 // pages/index/index.js
 Page({
@@ -9,48 +11,40 @@ Page({
    */
   data: {
     novelList: [],
-    openId: '',
     settingEnable: false,
-    userInfo: null,
+    openId: '',
+    isLoading: false, // 蒙版状态值
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-  },
-
-  /**
-   * 页面出现加载方法
-   */
-  onShow: function () {
+    this.setData({ isLoading: true })
     var that = this
     wx.cloud.callFunction({
       name: 'getOpenid',
       complete: res => {
-        that.setData({ 'openId': res.result })
-        that.dbGetShelf(res.result)
-        that.handleSearchUserinfo(res.result)
+        that.setData({ openId: res.result })
         wx.setStorageSync('openId', res.result)
+        that.handleSearchShelf(res.result)
       }
     })
   },
 
   /**
-   * 根据 openId 查询用户信息
+   * 查询书架里小说
    */
-  handleSearchUserinfo: function (openId) {
+  handleSearchShelf: function (openId) {
     var that = this
-    db.collection('user')
-      .where({
-        _openid: openId,
-      })
-      .get({
-        success: function (res) {
-          var userInfo = res.data[0]
-          that.setData({ userInfo: userInfo })
-        }
-      })
+    request({
+      url: api.GET_SHELF,
+      data: { open_id: openId }
+    }).then(function (res) {
+      that.setData({ novelList: res, isLoading: false })
+    }).catch(function (err) {
+      that.setData({ isLoading: false })
+    })
   },
 
   /**
@@ -67,9 +61,10 @@ Page({
    */
   handleRedirectRead: function (e) {
     var chapterUrl = e.currentTarget.dataset.url
-
+    var bookName = e.currentTarget.dataset.bookname
+    var id = e.currentTarget.dataset.id
     wx.navigateTo({
-      url: `../read/read?chapterUrl=${chapterUrl}`,
+      url: `../read/read?chapterUrl=${chapterUrl}&bookName=${bookName}&novelId=${id}`,
     })
   },
 
@@ -79,13 +74,12 @@ Page({
   handleRemoveNovel: function (e) {
     var that = this
     var id = e.currentTarget.dataset.id
-    this.dbRemoveShelf(id, function () {
-      wx.showToast({
-        title: '小说删除成功',
-      })
-      var openId = that.data.openId
-      that.handleSetting()
-      that.dbGetShelf(openId)
+    request({
+      url: api.DEL_SHELF,
+      method: 'DELETE',
+      data: { id },
+    }).then(function (res) {
+      that.handleSearchShelf(that.data.openId)
     })
   },
 
@@ -96,48 +90,4 @@ Page({
     this.setData({ settingEnable: !this.data.settingEnable })
   },
 
-  /**
-   * 保存用户信息
-   */
-  handleUserinfo: function (res) {
-    var userInfo = res.detail.userInfo
-    this.setData({ userInfo })
-    userInfo.openId = this.data.openId
-    // 保存数据库
-    db.collection('user')
-      .add({
-        data: userInfo
-      })
-      .then(res => {
-      })
-  },
-
-  /**
-   * 查询书架信息
-   */
-  dbGetShelf: function (openId) {
-    var that = this
-    db.collection('shelf')
-      .where({
-        _openid: openId,
-      })
-      .get({
-        success: function (res) {
-          var shelf = res.data
-          that.setData({ novelList: shelf })
-          wx.setStorageSync('novelList', shelf)
-        }
-      })
-  },
-
-  /**
-   * 删除小说
-   */
-  dbRemoveShelf: function (id, cb) {
-    db.collection('shelf').doc(id).remove({
-      success: function (res) {
-        if (typeof cb === 'function') cb(res) 
-      }
-    })
-  },
 })

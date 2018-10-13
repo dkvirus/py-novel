@@ -1,14 +1,103 @@
 <view class="wrapper">
-  <view>
-    <button bindtap="handleRedirectIndex">返回首页</button>
+  <!-- 头部：电量、时间、wifi -->
+  <view class="header"></view>
+
+  <!-- 内容 -->
+  <scroll-view scroll-y style="font-size: {{setting.font}}rpx; background: {{setting.bg}}"
+    class="content" scroll-top="{{scrollTop}}"
+    bindtap="handleShowMenus">
+    <rich-text nodes="{{detail.content}}"></rich-text>
+  </scroll-view>
+  
+  <!-- 底部：显示章节标题 -->
+  <view style="background: {{setting.bg}}" class="footer">
+    <view style="flex: 1;">{{detail.title}}</view>
+    <view class="page" bindtap="handlePage" data-url="{{detail.prev_url}}" 
+      data-info="prev">上一章</view>
+    <view class="page" bindtap="handlePage" data-url="{{detail.next_url}}"
+      data-info="next">下一章</view>
+    <!-- <view>{{percentage}}%</view> -->
   </view>
-  <view class="title">{{detail[0]}}</view>
-  <view class="content">
-    <rich-text nodes="{{detail[1]}}"></rich-text>
+
+  <!-- 隐藏的功能菜单 -->
+  <view class="menus" wx:if="{{isShowMenus}}">
+    <view class="menus-header">
+      <image bindtap="handleBack" 
+        class="icon btn-back" src="../../images/tab-back.png"></image>
+      <view>{{bookName}}</view>
+    </view>
+    <view class="menus-mask" bindtap="handleHideMenus"></view>
+    <view class="menus-wrapper">
+      <view class="menus-tab" bindtap="handleShowChapter">
+        <image class="icon" src="../../images/tab-chapter.png"></image>
+        <view>目录</view>
+      </view>
+
+      <view class="menus-tab" bindtap="handleShowSetting">
+        <image class="icon" src="../../images/tab-setting.png"></image>
+        <view>设置</view>
+      </view>
+      
+      <view class="menus-tab" bindtap="handleSwitchTheme" data-theme="{{isDark}}">
+        <image class="icon" src="../../images/tab-theme-{{isDark?'light':'dark'}}.png"></image>
+        <view>{{isDark?'白天':'黑夜'}}</view>
+      </view>
+    </view>
   </view>
-  <view class="btns">
-    <button bindtap="handlePage" data-url="{{detail[2]}}" class="btn">上一章</button>
-    <button bindtap="handleRedirectChapter" class="btn">目录</button>
-    <button bindtap="handlePage" data-url="{{detail[3]}}" class="btn">下一章</button>
+
+  <!-- 隐藏的设置面板 -->
+  <view class="setting" wx:if="{{isShowSetting}}">
+    <view class="setting-mask" bindtap="handleHideSetting"></view>
+    <view class="setting-wrapper">
+      <view class="setting-light">
+        <image style="width: 30rpx; height: 30rpx;" src="../../images/setting-light.png"></image>
+        <slider style="flex: 1;" block-size="12" value="{{setting.light}}" show-value
+          backgroundColor="rgb(25,27,32)" activeColor="rgb(212,50,54)" 
+          bindchange="handleChangeLight"/>
+        <image class="icon" src="../../images/setting-light.png"></image>
+      </view>
+
+      <view class="setting-font">
+        <view class="setting-font-label">字体</view>
+        <view class="btn-font" bindtap="handleChangeFont" data-target="default">
+          <image class="icon" src="../../images/setting-font-default.png"></image>
+        </view>
+        <view class="btn-font" bindtap="handleChangeFont" data-target="sub">
+          <image class="icon" src="../../images/setting-font-sub.png"></image>
+        </view>
+        <view class="btn-font" bindtap="handleChangeFont" data-target="add">
+          <image class="icon" src="../../images/setting-font-add.png"></image>
+        </view>
+      </view>
+
+      <scroll-view class="setting-bg" scroll-x>
+        <view wx:for="{{setting.bgs}}" wx:key="{{item}}"
+          bindtap="handleChangeBg" data-bg="{{item}}"
+          style="background-color: {{item}};" class="setting-bg-box"></view>
+      </scroll-view>
+    </view>
   </view>
+  
+  <!-- 隐藏的章节 -->
+  <view class="chapter" wx:if="{{isShowChapter}}">
+    <view class="chapter-wrapper">
+      <view class="chapter-bookname">{{bookName}}</view>
+      <view class="chapter-label">
+        <view>目录(共{{chapter.list.length}}章)</view>
+        <image bindtap="handleChangeOrder" class="icon70" 
+          src="../../images/chapter-{{chapter.order}}.png"></image>
+      </view>
+      <scroll-view class="chapter-list" scroll-into-view="{{chapter.id}}" 
+        scroll-y style="height: 800rpx;">
+        <view wx:for="{{chapter.list}}" wx:key="{{item.url}}"
+          bindtap="handlePage" data-url="{{item.url}}" id="{{item.id}}"
+          class="chapter-item {{detail.title===item.name?'chapter-current':''}}">
+          {{item.name}}
+        </view>
+      </scroll-view>
+    </view>
+    <view class="chapter-mask" bindtap="handleHideChapter"></view>
+  </view>
+
+  <mask loading="{{isLoading}}" />  
 </view>

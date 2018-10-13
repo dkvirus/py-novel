@@ -1,6 +1,11 @@
-<view class="wrapper">
+<view class="wrapper padTop">
+  <view class="header"></view>
+
   <view class="intro">
-    <view class="novelName">{{novelName}}</view>
+    <view class="back" bindtap="handleBack">
+      <image class="btn-back" src="../../images/back-black.png"></image>
+    </view>
+    <view class="novelName">{{bookName}}</view>
     <view class="authorName">作者：{{authorName}}</view>
   </view>
 
@@ -8,11 +13,13 @@
 
   <scroll-view class="chapterList" scroll-y>
     <view class="chapterItem" 
-      wx:for="{{chapterList}}" wx:key="{{item[0]}}"
-      >{{item[1]}}</view>
+      wx:for="{{chapterList}}" wx:key="{{item.url}}"
+      >{{item.name}}</view>
   </scroll-view>
 
   <view class="btns">
     <button disabled="{{chapterList.length === 0}}" bindtap="handleJoinShelf" class="btn-join">加入书架</button>
   </view>
+  
+  <mask loading="{{isLoading}}" />
 </view>

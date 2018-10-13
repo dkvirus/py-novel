@@ -1,17 +1,17 @@
 {
   "pages": [
-    "pages/classify/classify",
     "pages/index/index",
-    "pages/search/search",
-    "pages/intro/intro",
     "pages/read/read",
-    "pages/chapter/chapter"
+    "pages/search/search",
+    "pages/classify/classify",
+    "pages/intro/intro"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#0068C4",
     "navigationBarTitleText": "公羊书屋",
     "navigationBarTextStyle": "white",
+    "navigationStyle": "custom",
     "enablePullDownRefresh": true
   },
   "tabBar": {
@@ -22,11 +22,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "书架"
+        "text": "书架",
+        "iconPath": "./images/book-shelf.png",
+        "selectedIconPath": "./images/book-shelf-selected.png"
       },
       {
         "pagePath": "pages/classify/classify",
-        "text": "书屋"
+        "text": "书屋",
+        "iconPath": "./images/book-shop.png",
+        "selectedIconPath": "./images/book-shop-selected.png"
       }
     ]
   },

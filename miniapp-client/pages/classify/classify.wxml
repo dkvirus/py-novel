@@ -1,29 +1,33 @@
-<view class="wrapper">
-  <view class="left">
-    <scroll-view scroll-y style="height: 600px;">
-      <view class="classify-item {{selectedClassify === item.path ? 'active' : ''}}" 
-        bindtap="handleSwitchClassify" data-path="{{item.path}}"
-        wx:for="{{classifyList}}" wx:key="{{item.id}}">
-        {{item.desc}}
-      </view>
-    </scroll-view>
-  </view>
+<view class="padTop">
+  <view class="header"></view>
 
-  <view class="right">
-    <scroll-view class="like" wx:if="{{novelList.length > 0}}">
-      <view class="like-item" wx:for="{{novelList}}" wx:key="{{item[0]}}">
-        <view class="like-wrapper"
-          bindtap="handleRedirectIntro" data-url="{{item[0]}}"
-          data-novelname="{{item[1]}}" data-authorname="{{item[2]}}">
-          <view class="cover">
-            <image class="cover-image" src="../../images/cover.png"></image>
-          </view>
-          <view class="intro">
-            <view class="novelname">{{item[1]}}</view>
-            <view class="authorname">{{item[2]}}</view>
+  <view class="wrapper">
+    <view class="left">
+      <scroll-view scroll-y style="height: 600px;">
+        <view class="classify-item {{selectedClassify === item.id ? 'active' : ''}}" 
+          bindtap="handleSwitchClassify" data-id="{{item.id}}"
+          wx:for="{{classifyList}}" wx:key="{{item.id}}">
+          {{item.desc}}
+        </view>
+      </scroll-view>
+    </view>
+
+    <view class="right">
+      <scroll-view class="like" wx:if="{{novelList.length > 0}}">
+        <view class="like-item" wx:for="{{novelList}}" wx:key="{{item.url}}">
+          <view class="like-wrapper"
+            bindtap="handleRedirectIntro" data-url="{{item.url}}"
+            data-bookname="{{item.book_name}}" data-authorname="{{item.author_name}}">
+            <view class="cover">
+              <image class="cover-image" src="../../images/cover.png"></image>
+            </view>
+            <view class="intro">
+              <view class="novelname">{{item.book_name}}</view>
+              <view class="authorname">{{item.author_name}}</view>
+            </view>
           </view>
         </view>
-      </view>
-    </scroll-view>
+      </scroll-view>
+    </view>
   </view>
 </view>
