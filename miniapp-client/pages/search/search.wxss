@@ -119,6 +119,50 @@
 }
 
 
+/* 热门搜索 */
+.hot {
+  padding: 10rpx 30rpx;
+  overflow: hidden;
+  border-bottom: 1px solid rgb(236, 241, 244);
+}
+.hot-item {
+  width: 50%;
+  box-sizing: border-box;
+  float: left;
+  padding: 20rpx;
+  position: relative;
+}
+.hot-badge {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 40rpx;
+  height: 40rpx;
+  line-height: 40rpx;
+  border-radius: 50%;
+  color: #fff;
+  text-align: center;
+  background: rgb(125, 168, 244);
+}
+.hot-item:nth-child(1) .hot-badge {
+  background: rgb(230, 42, 52);
+}
+.hot-item:nth-child(2) .hot-badge {
+  background: rgb(235, 110, 53);
+}
+.hot-item:nth-child(3) .hot-badge {
+  background: rgb(241, 157, 51);
+}
+.hot-wrapper {
+  padding: 20rpx 60rpx;
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+  color: rgb(16, 30, 194);
+  border-radius: 10rpx;
+}
+
 
 
 

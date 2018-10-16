@@ -191,5 +191,66 @@ def addShelf():
     except:
         return jsonify({ 'code': '9999', 'message': '新增数据失败' })
 
+'''
+查询搜索历史
+'''
+@app.route('/api/gysw/search/hist/<open_id>')
+def getSearchSelf(open_id):
+    try:
+        db = Db() 
+        result = db.selectAll('select keyword from gysw_search where open_id = "%s" order by last_update_at desc limit 5' % open_id)
+        db.close() 
+        return jsonify({ 'code': '0000', 'message': '查询数据成功', 'data': result })
+    except Exception as e:
+        print(e)
+        return jsonify({ 'code': '9999', 'message': '查询数据失败' })
+
+'''
+查询热门搜索
+'''
+@app.route('/api/gysw/search/hot')
+def getSearchHot():
+    try:
+        db = Db() 
+        result = db.selectAll('select keyword, convert(sum(times), int) as times from gysw_search group by keyword order by times desc limit 6')
+        db.close()
+        print(result)
+        return jsonify({ 'code': '0000', 'message': '查询数据成功', 'data': result })
+    except Exception as e:
+        print(e) 
+        return jsonify({ 'code': '9999', 'message': '查询数据失败' })
+
+'''
+添加搜索历史
+'''
+@app.route('/api/gysw/search/hist', methods=['POST'])
+def addSearch():
+    try:
+        open_id = request.json['open_id']
+        keyword = request.json['keyword']
+        if not open_id and not keyword:
+            return jsonify({ 'code': '9999', 'message': '新增数据失败：参数值不能为空' })
+        db = Db()
+        # 取数据
+        result = db.selectAll('select * from gysw_search where keyword = "%s" and open_id = "%s"' % (keyword, open_id))
+        if not result or len(result) == 0:
+            print('新增...')
+            # 没有，新增
+            sql = 'insert into gysw_search (`open_id`, `keyword`, `last_update_at`) values (%s, %s, %s)'
+            localtime = time.localtime(time.time())
+            db.insertOne(sql, (open_id, keyword, localtime))
+        else:
+            print('修改...')
+            # 修改，次数 +1
+            current = result[0]
+            times = current['times'] + 1
+            db.updateOne('update gysw_search set times = %d where open_id = "%s" and keyword = "%s"' % (times, open_id, keyword))
+
+        db.close()
+        return jsonify({ 'code': '0000', 'message': '新增数据成功' })
+    except Exception as e:
+        print(e)
+        return jsonify({ 'code': '9999', 'message': '新增数据失败' })
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

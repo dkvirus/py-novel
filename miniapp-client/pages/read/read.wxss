@@ -41,6 +41,7 @@
   box-sizing: border-box;
   padding: 0 30rpx;
   font-size: 30rpx;
+  box-shadow: 0 -4rpx 4rpx #888;
 }
 .page {
   width: 30%;

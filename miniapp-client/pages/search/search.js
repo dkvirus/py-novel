@@ -10,54 +10,80 @@ Page({
    * 页面的初始数据
    */
   data: {
-    inputValue: '',
-    novelList: [],
-    recomList: [
+    inputValue: '',       // 搜索框值
+    novelList: [],        // 搜索结果
+    hotList: [
       {
-        url: 'https://www.biquge5200.cc/98_98081/',
-        book_name: '兵者',
-        author_name: '七品',
+        "keyword": "都市阴阳师",
+        "times": 5
       },
       {
-        url: 'https://www.biquge5200.cc/84_84888/',
-        book_name: '超品巫师',
-        author_name: '九灯和善',
+        "keyword": "西红柿",
+        "times": 6
       },
       {
-        url: 'https://www.biquge5200.cc/92_92627/',
-        book_name: '都市阴阳师',
-        author_name: '巫九',
+        "keyword": "巫九",
+        "times": 1
       },
       {
-        url: 'https://www.biquge5200.cc/63_63758/',
-        book_name: '黑客无间道',
-        author_name: '我不是黑客',
+        "keyword": "兵者",
+        "times": 1
       },
-    ],  
-    histList: [   // 搜索历史
-    ]
+      {
+        "keyword": "七品",
+        "times": 1
+      }
+    ],          // 热门搜索  
+    histList: [
+      {
+        "keyword": "西红柿"
+      },
+      {
+        "keyword": "巫九"
+      },
+      {
+        "keyword": "七品"
+      },
+      {
+        "keyword": "兵者"
+      }
+    ],         // 搜索历史
+    isLoading: false,      // 蒙版状态值 
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.handleSearchHot()
+    this.handleSearchHist()
   },
 
   /**
-   * 页面出现加载数据
+   * 查询热门搜索
    */
-  onShow: function () {
+  handleSearchHot: function () {
+    this.setData({ isLoading: true })
+    var that = this
+    request({
+      url: api.GET_SEARCH_HOT,
+    }).then(function (res) {
+      that.setData({ hotList: res, isLoading: false })      
+    })
+  },
+
+  /**
+   * 查询历史搜索
+   */
+  handleSearchHist: function () {
     var that = this
     var openId = wx.getStorageSync('openId')
-    if (!openId) return
-    // this.dbGetHist(openId, function (data) {
-
-    //   data = data.map(item => item.value)  // 处理数组数据结构
-    //   data = [...new Set(data)]     // 数组去重
-    //   data = data.slice(0, 5)      // 截取前10条
-    //   that.setData({ histList: data })
-    // })
+    request({
+      url: api.GET_SEARCH_HIST,
+      data: { open_id: openId },
+    }).then(function (res) {
+      that.setData({ histList: res })
+    })
   },
 
   /**
@@ -72,8 +98,10 @@ Page({
    * 查询小说
    */
   handleSearchNovel: function () {
+    this.setData({ isLoading: true })
     var that = this
     var inputValue = this.data.inputValue
+    var openId = wx.getStorageSync('openId')
     if (!inputValue) {
       wx.showToast({
         title: '请输入内容',
@@ -85,19 +113,22 @@ Page({
       url: api.GET_NOVEL,
       data: { keyword: inputValue },
     }).then(function (res) {
-      that.setData({ novelList: res })
-    })
+      that.setData({ novelList: res, isLoading: false })
 
-    // 存入历史表
-    // this.dbInsertHist({ value: inputValue })
+      request({
+        url: api.ADD_SEARCH_HIST,
+        method: 'POST',
+        data: { open_id: openId, keyword: inputValue }
+      })
+    })
   },
 
   /**
-   * 搜索历史
+   * 关键字查询
    */
-  handleSearchHist: function (e) {
-    var value = e.currentTarget.dataset.value
-    this.setData({ inputValue: value })
+  handleSearchKeyword: function (e) {
+    var keyword = e.currentTarget.dataset.keyword
+    this.setData({ inputValue: keyword })
     this.handleSearchNovel()
   },
 
