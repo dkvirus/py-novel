@@ -4,7 +4,7 @@
 
 ## 技术栈
 
-Python+Vue+iview+微信小程序。
+Python+Mariadb+Vue+iview+微信小程序。
 
 - [x] Python：转换数据接口。笔趣阁广告多、排版也很简陋，http请求返回的响应是 html 字符串，通过 Python 做中间层处理，正则表达式匹配 Html 字符串中有用的数据：小说名称、作者、内容等信息，提供统一的数据接口，为 Web 端和移动端提供数据来源；[python服务端详情](./server)
 - [x] Vue：Web 端展示选用 Vue 框架，UI 选用 iview 框架，已适配手机浏览器阅读；[浏览器客户端详情+图示](./web-client)
