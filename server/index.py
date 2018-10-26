@@ -45,6 +45,24 @@ def getNovel():
         db = Db() 
         result = db.selectAll(sql)
         db.close()
+        
+        if len(result) == 0:
+            # 根据 url 去笔趣阁查找小说
+            target_url = 'https://www.biquge5200.cc/modules/article/search.php?searchkey=' + keyword
+            r = requests.get(target_url)
+            root = etree.HTML(r.text)
+            novels = root.xpath('//tr[position()>1]')
+
+            result = []
+            for novel in novels:
+                author_name = novel.xpath('td[position()=3]/text()')[0]
+                book_name = novel.xpath('td[position()=1]/a/text()')[0]
+                url = novel.xpath('td[position()=1]/a/@href')[0]
+                print(author_name)
+                print(book_name)
+                print(url)
+                result.append({ 'author_name': author_name, 'book_name': book_name, 'url': url })
+
         return jsonify({ 'code': '0000', 'message': '请求数据成功', 'data': result })
     except:
         return jsonify({ 'code': '9999', 'message': '请求数据失败' })

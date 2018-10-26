@@ -68,6 +68,13 @@ Page({
     request({
       url: api.GET_SEARCH_HOT,
     }).then(function (res) {
+      console.log('>>>>>>>')
+
+      if (res.data && res.data.length === 0) {
+        return wx.showToast({
+          title: '没有找到小说！',
+        })
+      }
       that.setData({ hotList: res, isLoading: false })      
     })
   },
@@ -113,6 +120,12 @@ Page({
       url: api.GET_NOVEL,
       data: { keyword: inputValue },
     }).then(function (res) {
+      if (res && res.length === 0) {
+        that.setData({ isLoading: false })
+        return wx.showToast({
+          title: '没有找到小说！',
+        })
+      }
       that.setData({ novelList: res, isLoading: false })
 
       request({

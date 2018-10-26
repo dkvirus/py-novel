@@ -25,11 +25,18 @@ Page({
     wx.cloud.callFunction({
       name: 'getOpenid',
       complete: res => {
+        console.log(res.result)
         that.setData({ openId: res.result })
         wx.setStorageSync('openId', res.result)
         that.handleSearchShelf(res.result)
       }
     })
+  },
+
+  onShow: function () {
+    var openId = wx.getStorageSync('openId')
+    if (!openId) return
+    this.handleSearchShelf(openId)
   },
 
   /**
@@ -41,7 +48,7 @@ Page({
       url: api.GET_SHELF,
       data: { open_id: openId }
     }).then(function (res) {
-      that.setData({ novelList: res, isLoading: false })
+      that.setData({ novelList: res, isLoading: false, settingEnable: false })
     }).catch(function (err) {
       that.setData({ isLoading: false })
     })
