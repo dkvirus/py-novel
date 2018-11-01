@@ -37,9 +37,13 @@ Page({
       bg: 'rgb(244, 243, 249)',
     },
     chapter: {
-      list: [],
       order: 'asc',
       id: '',
+      list: [],               // 展示列表，一次只展示 100 条数据
+      page: [],               // 分页处理数据
+      all: [],                // 所有列表
+      isShowPage: false,      // 是否显示分页
+      defaultPage: {},        // 默认列表
     }
   },
 
@@ -81,9 +85,41 @@ Page({
       url: api.GET_CHAPTER,
       data: { url },
     }).then(function (res) {
-      that.setData({ 'chapter.list': res })
+      // 拼接分页数据  288 => 2、88,,,,2880 => 28、80
+      var integer = Math.floor(res.length / 100)        // 整数部分
+      var remainder = res.length % 100                  // 余数
+      var page = []
+      for (var i = 1; i <= integer; i++) {
+        var obj = {}
+        obj.id = String(i)
+        obj.start = (i - 1) * 100
+        obj.end = i * 100
+        obj.desc = `${(i-1)*100+1}-${i*100}`
+        page.push(obj)
+      }
+      page.push({ 
+        id: String(integer+1), 
+        desc: `${integer*100+1}-${integer*100+remainder}`,
+        start: integer*100,
+        end: integer * 100 + remainder,
+      })
+
+      that.setData({ 
+        'chapter.list': res.slice(0,100), 
+        'chapter.page': page, 
+        'chapter.all': res,
+        'chapter.defaultPage': page[0], 
+      })
       that.handleSearchDetail(that.data.chapterUrl)
     })
+  },
+
+  /**
+   * 切换分页
+   */
+  handleSwitchPage: function () {
+    var isShowPage = this.data.chapter.isShowPage
+    this.setData({ 'chapter.isShowPage': !isShowPage })
   },
 
   /**
@@ -97,8 +133,7 @@ Page({
       data: { url },
     }).then(function (res) {
       res.title = res.title && res.title.trim()
-      var id = that.data.chapter.list.find(item => item.name === res.title).id
-      that.setData({ detail: res, chapterUrl: url, 'chapter.id': id, 
+      that.setData({ detail: res, chapterUrl: url, 
         scrollTop: 0, isLoading: false })
       
       if (update) {
@@ -139,6 +174,21 @@ Page({
   },
 
   /**
+   * 大翻页处理
+   */
+  handleBigPage: function (e) {
+    var { start, end, id } = e.currentTarget.dataset
+    var { all, isShowPage, page } = this.data.chapter
+
+    var list = all.slice(start, end)
+    this.setData({ 
+      'chapter.list': list, 
+      'chapter.isShowPage': !isShowPage, 
+      'chapter.defaultPage': page.find(item => item.id === id)
+    })
+  },
+
+  /**
    * 显示功能菜单
    */
   handleShowMenus: function () {
@@ -156,8 +206,21 @@ Page({
    * 显示目录侧边框
    */
   handleShowChapter: function () {
+    // 当前阅读章节
+    var { detail, chapter } = this.data
+    var index = chapter.all.findIndex(item => item.name === detail.title.trim())
+    var page = chapter.page.find(item => index <= item.end && index >= item.start)
+    var list = chapter.all.slice(page.start, page.end)
+    var id = list.find(item => item.name === detail.title.trim()).id
+
     this.handleHideMenus()
-    this.setData({ isShowChapter: true })
+    this.setData({ 
+      isShowChapter: true, 
+      'chapter.isShowPage': false, 
+      'chapter.list': list,
+      'chapter.defaultPage': page,
+      'chapter.id': id || '',
+    })
   },
 
   /**
@@ -178,7 +241,7 @@ Page({
       order = 'asc'
     }
     list = list.reverse();
-    this.setData({ 'chapter.list': list, 'chapter.order': order, scrollTop: 0 })
+    this.setData({ 'chapter.list': list, 'chapter.order': order, scrollTopChap: 0 })
   },
 
   /**

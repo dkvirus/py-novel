@@ -81,20 +81,34 @@
   <!-- 隐藏的章节 -->
   <view class="chapter" wx:if="{{isShowChapter}}">
     <view class="chapter-wrapper">
-      <view class="chapter-bookname">{{bookName}}</view>
+      <view class="chapter-bookname">{{bookName}}(共{{chapter.all.length}}章)</view>
       
       <view class="chapter-label">
-        <view>目录(共{{chapter.list.length}}章)</view>
+        <view>目录({{chapter.defaultPage.desc}})</view>
+        <view bindtap="handleSwitchPage" style="color: rgb(142, 142, 142)">切换翻页</view>
         <image bindtap="handleChangeOrder" class="icon70" 
           src="../../images/chapter-{{chapter.order}}.png"></image>
       </view>
       
-      <scroll-view class="chapter-list" scroll-into-view="{{chapter.id}}" 
+      <!-- 小分页 -->
+      <scroll-view wx:if="{{!chapter.isShowPage}}" class="chapter-list" 
+        scroll-into-view="{{chapter.id}}" 
         scroll-y style="height: 800rpx;" scroll-top="{{scrollTopChap}}">
         <view wx:for="{{chapter.list}}" wx:key="{{item.url}}"
           bindtap="handlePage" data-url="{{item.url}}" id="{{item.id}}"
           class="chapter-item {{detail.title===item.name?'chapter-current':''}}">
           {{item.name}}
+        </view>
+      </scroll-view>
+
+      <!-- 大分页 -->
+      <scroll-view wx:else class="chapter-list" 
+        scroll-y style="height: 800rpx;">
+        <view wx:for="{{chapter.page}}" wx:key="{{item.id}}"
+          bindtap="handleBigPage" data-start="{{item.start}}" data-end="{{item.end}}"
+          data-id="{{item.id}}"
+          class="chapter-item {{detail.title===item.name?'chapter-current':''}}">
+          {{item.desc}}
         </view>
       </scroll-view>
     </view>
