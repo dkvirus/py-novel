@@ -1,6 +1,10 @@
 <view class="wrapper padTop">
   <view class="header"></view>
 
+  <view class="tab" style="padding-bottom: 0;">
+    <view>搜索 🔍 页面</view>
+  </view>
+
   <view class="search">
     <view class="back" bindtap="handleBackSearch"
       wx:if="{{novelList.length > 0}}">
@@ -12,9 +16,10 @@
     </view>
     <view class="searchWrapper">
       <input class="searchInput" bindinput="handleInputChange" value="{{inputValue}}"
-      placeholder="小说名/作者" placeholder-class="searchInputPlac" />
-      <image class="searchIcon" 
-        src="../../images/search.png" bindtap="handleSearchNovel"/> 
+      placeholder="小说名/作者" placeholder-class="searchInputPlac" confirm-type="search" />
+    </view>
+    <view class="searchIconWrap" bindtap="handleSearchNovel">
+      <image class="searchIcon" src="../../images/search.png"/> 
     </view>
   </view>
 

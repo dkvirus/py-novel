@@ -18,11 +18,12 @@ Page({
     isShowChapter: false,
     isShowMenus: false,
     isShowSetting: false,
-    isDark: false,    // true为夜间，false为白天
-    isLoading: false, // 蒙版状态值
-    percentage: 0,    // 阅读进度
+    isDark: false,                    // true为夜间，false为白天
+    isLoading: false,                 // 蒙版状态值
+    percentage: 0,                    // 阅读进度
     bookName: '',
-    scrollTop: 0,
+    scrollTop: 0,                     // 文章滚动条位置
+    scrollTopChap: 0,                 // 目录滚动条位置
     setting: {
       light: 0,
       font: 34,
@@ -177,7 +178,7 @@ Page({
       order = 'asc'
     }
     list = list.reverse();
-    this.setData({ 'chapter.list': list, 'chapter.order': order })
+    this.setData({ 'chapter.list': list, 'chapter.order': order, scrollTop: 0 })
   },
 
   /**

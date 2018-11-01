@@ -1,8 +1,8 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/search/search",
     "pages/read/read",
+    "pages/search/search",
     "pages/classify/classify",
     "pages/intro/intro"
   ],

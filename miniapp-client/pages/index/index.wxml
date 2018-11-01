@@ -1,7 +1,7 @@
 <view class="wrapper padTop">
   <view class="header"></view>
 
-  <view class="tab">
+  <view class="tab1">
     <view class="title">我的书架</view>
     <image class="icon" 
       bindtap="handleSetting"

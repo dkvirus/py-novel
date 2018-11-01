@@ -43,6 +43,15 @@
   color: #888;
 }
 
+.tab1 {
+  margin: 30rpx 0;
+  padding: 0 50rpx;
+  display: flex;
+  align-items: center;
+}
+.tab1 .title {
+  margin-right: 30rpx;
+}
 .tab{
   margin: 30rpx 0;
   padding: 0 50rpx;

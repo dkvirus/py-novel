@@ -4,6 +4,14 @@
   background: #fff;
   overflow: hidden;
 }
+
+.title {
+  height: 50rpx;
+  line-height: 50rpx;
+  padding: 0;
+  margin: 0;
+}
+
 .search {
   height: 120rpx;
   display: flex;
@@ -14,23 +22,15 @@
   margin: 20rpx 0;
 }
 .back {
-  width: 10%;
+  width: 15%;
 }
 .btn-back {
   width: 50rpx;
   height: 50rpx;
 }
 .searchWrapper {
-  width: 90%;
+  width: 70%;
   position: relative;
-}
-.searchIcon {
-  position: absolute;
-  right: 80rpx;
-  top: 30rpx;
-  width: 40rpx;
-  height: 40rpx;
-  z-index: 10;
 }
 .searchInput {
   padding: 0 40rpx;
@@ -45,6 +45,18 @@
   font-size: 32rpx;
   color: #888;
 }
+
+.searchIconWrap {
+  width: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.searchIcon {
+  width: 60rpx;
+  height: 60rpx;
+}
+
 
 .tab {
   font-size: 34rpx;

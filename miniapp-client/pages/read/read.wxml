@@ -82,13 +82,15 @@
   <view class="chapter" wx:if="{{isShowChapter}}">
     <view class="chapter-wrapper">
       <view class="chapter-bookname">{{bookName}}</view>
+      
       <view class="chapter-label">
         <view>目录(共{{chapter.list.length}}章)</view>
         <image bindtap="handleChangeOrder" class="icon70" 
           src="../../images/chapter-{{chapter.order}}.png"></image>
       </view>
+      
       <scroll-view class="chapter-list" scroll-into-view="{{chapter.id}}" 
-        scroll-y style="height: 800rpx;">
+        scroll-y style="height: 800rpx;" scroll-top="{{scrollTopChap}}">
         <view wx:for="{{chapter.list}}" wx:key="{{item.url}}"
           bindtap="handlePage" data-url="{{item.url}}" id="{{item.id}}"
           class="chapter-item {{detail.title===item.name?'chapter-current':''}}">
