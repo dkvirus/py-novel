@@ -9,6 +9,7 @@ Python+Mariadb+Vue+iview+微信小程序。
 - [x] Python：转换数据接口。笔趣阁广告多、排版也很简陋，http请求返回的响应是 html 字符串，通过 Python 做中间层处理，正则表达式匹配 Html 字符串中有用的数据：小说名称、作者、内容等信息，提供统一的数据接口，为 Web 端和移动端提供数据来源；[python服务端详情](./server)
 - [x] Vue：Web 端展示选用 Vue 框架，UI 选用 iview 框架，已适配手机浏览器阅读；[浏览器客户端详情+图示](./web-client)
 - [x] 微信小程序：看小说大多数情况还是在手机上看的，移动客户端再开发一个微信小程序端；[小程序客户端详情+图示](./miniapp-client)
+- [ ] 移动端：Flutter。[Flutter实现移动端功能](./client_mobile_flutter)
 
 截止 2018年10月03日 基本功能已经全部完成，下一阶段任务：
 
