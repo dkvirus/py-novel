@@ -19,7 +19,7 @@ db = 'db name'
 ## 目录结构
 
 ```
-|-- server
+|-- server_python
     |-- reptile                     # 爬虫
         |-- db.py                   # 封装数据库操作方法
         |-- novel.py                # 爬小说
@@ -48,8 +48,8 @@ db = 'db name'
 ## 启动
 
 ```
-$ cd server
+$ cd server_python
 $ python3 index.py
 ```
 
-打开浏览器访问 `http://localhost:5000/novel/search/兵者`。
+打开浏览器访问 `http://localhost:5000`。

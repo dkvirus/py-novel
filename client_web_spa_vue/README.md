@@ -21,7 +21,7 @@
 ## 启动
 
 ```
-$ cd web-client
+$ cd client_web_spa_vues
 $ npm install
 $ npm run dev         # 启动工程
 ```

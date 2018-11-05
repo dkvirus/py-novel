@@ -4,7 +4,7 @@
       <Col>
         <Input v-model="name" search enter-button 
           placeholder="请输入书名/作者名" @on-search="queryNovel" 
-          style="width: 200px;"/>
+          style="width: 200px;margin-bottom: 20px;"/>
       </Col>
     </Row>
 
@@ -19,11 +19,11 @@
       </Row>
       <Row>
         <Col :xs="12" :sm="8" :md="6"
-          v-for="novel in novelList" :key="novel[0]"
+          v-for="novel in novelList" :key="novel.id"
           style="padding: 10px;">
-          <div @click="queryChapter(novel[0])" class="novel-item">
-            <h3>{{novel[1]}}</h3>
-            <h6>{{novel[2]}}</h6>
+          <div @click="queryChapter(novel.url)" class="novel-item">
+            <h3>{{novel.book_name}}</h3>
+            <h6>{{novel.author_name}}</h6>
           </div>
         </Col>
       </Row>
@@ -47,10 +47,10 @@
       </Row>
       <Row>
         <Col :xs="12" :sm="8" :md="6"
-          v-for="chapter in chapterList" :key="chapter[0]"
+          v-for="chapter in chapterList" :key="chapter.id"
           style="padding: 5px;">
-          <div @click="queryContent(chapter[0])" class="novel-item">
-            {{chapter[1]}}
+          <div @click="queryContent(chapter.url)" class="novel-item">
+            {{chapter.name}}
           </div>
         </Col>
       </Row>
@@ -58,15 +58,15 @@
 
     <hr>
 
-    <div v-if="detail.length > 0" class="mgTop20 detail">
-      <h3 style="text-align: center; margin-bottom: 20px;">{{detail[0]}}</h3>
-      <div v-html="detail[1]"></div>
+    <div v-if="detail.title" class="mgTop20 detail">
+      <h3 style="text-align: center; margin-bottom: 20px;">{{detail.title}}</h3>
+      <div style="font-size: 18px;" v-html="detail.content"></div>
       <Row type="flex" justify="space-around" style="margin: 30px 0px;">
         <Col>
-          <Button type="primary" v-if="~detail[2].indexOf('.html')" @click="queryContent(detail[2])">上一章</Button>
+          <Button type="primary" v-if="~detail.prev_url.indexOf('.html')" @click="queryContent(detail.prev_url)">上一章</Button>
         </Col>
         <Col>
-          <Button type="primary" v-if="~detail[3].indexOf('.html')" @click="queryContent(detail[3])">下一章</Button>
+          <Button type="primary" v-if="~detail.next_url.indexOf('.html')" @click="queryContent(detail.next_url)">下一章</Button>
         </Col>
       </Row>
     </div>
@@ -76,8 +76,8 @@
 <script>
 import axios from 'axios'
 
-// const apiPrefix = 'http://localhost:5000'
-const apiPrefix = 'https://novel.dkvirus.top/api'
+const apiPrefix = 'http://localhost:5000/api'
+// const apiPrefix = 'https://novel.dkvirus.top/api'
 
 export default {
   name: 'app',
@@ -96,7 +96,7 @@ export default {
       const that = this
       const name = this.name
       if (!name) return alert('书名/作者名不能为空')
-      axios.get(`${apiPrefix}/novel/search/${name}`)
+      axios.get(`${apiPrefix}/gysw/novel`, { params: { keyword: name } })
         .then(function (res) {
           if (res.data.code === '0000') {
             that.novelList = res.data.data
@@ -108,7 +108,7 @@ export default {
     },
     queryChapter (url) {
       const that = this
-      axios.get(`${apiPrefix}/novel/chapter/${url}`)
+      axios.get(`${apiPrefix}/gysw/chapter/${url}`)
         .then(function (res) {
           if (res.data.code === '0000') {
             that.chapterList = res.data.data
@@ -118,7 +118,7 @@ export default {
     },
     queryContent (url) {
       const that = this
-      axios.get(`${apiPrefix}/novel/content/${url}`)
+      axios.get(`${apiPrefix}/gysw/content/${url}`)
         .then(function (res) {
           if (res.data.code === '0000') {
             that.isShowNovel = false
