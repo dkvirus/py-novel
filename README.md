@@ -38,8 +38,8 @@ Python+Mariadb+Vue+iview+微信小程序。
 #!/bin/sh
 
 # 传输 web-client 
-cd /Users/dkvirus/Documents/github/py-novel/web-client  && rm -rf dist  && npm run build &&  tar czv dist | ssh novel@dkvirus.top 'cd ~ && rm -rf dist && tar xz'
+cd /Users/dkvirus/Documents/github/py-novel/client_web_spa_vue  && rm -rf dist  && npm run build &&  tar czv dist | ssh novel@dkvirus.top 'cd ~ && rm -rf dist && tar xz'
 
 # 传输 server
-cd /Users/dkvirus/Documents/github/py-novel && tar czv server | ssh novel@dkvirus.top 'cd ~ && rm -rf server && tar xz'
+cd /Users/dkvirus/Documents/github/py-novel && tar czv server_python | ssh novel@dkvirus.top 'cd ~ && rm -rf server_python && tar xz'
 ```
