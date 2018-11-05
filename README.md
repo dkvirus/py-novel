@@ -20,9 +20,10 @@ Python+Mariadb+Vue+iview+微信小程序。
 
 ```
 |-- py-novel
-    |-- server              # python 提供数据接口
-    |-- web-client          # web 客户端
-    |-- miniapp-clent       # 微信小程序客户端
+    |-- client_mobile_flutter       # 移动端开发，flutter 框架
+    |-- client_mobile_miniapp       # 移动端开发，微信小程序
+    |-- client_web_spa_vue          # web端，vue单页应用
+    |-- server_python               # python 提供数据接口
 ```
 
 ## 部署
