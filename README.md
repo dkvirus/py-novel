@@ -10,11 +10,16 @@ Python+Mariadb+Vue+iview+微信小程序。
 - [x] Vue：Web 端展示选用 Vue 框架，UI 选用 iview 框架，已适配手机浏览器阅读；[浏览器客户端详情+图示](./client_web_spa_vue)
 - [x] 微信小程序：看小说大多数情况还是在手机上看的，移动客户端再开发一个微信小程序端；[小程序客户端详情+图示](./client_mobile_miniapp)
 - [ ] 移动端：Flutter。[Flutter实现移动端功能](./client_mobile_flutter)
+- [ ] 移动端：React-native。[React-native实现移动端](./client_mobile_rn)
 
-截止 2018年10月03日 基本功能已经全部完成，下一阶段任务：
+2018年10月03日 基本功能已经全部完成，下一阶段任务：
 
 - [x] 页面美化；
 - [ ] 前面只是一本一本爬取，后面爬取笔趣阁上所有完载的小说，保存在本地txt或者存数据库，这涉及到ip代理和多线程。
+
+2018年11月06日
+
+吐槽：Flutter 的 cli 工具做的相当好，就是写页面嵌套层级太深让 jser 望而生畏。
 
 ## 目录结构
 
@@ -22,6 +27,7 @@ Python+Mariadb+Vue+iview+微信小程序。
 |-- py-novel
     |-- client_mobile_flutter       # 移动端开发，flutter 框架
     |-- client_mobile_miniapp       # 移动端开发，微信小程序
+    |-- client_mobile_rn            # 移动端开发，react-native 框架
     |-- client_web_spa_vue          # web端，vue单页应用
     |-- server_python               # python 提供数据接口
 ```
