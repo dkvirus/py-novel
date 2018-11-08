@@ -8,8 +8,11 @@
     "test": "jest"
   },
   "dependencies": {
+    "antd-mobile-rn": "^2.3.1",
+    "babel-plugin-import": "^1.11.0",
     "react": "16.6.0-alpha.8af6728",
-    "react-native": "0.57.4"
+    "react-native": "0.57.4",
+    "react-navigation": "^2.18.2"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",
