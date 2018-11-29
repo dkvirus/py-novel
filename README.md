@@ -4,22 +4,21 @@
 
 ## 技术栈
 
-Python+Mariadb+Vue+iview+微信小程序。
-
-- [x] Python：转换数据接口。笔趣阁广告多、排版也很简陋，http请求返回的响应是 html 字符串，通过 Python 做中间层处理，正则表达式匹配 Html 字符串中有用的数据：小说名称、作者、内容等信息，提供统一的数据接口，为 Web 端和移动端提供数据来源；[python服务端详情](./server_python)
+- [x] Python【Python3+Flask+Mariadb】：转换数据接口。笔趣阁广告多、排版也很简陋，http请求返回的响应是 html 字符串，通过 Python 做中间层处理，正则表达式匹配 Html 字符串中有用的数据：小说名称、作者、内容等信息，提供统一的数据接口，为 Web 端和移动端提供数据来源；[python服务端详情](./server_python)
+- [x] Node【Node+Express+Mariadb】：为了适用多端，重构服务端接口，不改动之前 Python 实现版本，使用 node 实现 `/api/v2` 的接口；[node服务端详情](./server_node_express)
 - [x] Vue：Web 端展示选用 Vue 框架，UI 选用 iview 框架，已适配手机浏览器阅读；[浏览器客户端详情+图示](./client_web_spa_vue)
 - [x] 微信小程序：看小说大多数情况还是在手机上看的，移动客户端再开发一个微信小程序端；[小程序客户端详情+图示](./client_mobile_miniapp)
 - [ ] 移动端：Flutter。[Flutter实现移动端功能](./client_mobile_flutter)
 - [ ] 移动端：React-native。[React-native实现移动端](./client_mobile_rn)
+- [ ] 移动端：Taro。
+- [ ] 移动端：Weex。
+- [ ] 移动端：Android 原生-Java。
+- [ ] 移动端：Android 原生-Kotlin。
+- [ ] 移动端：IOS 原生-swift。
 
-2018年10月03日 基本功能已经全部完成，下一阶段任务：
+## 更新日志
 
-- [x] 页面美化；
-- [ ] 前面只是一本一本爬取，后面爬取笔趣阁上所有完载的小说，保存在本地txt或者存数据库，这涉及到ip代理和多线程。
-
-2018年11月06日
-
-吐槽：Flutter 的 cli 工具做的相当好，就是写页面嵌套层级太深让 jser 望而生畏。
+[更新日志](./CHANGELOG.md)
 
 ## 目录结构
 
@@ -29,7 +28,8 @@ Python+Mariadb+Vue+iview+微信小程序。
     |-- client_mobile_miniapp       # 移动端开发，微信小程序
     |-- client_mobile_rn            # 移动端开发，react-native 框架
     |-- client_web_spa_vue          # web端，vue单页应用
-    |-- server_python               # python 提供数据接口
+    |-- server_node_express         # node 提供数据接口 /api/v2
+    |-- server_python               # python 提供数据接口 /api/v1
 ```
 
 ## 部署
@@ -38,14 +38,4 @@ Python+Mariadb+Vue+iview+微信小程序。
 
 - python 服务单独在云主机(centos7)运行 `$ python3 index.py`，当退出 shell 时服务也会断开。解决方法为将 index.py 做成系统服务，使用 `systemctl` 统一管理；[《自定义系统服务》](https://blog.dkvirus.top/%E8%BF%90%E7%BB%B4/%E7%A5%9E%E5%A5%87%E7%9A%84%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7%20Systemd/)
 - 一键部署包括将本地文件传输到云主机，使用的是 ssh 协议，但前提要设置免密登录。[《设置 ssh 免密登录》](https://blog.dkvirus.top/Linux/%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E6%9C%8D%E5%8A%A1%E4%B9%8B%20SSH/)
-- 脚本示例如下，可供参考。
 
-```
-#!/bin/sh
-
-# 传输 web-client 
-cd /Users/dkvirus/Documents/github/py-novel/client_web_spa_vue  && rm -rf dist  && npm run build &&  tar czv dist | ssh novel@dkvirus.top 'cd ~ && rm -rf dist && tar xz'
-
-# 传输 server
-cd /Users/dkvirus/Documents/github/py-novel && tar czv server_python | ssh novel@dkvirus.top 'cd ~ && rm -rf server_python && tar xz'
-```
