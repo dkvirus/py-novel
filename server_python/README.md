@@ -53,3 +53,13 @@ $ python3 index.py
 ```
 
 打开浏览器访问 `http://localhost:5000`。
+
+## 更新日志
+
+2018年11月28日 公羊阅读后台接口突然崩了，小程序上访问不了页面。经排查后发现是 `/api/gysw/chapter/<path:url>` 和 `/api/gysw/content/<path:url>` 接口的问题。restful 传参组装在请求地址里，但如果参数本身就是个 url 地址就会出现问题。
+
+```
+/api/gysw/chapter/https://www.biquge5200.cc/92_92627/
+```
+
+后端拿到的参数 url 变成了 `https:/www.biquge5200.cc/92_92627/`，注意 `https:` 后面少了一个斜杠。以为是 flask 的问题，后来用 node-express 也整了个web框架，同样的参数 url 也会少个斜杠。奇怪的是，在本地 mac 电脑上一切正常，将代码上传到 CentOS7 服务器才出现这个问题。更奇怪的是，在11月28日之前一切正常，突然之间参数就传递异常了。目前，已添加处理可以访问，但是问题根源仍未可知。

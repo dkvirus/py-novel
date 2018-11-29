@@ -86,6 +86,9 @@ def getClassify():
 @app.route('/api/gysw/chapter/<path:url>')
 def getChapter(url):
     try:
+        if 'https:/www' in url:
+            url = url.replace('https:/www', 'https://www')
+            
         r = requests.get(url)
         root = etree.HTML(r.text)
         chapters = root.xpath('//dd[position()>9]')
@@ -118,6 +121,9 @@ def getChapter(url):
 @app.route('/api/gysw/content/<path:url>')
 def getContent(url):
     try:
+        if 'https:/www' in url:
+            url = url.replace('https:/www', 'https://www')
+        
         r = requests.get(url)
         root = etree.HTML(r.text)
 
