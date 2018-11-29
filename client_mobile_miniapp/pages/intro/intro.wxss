@@ -3,51 +3,152 @@
   height: 95vh;
 }
 
+/* 第0行：页面标题 + 返回按钮 */
+.row0 {
+  display: flex;
+  align-items: center;
+  height: 100rpx;
+  padding: 0 30rpx;
+}
 .back {
   width: 10%;
-  float: left;
+  display: flex;
+  align-items: center;
 }
 .btn-back {
   width: 50rpx;
   height: 50rpx;
 }
-.intro {
+
+/* 第1行：小说封面+书名+作者名 */
+.row1 {
+  height: 240rpx;
+  display: flex;
   background: #fff;
-  margin-bottom: 40rpx;
-  padding: 40rpx 80rpx;
+  padding: 0 30rpx;
+  margin-bottom: 10rpx;
 }
-.novelName {
-  font-size: 60rpx;
-  color: #333;
-  margin-bottom: 20rpx;
-  float: left;
+.coverWrap {
+  width: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cover {
+  height: 80%;
+}
+.bookWrap {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  padding: 30rpx 50rpx;
+  justify-content: space-around;
+}
+.bookName {
+  font-size: 46rpx;
 }
 .authorName {
-  font-size: 30rpx;
-  color: #888;
-  text-align: right;
-}
-
-.title{
-  margin: 30rpx 0;
-  padding: 0 50rpx;
-}
-.chapterList {
-  height: 700rpx;
-  background: #fff;
-}
-.chapterItem {
-  padding: 20rpx 40rpx;
-  color: #888;
+  align-self: flex-end;
   font-size: 34rpx;
-  border-bottom: 1px solid #ccc
-}
-.chapterItem:last-child {
-  border-bottom: none;
+  color: #333;
 }
 
+/* 第2行：最后更新时间+小说分类 */
+.row2 {
+  background: #fff;
+  height: 100rpx;
+  line-height: 100rpx;
+  display: flex;
+  padding: 0 30rpx;
+  justify-content: space-between;
+  font-size: 32rpx;
+  color: #888;
+  margin-bottom: 10rpx;
+}
+
+/* 第3行：小说简介 */
+.row3 {
+  background: #fff;
+  padding: 20rpx 30rpx;
+}
+.bookDesc {
+  font-size: 32rpx;
+  margin-top: 20rpx;
+  padding: 10rpx 20rpx;
+}
+
+/* 底部按钮组 */
 .btns {
   position: absolute;
   bottom: 0;
   width: 100%;
+  display: flex;
+}
+.btn {
+  width: 50%;
+}
+
+/* 目录 */
+.chapter-wrapper {
+  position: fixed;
+  height: 95vh;
+  width: 80vw;
+  top: 5vh;
+  left: 0;
+  z-index: 10;
+  background: rgb(249, 249, 249);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.chapter-bookname {
+  height: 8vh;
+  line-height: 8vh;
+  color: rgb(81, 81, 81);
+  font-size: 42rpx;
+  padding-left: 30rpx;
+}
+.chapter-label {
+  height: 5vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 30rpx;
+  padding-right: 30rpx;
+  box-sizing: border-box;
+  font-size: 34rpx;
+  color: rgb(52, 52, 52);
+}
+.chapter-list {
+  flex: 1;
+  font-size: 32rpx;
+  color: rgb(92, 92, 92);
+  box-sizing: border-box;
+  border-top: 2px solid rgb(234, 234, 234);
+}
+.chapter-item {
+  padding: 18rpx 40rpx;
+}
+.chapter-current {
+  color: rgb(171, 34, 39);
+}
+.chapter-mask {
+  position: fixed;
+  height: 95vh;
+  width: 20vw;
+  top: 5vh;
+  right: 0;
+  z-index: 10;
+  background: rgb(155, 155, 155);
+  opacity: 0.7;
+}
+
+/* 公共 */
+.icon {
+  height: 50rpx;
+  width: 50rpx;
+}
+.icon70{
+  width: 70rpx;
+  height: 70rpx;
 }

@@ -11,7 +11,7 @@
   <view class="shelf">
     <view class="shelf-item" wx:for="{{novelList}}" wx:key="{{item.chapter_url}}">
       <view class="shelf-wrapper" bindtap="handleRedirectRead" data-id="{{item.id}}"
-        data-url="{{item.chapter_url}}" data-bookname="{{item.book_name}}">
+        data-url="{{item.recent_chapter_url}}" data-bookname="{{item.book_name}}">
         <image class="shelf-cover" src="../../images/cover.png"></image>
         <view class="shelf-novelname">{{item.book_name}}</view>
         <view class="shelf-authorname">({{item.author_name}})</view>

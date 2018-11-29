@@ -12,7 +12,6 @@ Page({
   data: {
     novelList: [],
     settingEnable: false,
-    openId: '',
     isLoading: false, // 蒙版状态值
   },
 
@@ -20,33 +19,64 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    // 获取 openid，继而获取 user_id，通过 user_id 查询书架列表
     this.setData({ isLoading: true })
     var that = this
     wx.cloud.callFunction({
       name: 'getOpenid',
       complete: res => {
-        console.log(res.result)
-        that.setData({ openId: res.result })
         wx.setStorageSync('openId', res.result)
-        that.handleSearchShelf(res.result)
+
+        // 根据 openid 查询 userId
+        that.handleSearchUserInfo(res.result)
+
+        // wx.setStorageSync('user_id', 0)
+        // that.handleSearchShelf(res.result)
       }
     })
   },
 
   onShow: function () {
-    var openId = wx.getStorageSync('openId')
-    if (!openId) return
-    this.handleSearchShelf(openId)
+    var userId = wx.getStorageSync('user_id')
+    if (!userId) return
+    this.handleSearchShelf(userId)
+  },
+
+  /**
+   * 查询用户信息
+   */
+  handleSearchUserInfo: function (openId) {
+    var that = this
+    request({
+      url: api.GET_USER_INFO,
+      data: { client_type: 'OPENID', username: openId },
+    }).then(function (res) {
+      if (res.length > 0) {
+        wx.setStorageSync('user_id', res[0].id)
+        that.handleSearchShelf(res[0].id)
+        return;
+      }
+
+      // 没有查到用户信息，新增一条用户
+      request({
+        url: api.ADD_USER_INFO,
+        method: 'POST',
+        data: { client_type: 'OPENID', username: openId }
+      }).then(function (res2) {
+        wx.setStorageSync('user_id', res2.insertId)
+        that.handleSearchShelf(res2.insertId)
+      })
+    })
   },
 
   /**
    * 查询书架里小说
    */
-  handleSearchShelf: function (openId) {
+  handleSearchShelf: function (userId) {
     var that = this
     request({
       url: api.GET_SHELF,
-      data: { open_id: openId }
+      data: { user_id: userId }
     }).then(function (res) {
       that.setData({ novelList: res, isLoading: false, settingEnable: false })
     }).catch(function (err) {
@@ -86,7 +116,8 @@ Page({
       method: 'DELETE',
       data: { id },
     }).then(function (res) {
-      that.handleSearchShelf(that.data.openId)
+      var userId = wx.getStorageSync('user_id')
+      that.handleSearchShelf(userId)
     })
   },
 

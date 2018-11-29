@@ -40,7 +40,7 @@ Page({
     var that = this
     // 查询数据
     request({
-      url: api.GET_NOVEL,
+      url: api.GET_SEARCH_NOVEL,
       data: { classify_id: id },
     }).then(function (res) {
       that.setData({ novelList: res, selectedClassify: id })

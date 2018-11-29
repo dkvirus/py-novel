@@ -68,8 +68,6 @@ Page({
     request({
       url: api.GET_SEARCH_HOT,
     }).then(function (res) {
-      console.log('>>>>>>>')
-
       if (res.data && res.data.length === 0) {
         return wx.showToast({
           title: '没有找到小说！',
@@ -84,10 +82,10 @@ Page({
    */
   handleSearchHist: function () {
     var that = this
-    var openId = wx.getStorageSync('openId')
+    var userId = wx.getStorageSync('user_id')
     request({
       url: api.GET_SEARCH_HIST,
-      data: { open_id: openId },
+      data: { user_id: userId },
     }).then(function (res) {
       that.setData({ histList: res })
     })
@@ -108,7 +106,7 @@ Page({
     this.setData({ isLoading: true })
     var that = this
     var inputValue = this.data.inputValue
-    var openId = wx.getStorageSync('openId')
+    var userId = wx.getStorageSync('user_id')
     if (!inputValue) {
       wx.showToast({
         title: '请输入内容',
@@ -117,7 +115,7 @@ Page({
     }
 
     request({
-      url: api.GET_NOVEL,
+      url: api.GET_SEARCH_NOVEL,
       data: { keyword: inputValue },
     }).then(function (res) {
       if (res && res.length === 0) {
@@ -131,7 +129,7 @@ Page({
       request({
         url: api.ADD_SEARCH_HIST,
         method: 'POST',
-        data: { open_id: openId, keyword: inputValue }
+        data: { user_id: userId, keyword: inputValue }
       })
     })
   },

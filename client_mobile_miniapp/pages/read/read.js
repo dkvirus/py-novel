@@ -141,7 +141,7 @@ Page({
         request({
           url: api.EDIT_SHELF,
           method: 'PUT',
-          data: { chapter_url: url, id: that.data.novelId },
+          data: { recent_chapter_url: url, id: that.data.novelId },
         }).then(function (res) {
 
         })
