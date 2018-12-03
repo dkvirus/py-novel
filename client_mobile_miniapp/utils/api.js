@@ -1,7 +1,7 @@
 // var apiPrefix = 'https://novel.dkvirus.top/api'
 // var apiPrefix = 'http://localhost:5000/api'
-var apiPrefix = 'http://localhost:3000/api/v2'
-// var apiPrefix = 'https://novel.dkvirus.top/api/v2'
+// var apiPrefix = 'http://localhost:3000/api/v2'
+var apiPrefix = 'https://novel.dkvirus.top/api/v2'
 
 module.exports = {
   GET_CLASSIFY: `${apiPrefix}/gysw/novel/classify`,           // 查询小说分类
