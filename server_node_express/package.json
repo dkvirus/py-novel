@@ -12,11 +12,13 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "chalk": "^2.4.1",
     "cheerio": "^1.0.0-rc.2",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-session": "^1.15.6",
     "iconv-lite": "^0.4.24",
+    "moment": "^2.22.2",
     "mysql": "^2.16.0",
     "nodemailer": "^4.7.0",
     "request": "^2.88.0",
