@@ -1,19 +1,19 @@
 const mysql = require('mysql');
 const { db_host, db_user, db_password, db_database } = require('../configs/config');
 
-const db = mysql.createConnection ({
+const db = mysql.createPool ({
     host: db_host,
     user: db_user,
     password: db_password,
     database: db_database,
 });
 
-db.connect((err) => {
-    if (err) {
-        throw err;
-    }
-    console.log('Connected to database');
-});
+// db.connect((err) => {
+//     if (err) {
+//         throw err;
+//     }
+//     console.log('Connected to database');
+// });
 
 global.db = db;
 
