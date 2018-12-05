@@ -1,20 +1,24 @@
 package top.dkvirus.novel.pages.index;
 
+import android.app.ActionBar;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
+import top.dkvirus.novel.pages.classify.ClassifyFragment;
+import top.dkvirus.novel.pages.login.LoginFragment;
+import top.dkvirus.novel.pages.search.SearchActivity;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Response;
-import top.dkvirus.novel.models.ShelfResult;
 import top.dkvirus.novel.pages.R;
-import top.dkvirus.novel.utils.HttpUtil;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -22,46 +26,81 @@ public class MainActivity extends AppCompatActivity{
 
     private RecyclerView mRecycleView;
 
+    // 底部导航栏
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_index:
+                    replaceFragment(new IndexFragment());
+                    return true;
+                case R.id.navigation_classify:
+                    replaceFragment(new ClassifyFragment());
+                    return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecycleView = findViewById(R.id.shelf_list);
-        GridLayoutManager manager = new GridLayoutManager(this, 2);
-        mRecycleView.setLayoutManager(manager);
+        // 底部导航条处理
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        // 请求用户数据
-        HttpUtil.sendOkHttpRequest("https://novel.dkvirus.top/api/v2/gysw/shelf/?user_id=9",
-            new okhttp3.Callback() {
+        // 获取登录状态
+        SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
+        Boolean isLogin = preferences.getBoolean("isLogin", false);
 
-                @Override
-                public void onFailure(Call call, IOException e) {
+        if (isLogin == true) {
+            replaceFragment(new IndexFragment());
+        } else {
+            replaceFragment(new LoginFragment());
+        }
 
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String responseData =  response.body().string();
-                    ShelfResult shelfResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<ShelfResult>(){});
-
-                    Log.d(TAG, "请求书架列表成功");
-                    showShelfList(shelfResult);
-                }
-            });
     }
 
     /**
-     * 展示书架列表
+     * 创建标题栏上面的按钮
      */
-    private void showShelfList (final ShelfResult result) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ShelfAdapter adapter = new ShelfAdapter(result.getData());
-                mRecycleView.setAdapter(adapter);
-            }
-        });
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.indexbar, menu);
+        return true;
+    }
+
+    /**
+     * 选中按钮触发事件
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_item:
+                SearchActivity.actionStart(this);
+                break;
+            case R.id.edit_item:
+                Toast.makeText(MainActivity.this, "You clicked edit",
+                        Toast.LENGTH_SHORT).show();
+                break;
+            default:
+        }
+
+        return true;
+    }
+
+    /**
+     * 替换碎片
+     */
+    private void replaceFragment (Fragment fragment) {
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.wrapper, fragment);
+        transaction.commit();
     }
 
 }

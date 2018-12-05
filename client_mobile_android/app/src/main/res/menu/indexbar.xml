@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/add_item"
+        android:title="添加"
+        app:showAsAction="always"
+        android:icon="@drawable/plus"/>
+
+    <item android:id="@+id/edit_item"
+        android:title="设置"
+        app:showAsAction="always"
+        android:icon="@drawable/setting"/>
+
+</menu>

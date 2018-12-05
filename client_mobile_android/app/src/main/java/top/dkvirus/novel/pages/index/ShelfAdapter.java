@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,6 +12,7 @@ import java.util.List;
 
 import top.dkvirus.novel.models.Shelf;
 import top.dkvirus.novel.pages.R;
+import top.dkvirus.novel.pages.read.ReadActivity;
 
 public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.ViewHolder> {
 
@@ -50,8 +50,8 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.ViewHolder> 
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
                 Shelf shelf = shelfList.get(position);
-                Toast.makeText(view.getContext(), "You click view " + shelf.getBook_desc(),
-                        Toast.LENGTH_SHORT).show();
+
+                ReadActivity.actionStart(view.getContext(), shelf.getRecent_chapter_url());
             }
         });
 

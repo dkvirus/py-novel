@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/novel_cover"
+    android:id="@+id/search_wrap"
     android:background="@drawable/cover"
     android:layout_marginBottom="20dp"
     android:layout_marginLeft="10dp"
@@ -9,7 +9,7 @@
     android:layout_height="200dp">
 
     <TextView android:text="兵者"
-        android:id="@+id/novel_book"
+        android:id="@+id/book_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="17sp"
@@ -17,7 +17,7 @@
         android:layout_marginTop="30dp"/>
 
     <TextView android:text="七品"
-        android:id="@+id/novel_author"
+        android:id="@+id/author_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_alignParentRight="true"

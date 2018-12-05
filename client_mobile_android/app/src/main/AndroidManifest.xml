@@ -20,8 +20,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".read.ReadActivity" />
-        <activity android:name=".search.SearchActivity"></activity>
+        <activity android:name=".read.ReadActivity"/>
+        <activity android:name=".search.SearchActivity" android:label="搜索"/>
+        <activity android:name=".intro.IntroActivity" android:label="小说详情"/>
     </application>
 
 </manifest>
