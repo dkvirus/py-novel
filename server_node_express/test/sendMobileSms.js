@@ -1,12 +1,12 @@
 const request = require('request');
 
-function testSendMail () {
+function testSendMobileSms () {
     request({
-        url: 'http://localhost:3000/api/v2/gysw/email/code',
+        url: 'http://localhost:3000/api/v2/gysw/mobile/code',
         method: 'post',
         json: true,
         body: {
-            "email": "me@dkvirus.com",
+            "mobile": 18056891357,
             "userId": 3,
         }
     }, function (e, r, body) {
@@ -14,5 +14,5 @@ function testSendMail () {
     })
 }
 
-testSendMail()
+testSendMobileSms()
 

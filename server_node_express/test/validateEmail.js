@@ -6,8 +6,8 @@ function testValidateCode () {
         method: 'post',
         json: true,
         body: {
-            "code": "774296",
-            "userId": 1,
+            "code": "413302",
+            "userId": 3,
         }
     }, function (e, r, body) {
         console.log(body);

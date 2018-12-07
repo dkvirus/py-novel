@@ -1,12 +1,12 @@
 const request = require('request');
 
-function testSendMail () {
+function testValidateMobileSmsCode () {
     request({
-        url: 'http://localhost:3000/api/v2/gysw/email/code',
+        url: 'http://localhost:3000/api/v2/gysw/mobile/validate',
         method: 'post',
         json: true,
         body: {
-            "email": "me@dkvirus.com",
+            "code": "483453",
             "userId": 3,
         }
     }, function (e, r, body) {
@@ -14,5 +14,4 @@ function testSendMail () {
     })
 }
 
-testSendMail()
-
+testValidateMobileSmsCode();
