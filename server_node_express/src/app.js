@@ -10,6 +10,7 @@ const router = require('./router');
 const { apiPrefix } = require('./configs/config');
 require('./utils/db');
 require('./utils/email');
+require('./utils/redis');
 
 const app = express();
 

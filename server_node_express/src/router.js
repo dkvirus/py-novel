@@ -3,6 +3,7 @@ const search = require('./routes/search');
 const novel = require('./routes/novel');
 const user = require('./routes/user');
 const email = require('./routes/email');
+const mobile = require('./routes/mobile');
 
 module.exports = function (app) {
 
@@ -30,10 +31,14 @@ module.exports = function (app) {
     app.get('/gysw/user/info', user.getUserInfo);                       // 查看用户信息
     app.post('/gysw/user/info', user.addUserInfo);                      // 新增用户
     
-    // 邮箱
-    app.post('/gysw/email/code', email.getEmailCode);                   // 发送 email 验证码
-    app.post('/gysw/email/validate', email.validateEmail);              // 检验验证码是否正确
+    // 邮箱验证码
+    app.post('/gysw/email/code', email.sendEmailCode);                  // 发送 email 验证码
+    app.post('/gysw/email/validate', email.validateEmailCode);          // 检验验证码是否正确
     
+    // 短信验证码
+    app.post('/gysw/mobile/code', mobile.sendMobileCode);               // 发送短信验证码
+    app.post('/gysw/mobile/validate', mobile.validateMobileCode);       // 检验验证码是否正确
+
     // Not Found
     app.use('*', function (req, res) { res.json({ code: '9999', message: '没有找到对应的路由' }) });
 }
