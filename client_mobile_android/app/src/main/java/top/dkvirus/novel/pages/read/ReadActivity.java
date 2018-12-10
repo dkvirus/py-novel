@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 import top.dkvirus.novel.models.Novel;
 import top.dkvirus.novel.models.NovelResult;
@@ -67,10 +68,8 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
      * 查询内容详情
      */
     private void handleSearchDetail (String chapterUrl, Boolean isUpdate) {
-        // 请求用户数据
-        HttpUtil.sendOkHttpRequest("https://novel.dkvirus.top/api/v2/gysw/novel/content?url=" + chapterUrl,
-            new okhttp3.Callback() {
-
+        HttpUtil.get("https://novel.dkvirus.top/api/v2/gysw/novel/content?url=" + chapterUrl,
+            new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     Log.d(TAG, "onFailure: 请求小说内容失败");
@@ -79,7 +78,7 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     Log.d(TAG, "onResponse: 请求小说内容成功");
-                    
+
                     String responseData =  response.body().string();
                     NovelResult novelResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<NovelResult>(){});
 

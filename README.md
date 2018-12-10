@@ -9,8 +9,8 @@
 - [x] Vue：Web 端展示选用 Vue 框架，UI 选用 iview 框架，已适配手机浏览器阅读；[浏览器客户端详情+图示](./client_web_spa_vue)
 - [x] 微信小程序：看小说大多数情况还是在手机上看的，移动客户端再开发一个微信小程序端；[小程序客户端详情+图示](./client_mobile_miniapp)
 - [x] 移动端：Android 原生-Java；(开发中)[安卓原生Java端详情+图示](./client_mobile_android)
-- [ ] 移动端：Flutter。[Flutter实现移动端功能](./client_mobile_flutter)
-- [ ] 移动端：React-native。[React-native实现移动端](./client_mobile_rn)
+- [ ] 移动端：Flutter。
+- [ ] 移动端：React-native。
 - [ ] 移动端：Taro。
 - [ ] 移动端：Weex。
 - [ ] 移动端：Android 原生-Kotlin。

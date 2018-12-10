@@ -16,6 +16,7 @@ import java.io.IOException;
 import com.google.gson.reflect.TypeToken;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 import top.dkvirus.novel.models.ShelfResult;
 import top.dkvirus.novel.pages.R;
@@ -38,24 +39,22 @@ public class IndexFragment extends Fragment {
         GridLayoutManager manager = new GridLayoutManager(activity, 2);
         mRecycleView.setLayoutManager(manager);
 
-        // 请求用户数据
-        HttpUtil.sendOkHttpRequest("https://novel.dkvirus.top/api/v2/gysw/shelf/?user_id=9",
-            new okhttp3.Callback() {
+        HttpUtil.get("https://novel.dkvirus.top/api/v2/gysw/shelf?user_id=9", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, "onFailure: 请求书架列表失败");
+            }
 
-                @Override
-                public void onFailure(Call call, IOException e) {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.d(TAG, "onResponse: 请求书架列表成功");
 
-                }
+                String responseData =  response.body().string();
+                ShelfResult shelfResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<ShelfResult>(){});
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String responseData =  response.body().string();
-                    ShelfResult shelfResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<ShelfResult>(){});
-
-                    Log.d(TAG, "请求书架列表成功");
-                    showShelfList(shelfResult);
-                }
-            });
+                showShelfList(shelfResult);
+            }
+        });
 
         return view;
     }

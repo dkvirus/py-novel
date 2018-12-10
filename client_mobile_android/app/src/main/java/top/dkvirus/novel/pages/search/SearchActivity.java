@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 import top.dkvirus.novel.models.SearchResult;
 import top.dkvirus.novel.pages.R;
@@ -74,19 +75,17 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
-
-        // 请求用户数据
-        HttpUtil.sendOkHttpRequest("https://novel.dkvirus.top/api/v2/gysw/search/novel?keyword=" + keyword,
-            new okhttp3.Callback() {
-
+        // 内容不为空，发请求，请求回来之后展示列表
+        HttpUtil.get("https://novel.dkvirus.top/api/v2/gysw/search/novel?keyword=" + keyword,
+            new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    Log.d(TAG, "onFailure: 请求列表失败");
+                    Log.d(TAG, "onFailure: 根据关键字查询小说列表失败");
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    Log.d(TAG, "请求书架列表成功");
+                    Log.d(TAG, "onResponse: 根据关键字查询小说列表成功");
 
                     String responseData =  response.body().string();
                     SearchResult searchResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<SearchResult>(){});
@@ -95,8 +94,6 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
                 }
             });
 
-
-        // 内容不为空，发请求，请求回来之后展示列表
     }
 
     /**

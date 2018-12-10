@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/novel_cover"
+        android:background="@drawable/cover"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:padding="10dp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="5dp"
+        android:layout_width="140dp"
+        android:layout_height="200dp">
+
+        <TextView
+            android:id="@+id/book_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="17sp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"/>
+
+        <TextView
+            android:id="@+id/author_name"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="40dp"
+            android:textSize="13sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout android:layout_width="match_parent"
+        android:background="#ffffff"
+        android:layout_marginVertical="5dp"
+        android:paddingHorizontal="20dp"
+        android:layout_height="40dp">
+
+        <TextView android:id="@+id/last_update_at"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_centerVertical="true"/>
+
+        <TextView android:id="@+id/classify_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_marginVertical="5dp"
+        android:paddingVertical="20dp"
+        android:background="#ffffff">
+
+        <TextView android:layout_height="30dp"
+            android:layout_width="match_parent"
+            android:paddingHorizontal="20dp"
+            android:textSize="18sp"
+            android:text="小说简介"/>
+
+        <TextView android:id="@+id/book_desc"
+            android:paddingHorizontal="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <Button android:id="@+id/join_shelf"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:text="加入书架"/>
+
+</LinearLayout>
