@@ -5,7 +5,7 @@ module.exports = {
      * 发送短信验证码 
      */
     sendMobileCode: async function (req, res) {
-        const { mobile, userId } = req.body;
+        const { mobile } = req.body;
 
         const code = String(Math.random().toFixed(6)).substr(2);    // 验证码
         const deadline = 10;        // 在 [deadline] 分钟内填写
@@ -13,7 +13,7 @@ module.exports = {
     
         if (result.code === '0000') {
             console.log('短信验证码：', code);
-            await redis.hmsetAsync(`user${userId}`, { mobile: code });
+            await redis.hmsetAsync(`user${mobile}`, { mobile: code });
         }
 
         res.json(result);
@@ -23,11 +23,11 @@ module.exports = {
      * 校验短信验证码 
      */
     validateMobileCode: async function (req, res) {
-        const { code, userId } = req.body;
+        const { code, mobile } = req.body;
         
         try {
             // 从 redis 中读取短信验证码
-            const mobileCode = await redis.hgetAsync(`user${userId}`, 'mobile');
+            const mobileCode = await redis.hgetAsync(`user${mobile}`, 'mobile');
 
             if (!mobileCode) return res.json({ code: '9999', message: '短信校验超时，请重新发送验证码' });
     
@@ -36,7 +36,7 @@ module.exports = {
             }
     
             // 校验成功之后要置空校验码值
-            await redis.hmsetAsync(`user${userId}`, { mobile: '' });
+            await redis.hmsetAsync(`user${mobile}`, { mobile: '' });
             res.json({ code: '0000', message: '短信校验码验证成功' });
 
         } catch (e) {
