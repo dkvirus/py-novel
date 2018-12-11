@@ -20,16 +20,35 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import top.dkvirus.novel.configs.Constant;
 
 public class HttpUtil {
 
-    private static final String TAG = "HttpUtil";
+    private static final String TAG = Constant.LOG;
+
+    private static final String apiPrefix = "https://novel.dkvirus.top/api/test";
 
     /**
      * get 请求
      */
     public static void get (String url, Callback callback) {
         OkHttpClient client = new OkHttpClient();
+        url = apiPrefix + url;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(callback);
+    }
+
+    public static void get (String url, Map<String, Object> map, Callback callback) {
+        OkHttpClient client = new OkHttpClient();
+        url = apiPrefix + url + "?1=1";
+
+        for (String key : map.keySet()) {
+            url += "&" + key + "=" + map.get(key);
+        }
 
         Request request = new Request.Builder()
                 .url(url)
@@ -43,6 +62,7 @@ public class HttpUtil {
      */
     public static void post (String url, Map<String, Object> map, Callback callback) {
         OkHttpClient client = new OkHttpClient();
+        url = apiPrefix + url;
 
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
@@ -72,6 +92,7 @@ public class HttpUtil {
      */
     public static void delete (String url, Callback callback) {
         OkHttpClient client = new OkHttpClient();
+        url = apiPrefix + url;
 
         Request request = new Request.Builder()
                 .url(url)
@@ -86,6 +107,7 @@ public class HttpUtil {
      */
     public static void put (String url, Map<String, Object> map, Callback callback) {
         OkHttpClient client = new OkHttpClient();
+        url = apiPrefix + url;
 
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
         JSONObject jsonObject = new JSONObject();
@@ -105,63 +127,6 @@ public class HttpUtil {
                 .put(body)
                 .build();
 
-        client.newCall(request).enqueue(callback);
-    }
-
-    /**
-     * 用 HttpURLConnection 发请求
-     */
-    public static void sendHttpRequest (final String address, final HttpCallbackListener listener) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                HttpURLConnection connection = null;
-
-                try {
-                    URL url = new URL(address);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestMethod("method");
-                    connection.setConnectTimeout(8000);
-                    connection.setReadTimeout(8000);
-                    connection.setDoInput(true);
-                    connection.setDoOutput(true);
-
-                    InputStream in = connection.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    if (listener != null) {
-                        listener.onFinish(response.toString());
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (listener != null) {
-                        listener.onError(e);
-                    }
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect();
-                    }
-                }
-
-
-            }
-        }).start();
-
-    }
-
-    /**
-     * 用 okhttp 发请求
-     */
-    public static void sendOkHttpRequest (String address, okhttp3.Callback callback) {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder()
-                .url(address)
-                .build();
         client.newCall(request).enqueue(callback);
     }
 

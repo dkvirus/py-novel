@@ -76,7 +76,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         // 内容不为空，发请求，请求回来之后展示列表
-        HttpUtil.get("https://novel.dkvirus.top/api/v2/gysw/search/novel?keyword=" + keyword,
+        HttpUtil.get("/gysw/search/novel?keyword=" + keyword,
             new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

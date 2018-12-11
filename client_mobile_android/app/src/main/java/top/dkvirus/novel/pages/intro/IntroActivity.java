@@ -93,7 +93,7 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
         map.put("book_desc", detail.getBook_desc());
         map.put("recent_chapter_url", detail.getRecent_chapter_url());
 
-        HttpUtil.post("https://novel.dkvirus.top/api/v2/gysw/shelf", map, new Callback() {
+        HttpUtil.post("/gysw/shelf", map, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, "onFailure: 将小说添加到书架失败");
@@ -118,7 +118,7 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
      * 请求小说详情
      */
     private void handleSearchNovel (String novelUrl) {
-        HttpUtil.get("https://novel.dkvirus.top/api/v2/gysw/novel/detail?url=" + novelUrl,
+        HttpUtil.get("/gysw/novel/detail?url=" + novelUrl,
             new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

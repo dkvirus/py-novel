@@ -1,4 +1,5 @@
 <resources>
+
     <string name="app_name">公羊书屋</string>
     <string name="index_title">我的书架</string>
     <string name="classify_title">公羊书屋</string>
@@ -8,4 +9,14 @@
 
     <string name="title_home">书架</string>
     <string name="title_dashboard">书屋</string>
+
+    <!-- 顶部标题栏 -->
+    <string name="title_signup">注册页面</string>
+    <string name="title_signin">登录页面</string>
+
+    <!-- 底部导航条 -->
+    <string name="navigation_shelf">我的书架</string>
+    <string name="navigation_classify">公羊书屋</string>
+
+
 </resources>

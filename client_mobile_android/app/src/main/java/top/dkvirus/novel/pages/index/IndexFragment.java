@@ -1,5 +1,6 @@
 package top.dkvirus.novel.pages.index;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,6 +23,8 @@ import top.dkvirus.novel.models.ShelfResult;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.utils.HttpUtil;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class IndexFragment extends Fragment {
 
     private static final String TAG = "IndexFragment";
@@ -39,7 +42,12 @@ public class IndexFragment extends Fragment {
         GridLayoutManager manager = new GridLayoutManager(activity, 2);
         mRecycleView.setLayoutManager(manager);
 
-        HttpUtil.get("https://novel.dkvirus.top/api/v2/gysw/shelf?user_id=9", new Callback() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        SharedPreferences preferences = mainActivity.getSharedPreferences("data", MODE_PRIVATE);
+
+        int userId = preferences.getInt("userId", 0);
+
+        HttpUtil.get("/gysw/shelf?user_id=" + userId, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, "onFailure: 请求书架列表失败");

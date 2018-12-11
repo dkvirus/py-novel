@@ -68,7 +68,7 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
      * 查询内容详情
      */
     private void handleSearchDetail (String chapterUrl, Boolean isUpdate) {
-        HttpUtil.get("https://novel.dkvirus.top/api/v2/gysw/novel/content?url=" + chapterUrl,
+        HttpUtil.get("/gysw/novel/content?url=" + chapterUrl,
             new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

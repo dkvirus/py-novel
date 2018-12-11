@@ -1,6 +1,8 @@
 package top.dkvirus.novel.pages.index;
 
 import android.app.ActionBar;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,19 +12,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import top.dkvirus.novel.configs.Constant;
 import top.dkvirus.novel.pages.classify.ClassifyFragment;
 import top.dkvirus.novel.pages.login.LoginFragment;
 import top.dkvirus.novel.pages.search.SearchActivity;
 
 import top.dkvirus.novel.pages.R;
+import top.dkvirus.novel.pages.signin.SigninActivity;
+import top.dkvirus.novel.pages.signup.SignupActivity;
 
 public class MainActivity extends AppCompatActivity{
 
-    private static final String TAG = "MainActivity";
+    private static final String TAG = Constant.LOG;
 
     private RecyclerView mRecycleView;
 
@@ -49,6 +55,8 @@ public class MainActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "onCreate: 进入我的书架页面");
+        
         // 底部导航条处理
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -56,13 +64,25 @@ public class MainActivity extends AppCompatActivity{
         // 获取登录状态
         SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
         Boolean isLogin = preferences.getBoolean("isLogin", false);
+        int userId = preferences.getInt("userId", -1);
+
+        Log.d(TAG, "onCreate: isLogin = " + isLogin);
+        Log.d(TAG, "onCreate: userId = " + userId);
 
         if (isLogin == true) {
             replaceFragment(new IndexFragment());
         } else {
-            replaceFragment(new LoginFragment());
+            SigninActivity.actionStart(MainActivity.this);
         }
 
+    }
+
+    /**
+     * 页面跳转传参
+     */
+    public static void actionStart (Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
     }
 
     /**
