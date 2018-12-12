@@ -19,6 +19,7 @@ import com.google.gson.reflect.TypeToken;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import top.dkvirus.novel.configs.Api;
 import top.dkvirus.novel.models.ShelfResult;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.utils.HttpUtil;
@@ -47,7 +48,7 @@ public class IndexFragment extends Fragment {
 
         int userId = preferences.getInt("userId", 0);
 
-        HttpUtil.get("/gysw/shelf?user_id=" + userId, new Callback() {
+        HttpUtil.get(Api.GET_SHELF + "?user_id=" + userId, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, "onFailure: 请求书架列表失败");

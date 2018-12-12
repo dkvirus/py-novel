@@ -20,13 +20,15 @@ import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import top.dkvirus.novel.configs.Api;
+import top.dkvirus.novel.configs.Constant;
 import top.dkvirus.novel.models.SearchResult;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.utils.HttpUtil;
 
 public class SearchActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private static final String TAG = "SearchActivity";
+    private static final String TAG = Constant.LOG;
 
     private EditText editText;
 
@@ -36,6 +38,8 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        Log.d(TAG, "onCreate: 进入小说搜索页面");
 
         Button btnSearch = findViewById(R.id.btn_search);
         editText = findViewById(R.id.keyword);
@@ -76,7 +80,7 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         // 内容不为空，发请求，请求回来之后展示列表
-        HttpUtil.get("/gysw/search/novel?keyword=" + keyword,
+        HttpUtil.get(Api.GET_SEARCH_NOVEL + "?keyword=" + keyword,
             new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

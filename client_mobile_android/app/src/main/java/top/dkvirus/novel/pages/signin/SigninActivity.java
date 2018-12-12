@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -100,7 +101,27 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 String responseData =  response.body().string();
                 UserResult userResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<UserResult>(){});
 
-                if (userResult.getCode() != "0000") {
+                if (!"0000".equals(userResult.getCode())) {
+                     runOnUiThread(new Runnable() {
+                         @Override
+                         public void run() {
+                             Toast
+                                 .makeText(SigninActivity.this, "登录失败：网络错误", Toast.LENGTH_SHORT)
+                                 .show();
+                         }
+                     });
+                     return;
+                }
+
+                if (userResult.getData().getId() == 0) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast
+                                .makeText(SigninActivity.this, "登录失败：用户名或密码错误", Toast.LENGTH_SHORT)
+                                .show();
+                        }
+                    });
                     return;
                 }
 

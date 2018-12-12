@@ -18,6 +18,8 @@ import java.io.IOException;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import top.dkvirus.novel.configs.Api;
+import top.dkvirus.novel.configs.Constant;
 import top.dkvirus.novel.models.Novel;
 import top.dkvirus.novel.models.NovelResult;
 import top.dkvirus.novel.models.ShelfResult;
@@ -28,7 +30,7 @@ import top.dkvirus.novel.utils.HttpUtil;
 
 public class ReadActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "ReadActivity";
+    private static final String TAG = Constant.LOG;
 
     private WebView content;
 
@@ -41,6 +43,8 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
 
+        Log.d(TAG, "onCreate: 进入小说阅读页面");
+        
         // 接收其它页面传递过来的参数
         Intent intent = getIntent();
         String chapterUrl = intent.getStringExtra("chapterUrl");
@@ -68,7 +72,7 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
      * 查询内容详情
      */
     private void handleSearchDetail (String chapterUrl, Boolean isUpdate) {
-        HttpUtil.get("/gysw/novel/content?url=" + chapterUrl,
+        HttpUtil.get(Api.GET_NOVEL_CONTENT + "?url=" + chapterUrl,
             new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -92,6 +96,7 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void run() {
                 novel = novelResult.getData();
+                Log.d(TAG, "run: " + novel.toString());
 
                 content.loadDataWithBaseURL(null, novel.getContent(), "text/html", "utf-8", null);
                 title.setText(novel.getTitle());
@@ -102,22 +107,27 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (novel.getPrev_url().indexOf(".html") == -1) {
-            Toast.makeText(ReadActivity.this, "没有更多了", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (novel.getNext_url().indexOf(".html") == -1) {
-            Toast.makeText(ReadActivity.this, "已经是最新章节了", Toast.LENGTH_SHORT).show();
-            return;
-        }
+
+        Log.d(TAG, "onClick: " + novel.getNext_url());
+        Log.d(TAG, "onClick: " + novel.getNext_url().indexOf(".html"));
 
         switch (view.getId()) {
             case R.id.btn_prev:
                 Log.d(TAG, "onClick: 上一章");
+                if (novel.getPrev_url().indexOf(".html") == -1) {
+                    Toast.makeText(ReadActivity.this, "没有更多了", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
                 handleSearchDetail(novel.getPrev_url(), true);
                 break;
             case R.id.btn_next:
                 Log.d(TAG, "onClick: 下一章");
+
+                if (novel.getNext_url().indexOf(".html") == -1) {
+                    Toast.makeText(ReadActivity.this, "已经是最新章节了", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 handleSearchDetail(novel.getNext_url(), true);
                 break;
         }

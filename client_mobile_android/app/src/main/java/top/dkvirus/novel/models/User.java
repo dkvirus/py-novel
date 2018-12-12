@@ -2,7 +2,7 @@ package top.dkvirus.novel.models;
 
 public class User {
 
-    private int id = 0;
+    private int id;
 
     public int getId() {
         return id;

@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.reflect.TypeToken;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,9 +22,11 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import top.dkvirus.novel.configs.Api;
 import top.dkvirus.novel.configs.Constant;
+import top.dkvirus.novel.models.UserResult;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.signin.SigninActivity;
 import top.dkvirus.novel.utils.HttpUtil;
+import top.dkvirus.novel.utils.TimeCount;
 
 public class SignupActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -37,6 +41,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
     private Button mSmsBtn;
 
     private Button mSignupBtn;
+
+    private TimeCount mTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +59,8 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
 
         mSmsBtn.setOnClickListener(this);
         mSignupBtn.setOnClickListener(this);
+
+        mTime = new TimeCount(60000, 1000, mSmsBtn);
 
     }
 
@@ -75,6 +83,17 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * 发送验证码
      */
     private void handleSendCode () {
+
+        // 判断手机号输入是否为空
+        String username = mUsername.getText().toString();
+
+        if (username == "") {
+            Toast
+                .makeText(SignupActivity.this, "手机号不能为空", Toast.LENGTH_SHORT)
+                .show();
+            return;
+        }
+
         Map<String, Object> map = new HashMap<>();
         map.put("mobile", mUsername.getText());
 
@@ -88,10 +107,19 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
             public void onResponse(Call call, Response response) throws IOException {
                 Log.d(TAG, "onResponse: 发送手机验证码成功");
 
-                // 弹窗提醒发送成功
-                Toast.makeText(SignupActivity.this, "手机验证码发送成功", Toast.LENGTH_SHORT);
+                // 设置按钮 60s 内不可点击
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // 弹窗提醒发送成功
+                        Toast
+                            .makeText(SignupActivity.this, "发送验证码成功", Toast.LENGTH_SHORT)
+                            .show();
 
-                // 倒计时 60s 不能点击
+                        mTime.start();
+                    }
+                });
+
             }
         });
     }
@@ -100,44 +128,90 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
      * 注册
      */
     private void handleSignup () {
-        Map<String, Object> map = new HashMap<>();
-        map.put("mobile", mUsername.getText());
-        map.put("code", mCode.getText());
-
-        HttpUtil.post(Api.VALIDATE_MOBILE_CODE, map, new Callback() {
+        // 校验手机号是否已注册
+        HttpUtil.get(Api.VALIDATE_USER_INFO + "?username=" + mUsername.getText(), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "onFailure: 校验验证码失败");
+                Log.d(TAG, "onFailure: 校验用户是否已注册失败");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, "onResponse: 校验验证码成功");
+                Log.d(TAG, "onResponse: 校验用户是否已注册成功");
 
-                // 保存用户，跳转首页
-                Map<String, Object> map2 = new HashMap<>();
-                map2.put("username", mUsername.getText());
-                map2.put("password", mPassword.getText());
-                map2.put("client_type", "MOBILE");
+                String responseData =  response.body().string();
+                UserResult userResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<UserResult>(){});
 
-                HttpUtil.post(Api.ADD_USER_INFO, map2, new Callback() {
+                if (!"0000".equals(userResult.getCode())) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast
+                                .makeText(SignupActivity.this, "注册失败：网络原因", Toast.LENGTH_SHORT)
+                                .show();
+                        }
+                    });
+                    return;
+                }
+
+                Log.d(TAG, "onResponse: " + userResult.getData().getId());
+
+                if (userResult.getData().getId() != 0) {
+                    Log.d(TAG, "onResponse: 用户名已注册");
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast
+                                .makeText(SignupActivity.this, "注册失败：用户名已注册，请直接登录", Toast.LENGTH_SHORT)
+                                .show();
+                        }
+                    });
+                    return;
+                }
+
+                // 校验短信验证码是否正确
+                Map<String, Object> map = new HashMap<>();
+                map.put("mobile", mUsername.getText());
+                map.put("code", mCode.getText());
+
+                HttpUtil.post(Api.VALIDATE_MOBILE_CODE, map, new Callback() {
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        Log.d(TAG, "onFailure: 新增用户失败");
+                        Log.d(TAG, "onFailure: 校验验证码失败");
                     }
 
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
-                        Log.d(TAG, "onResponse: 新增用户成功");
+                        Log.d(TAG, "onResponse: 校验验证码成功");
 
-                        // 跳转登录页面
-                        SigninActivity.actionStart(SignupActivity.this);
+                        // 保存用户，跳转首页
+                        Map<String, Object> map2 = new HashMap<>();
+                        map2.put("username", mUsername.getText());
+                        map2.put("password", mPassword.getText());
+                        map2.put("client_type", "MOBILE");
+
+                        // 新增用户
+                        HttpUtil.post(Api.ADD_USER_INFO, map2, new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                Log.d(TAG, "onFailure: 新增用户失败");
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                Log.d(TAG, "onResponse: 新增用户成功");
+
+                                // 跳转登录页面
+                                SigninActivity.actionStart(SignupActivity.this);
+                            }
+                        });
 
                     }
                 });
-
             }
         });
+
+
     }
 
     /**

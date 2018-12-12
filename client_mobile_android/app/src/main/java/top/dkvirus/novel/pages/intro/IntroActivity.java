@@ -2,6 +2,7 @@ package top.dkvirus.novel.pages.intro;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -19,14 +20,17 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import top.dkvirus.novel.configs.Api;
+import top.dkvirus.novel.configs.Constant;
 import top.dkvirus.novel.models.Detail;
 import top.dkvirus.novel.models.DetailResult;
 import top.dkvirus.novel.pages.R;
+import top.dkvirus.novel.pages.index.MainActivity;
 import top.dkvirus.novel.utils.HttpUtil;
 
 public class IntroActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private static final String TAG = "IntroActivity";
+    private static final String TAG = Constant.LOG;
 
     private Detail detail;
 
@@ -47,6 +51,8 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
 
+        Log.d(TAG, "onCreate: 进入小说介绍页面");
+        
         // 接收其它页面传递过来的参数
         Intent intent = getIntent();
         String novelUrl = intent.getStringExtra("novelUrl");
@@ -87,13 +93,19 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
      * 加入书架
      */
     private void handleJoinShelf () {
+        // 获取登录状态
+        SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
+        int userId = preferences.getInt("userId", -1);
+
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("author_name", detail.getAuthor_name());
         map.put("book_name", detail.getBook_name());
         map.put("book_desc", detail.getBook_desc());
+        map.put("book_cover_url", "https://novel.dkvirus.top/images/cover.png");
         map.put("recent_chapter_url", detail.getRecent_chapter_url());
+        map.put("user_id", userId);
 
-        HttpUtil.post("/gysw/shelf", map, new Callback() {
+        HttpUtil.post(Api.ADD_SHELF, map, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, "onFailure: 将小说添加到书架失败");
@@ -107,6 +119,7 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void run() {
                         // 跳转到书架页面
+                        MainActivity.actionStart(IntroActivity.this);
                     }
                 });
             }
@@ -118,7 +131,7 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
      * 请求小说详情
      */
     private void handleSearchNovel (String novelUrl) {
-        HttpUtil.get("/gysw/novel/detail?url=" + novelUrl,
+        HttpUtil.get(Api.GET_NOVEL_INTRO + "?url=" + novelUrl,
             new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

@@ -41,4 +41,10 @@ public class Novel {
     public void setNext_url(String next_url) {
         this.next_url = next_url;
     }
+
+    public String toString () {
+        return "title = " + title + "\n"
+                + "prev_url = " + prev_url + "\n"
+                + "next_url = " + next_url + "\n";
+    }
 }

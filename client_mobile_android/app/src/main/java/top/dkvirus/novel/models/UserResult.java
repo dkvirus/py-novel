@@ -2,7 +2,7 @@ package top.dkvirus.novel.models;
 
 public class UserResult extends CommonResult {
 
-    private User data = new User();
+    private User data;
 
     public User getData() {
         return data;

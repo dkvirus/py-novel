@@ -61,6 +61,16 @@ public class MainActivity extends AppCompatActivity{
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+
+//        SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
+//
+//        // 开始存数据
+//        editor.putBoolean("isLogin", false);
+//        editor.putInt("userId", -1);
+//
+//        editor.apply();
+//        return;
+
         // 获取登录状态
         SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
         Boolean isLogin = preferences.getBoolean("isLogin", false);
