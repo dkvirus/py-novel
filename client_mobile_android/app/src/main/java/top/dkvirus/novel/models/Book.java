@@ -1,6 +1,6 @@
 package top.dkvirus.novel.models;
 
-public class Detail {
+public class Book {
 
     private String book_name;
 
@@ -15,18 +15,6 @@ public class Detail {
     private String book_url;
 
     private String recent_chapter_url;
-
-    public String toString () {
-        return "bookname is " + book_name + "\n author_name is " + author_name + "\n classify_name is " + classify_name;
-    }
-
-    public String getBook_url() {
-        return book_url;
-    }
-
-    public void setBook_url(String book_url) {
-        this.book_url = book_url;
-    }
 
     public String getBook_name() {
         return book_name;
@@ -66,6 +54,14 @@ public class Detail {
 
     public void setBook_desc(String book_desc) {
         this.book_desc = book_desc;
+    }
+
+    public String getBook_url() {
+        return book_url;
+    }
+
+    public void setBook_url(String book_url) {
+        this.book_url = book_url;
     }
 
     public String getRecent_chapter_url() {

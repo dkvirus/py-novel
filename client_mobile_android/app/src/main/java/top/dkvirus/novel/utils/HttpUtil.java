@@ -20,13 +20,14 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import top.dkvirus.novel.configs.Config;
 import top.dkvirus.novel.configs.Constant;
 
 public class HttpUtil {
 
     private static final String TAG = Constant.LOG;
 
-    private static final String apiPrefix = "https://novel.dkvirus.top/api/test";
+    private static final String apiPrefix = Config.API_PREFIX;
 
     /**
      * get 请求
@@ -42,6 +43,9 @@ public class HttpUtil {
         client.newCall(request).enqueue(callback);
     }
 
+    /**
+     * get 请求传参
+     */
     public static void get (String url, Map<String, Object> map, Callback callback) {
         OkHttpClient client = new OkHttpClient();
         url = apiPrefix + url + "?1=1";

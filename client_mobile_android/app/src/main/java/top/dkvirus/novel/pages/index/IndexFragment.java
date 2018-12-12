@@ -48,6 +48,7 @@ public class IndexFragment extends Fragment {
 
         int userId = preferences.getInt("userId", 0);
 
+        // 请求书架列表
         HttpUtil.get(Api.GET_SHELF + "?user_id=" + userId, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -59,28 +60,21 @@ public class IndexFragment extends Fragment {
                 Log.d(TAG, "onResponse: 请求书架列表成功");
 
                 String responseData =  response.body().string();
-                ShelfResult shelfResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<ShelfResult>(){});
+                final ShelfResult shelfResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<ShelfResult>(){});
 
-                showShelfList(shelfResult);
+                // 展示书架列表
+                MainActivity activity2 = (MainActivity) getActivity();
+                activity2.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ShelfAdapter adapter = new ShelfAdapter(shelfResult.getData());
+                        mRecycleView.setAdapter(adapter);
+                    }
+                });
             }
         });
 
         return view;
     }
-
-    /**
-     * 展示书架列表
-     */
-    private void showShelfList (final ShelfResult result) {
-        MainActivity activity = (MainActivity) getActivity();
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ShelfAdapter adapter = new ShelfAdapter(result.getData());
-                mRecycleView.setAdapter(adapter);
-            }
-        });
-    }
-
 
 }

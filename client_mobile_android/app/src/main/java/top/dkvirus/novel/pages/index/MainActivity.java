@@ -1,6 +1,5 @@
 package top.dkvirus.novel.pages.index;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,13 +17,10 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import top.dkvirus.novel.configs.Constant;
-import top.dkvirus.novel.pages.classify.ClassifyFragment;
-import top.dkvirus.novel.pages.login.LoginFragment;
 import top.dkvirus.novel.pages.search.SearchActivity;
 
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.signin.SigninActivity;
-import top.dkvirus.novel.pages.signup.SignupActivity;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -60,16 +56,6 @@ public class MainActivity extends AppCompatActivity{
         // 底部导航条处理
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-
-
-//        SharedPreferences.Editor editor = getSharedPreferences("data", MODE_PRIVATE).edit();
-//
-//        // 开始存数据
-//        editor.putBoolean("isLogin", false);
-//        editor.putInt("userId", -1);
-//
-//        editor.apply();
-//        return;
 
         // 获取登录状态
         SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
