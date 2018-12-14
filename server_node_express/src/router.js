@@ -30,7 +30,9 @@ module.exports = function (app) {
     // 用户
     app.get('/gysw/user/info', user.getUserInfo);                       // 查看用户信息
     app.post('/gysw/user/info', user.addUserInfo);                      // 新增用户
-    
+    app.put('/gysw/user/info/:id', user.editUserInfo);                  // 更新用户信息
+    app.get('/gysw/user/validate', user.validateUser);                  // 校验用户是否已注册
+
     // 邮箱验证码
     app.post('/gysw/email/code', email.sendEmailCode);                  // 发送 email 验证码
     app.post('/gysw/email/validate', email.validateEmailCode);          // 检验验证码是否正确

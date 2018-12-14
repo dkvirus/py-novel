@@ -5,7 +5,7 @@ module.exports = {
      */
     addShelf: async function (req, res) {
         const { user_id, author_name, book_name, 
-            book_desc, book_cover_url, recent_chapter_url } = req.body;
+            book_desc, book_cover_url = '', recent_chapter_url = '' } = req.body;
         const sql = `insert into gysw_shelf (user_id, author_name, book_name, 
             book_desc, book_cover_url, recent_chapter_url) values (?, ?, ?, ?, ?, ?)`;
 
@@ -26,10 +26,11 @@ module.exports = {
      * 更新书架小说最新阅读章节
      */
     editShelf: async function (req, res){
-        const sql = 'update gysw_shelf set recent_chapter_url = ? where id = ?';
+        const sql = 'update gysw_shelf set recent_chapter_url = ?, last_update_at = ? where id = ?';
         const { recent_chapter_url } = req.body;
         const { id } = req.params;
-        const result = await dbexec(sql, [recent_chapter_url, id]);
+        const now = new Date();
+        const result = await dbexec(sql, [recent_chapter_url, now, id]);
         res.json(result);
     },
 

@@ -55,7 +55,7 @@ module.exports = {
                     result.push(obj);
                 }
 
-                res.json({ code: '0000', data: result });
+                res.json({ code: '0000', message: '查询成功', data: result });
             });
         } catch (e) {
             res.json({ code: '9999', message: e });
