@@ -2,7 +2,7 @@ const request = require('request');
 
 function testValidateMobileSmsCode () {
     request({
-        url: 'http://localhost:3000/api/v2/gysw/mobile/validate',
+        url: 'http://localhost:3000/api/test/gysw/mobile/validate',
         method: 'post',
         json: true,
         body: {
