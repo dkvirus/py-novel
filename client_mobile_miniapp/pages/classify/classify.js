@@ -7,6 +7,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    isLoading: false,         // 蒙版状态值
     classifyList: [],
     selectedClassify: '',
     novelList: [],
@@ -16,6 +17,7 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    this.setData({ isLoading: true })
     this.handleSearchClassify()
   },
 
@@ -43,7 +45,9 @@ Page({
       url: api.GET_SEARCH_NOVEL,
       data: { classify_id: id },
     }).then(function (res) {
-      that.setData({ novelList: res, selectedClassify: id })
+      that.setData({ novelList: res, selectedClassify: id, isLoading: false })
+    }).catch(function (err) {
+      that.setData({ isLoading: false })
     })
   },
 
@@ -52,6 +56,7 @@ Page({
    */
   handleSwitchClassify: function (e) {
     var id = e.currentTarget.dataset.id
+    this.setData({ isLoading: true })
     this.handleSearchNovelByClassify(id)
   },
 

@@ -38,8 +38,8 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    var { novelUrl = 'https://www.biquge5200.cc/67_67351/', bookName = '', authorName = '' } = options
-    this.setData({ novelUrl, bookName, authorName, isLoading: false })
+    var { novelUrl = 'https://www.biquge5200.cc/67_67351/' } = options
+    this.setData({ novelUrl, isLoading: true })
     this.handleSearchNovelDetail(novelUrl)
     this.handleSearchChapter(novelUrl)
   },
@@ -53,6 +53,14 @@ Page({
       url: api.GET_NOVEL_INTRO,
       data: { url }
     }).then(function (res) {
+      if (!res.recent_chapter_url) {
+        wx.showToast({
+          title: '网络波动',
+        })
+        that.handleSearchNovelDetail(url)
+        return
+      }
+
       that.setData({
         'novel.bookName': res.book_name,
         'novel.authorName': res.author_name,
@@ -62,7 +70,9 @@ Page({
         'novel.recentChapterUrl': res.recent_chapter_url,
         isLoading: false,
       })
-    }) 
+    }).catch(function (err) {
+      that.setData({ isLoading: false })
+    })
   },
 
   /**
