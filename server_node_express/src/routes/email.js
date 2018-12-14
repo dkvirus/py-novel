@@ -1,4 +1,4 @@
-const { email_account } = require('../configs/config');
+const { email_account } = require('../../config');
 
 module.exports = {
     /**

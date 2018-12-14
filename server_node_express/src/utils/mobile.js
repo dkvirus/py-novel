@@ -1,4 +1,4 @@
-const { mobile_appid, mobile_appkey, mobile_signature, mobile_templateId } = require('../configs/config');
+const { mobile_appid, mobile_appkey, mobile_signature, mobile_templateId } = require('../../config');
 const QcloudSms = require('qcloudsms_js');
 
 function callback(err, res, resData) {

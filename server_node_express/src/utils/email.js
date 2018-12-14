@@ -1,5 +1,5 @@
 const nodemailer = require('nodemailer');
-const { email_account, email_pass } = require('../configs/config');
+const { email_account, email_pass } = require('../../config');
 
 const transporter = nodemailer.createTransport({//邮件传输
         host: 'smtp.qq.com',                // qq smtp服务器地址
