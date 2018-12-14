@@ -12,7 +12,15 @@ Page({
   data: {
     novelList: [],
     settingEnable: false,
-    isLoading: false, // 蒙版状态值
+    greeting: '早上好',    // 问候语
+    isLoading: false,     // 蒙版状态值
+    userInfo: {           // 用户信息
+      id: 0,
+      nickname: '',
+      avatar_url: '',
+      gender: '',
+      address: '',
+    },     
   },
 
   /**
@@ -29,11 +37,9 @@ Page({
 
         // 根据 openid 查询 userId
         that.handleSearchUserInfo(res.result)
-
-        // wx.setStorageSync('user_id', 0)
-        // that.handleSearchShelf(res.result)
       }
     })
+    this.handleGreeting()
   },
 
   onShow: function () {
@@ -51,9 +57,11 @@ Page({
       url: api.GET_USER_INFO,
       data: { client_type: 'OPENID', username: openId },
     }).then(function (res) {
-      if (res.length > 0) {
-        wx.setStorageSync('user_id', res[0].id)
-        that.handleSearchShelf(res[0].id)
+      console.log(res)
+      if (res.id) {
+        wx.setStorageSync('user_id', res.id)
+        that.setData({ userInfo: res })
+        that.handleSearchShelf(res.id)
         return;
       }
 
@@ -81,6 +89,39 @@ Page({
       that.setData({ novelList: res, isLoading: false, settingEnable: false })
     }).catch(function (err) {
       that.setData({ isLoading: false })
+    })
+  },
+
+  /**
+   * 获取用户信息
+   */
+  handleUpdateUserInfo: function (e) {
+    var { avatarUrl, city, country, gender, nickName, province } = e.detail.userInfo
+    var address = `${country}、${province}、${city}`
+    if (gender === 1) {
+      gender = '男性'
+    } else if (gender === 2) {
+      gender = '女性'
+    } else {
+      gender = '未知'
+    }
+    this.setData({ 
+      'userInfo.nickname': nickName,
+      'userInfo.avatar_url': avatarUrl,
+      'userInfo.gender': gender,
+      'userInfo.address': address,   
+    })
+
+    var userId = wx.getStorageSync('user_id')
+    if (!userId) return
+    var userInfo = this.data.userInfo
+
+    request({
+      url: api.EDIT_USER_INFO,
+      method: 'put',
+      data: { user_id: userId, ...userInfo },
+    }).then(function (res) {
+      console.log(res)
     })
   },
 
@@ -126,6 +167,25 @@ Page({
    */
   handleSetting: function () {
     this.setData({ settingEnable: !this.data.settingEnable })
+  },
+
+  /**
+   * 自动处理问候语
+   */
+  handleGreeting: function () {
+    var hour = new Date().getHours()
+    var greeting = ''
+    
+    if (hour < 6) { greeting = '凌晨好！' }
+    else if (hour < 9) { greeting = '早上好！' }
+    else if (hour < 12) { greeting = '上午好！' }
+    else if (hour < 14) { greeting = '中午好！' }
+    else if (hour < 17) { greeting = '下午好！' }
+    else if (hour < 19) { greeting = '傍晚好！' }
+    else if (hour < 22) { greeting = '晚上好！' }
+    else { greeting = '夜里好！' }
+
+    this.setData({ greeting }) 
   },
 
 })

@@ -1,11 +1,30 @@
 <view class="wrapper padTop">
   <view class="header"></view>
 
-  <view class="tab1">
+  <!-- <view class="tab1">
     <view class="title">我的书架</view>
     <image class="icon" 
       bindtap="handleSetting"
       src="../../images/{{ settingEnable ? 'back' : 'setting' }}.png"></image>
+  </view> -->
+
+  <view class="profile">
+    <view class="avatar">
+      <image class="avatar-image" src="{{userInfo.avatar_url || '../../images/default_avatar.png'}}"></image>
+    </view>
+
+    <view class="nickname" wx:if="{{userInfo.nickname}}">{{greeting}}{{userInfo.nickname}}</view>
+    <view class="nickname" wx:else>
+      <button open-type="getUserInfo" class="user-btn"
+        bindgetuserinfo="handleUpdateUserInfo">获取微信昵称</button>
+    </view>
+    
+
+    <view class="setting">
+      <image class="icon" 
+        bindtap="handleSetting"
+        src="../../images/{{ settingEnable ? 'back' : 'setting' }}.png"></image>
+    </view>
   </view>
 
   <view class="shelf">

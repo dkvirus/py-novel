@@ -2,9 +2,9 @@
   color: #777;
 }
 
-.self {
-  height: 200rpx;
-  background: #0068C4;
+.profile {
+  height: 160rpx;
+  background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
   padding: 20rpx 40rpx;
   display: flex;
   justify-content: flex-start;
@@ -19,8 +19,16 @@
   border-radius: 50%;
 }
 .nickname {
-  width: 30%;
-  color: #fff;
+  width: 60%;
+}
+.setting {
+  width: 20%;
+}
+.user-btn {
+  background: transparent;
+  border: none;
+  width: 80%;
+  font-size: 30rpx;
 }
 
 .search {
