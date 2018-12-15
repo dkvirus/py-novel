@@ -1,22 +1,16 @@
 <resources>
-
-    <string name="app_name">公羊书屋</string>
-    <string name="index_title">我的书架</string>
-    <string name="classify_title">公羊书屋</string>
-    <string name="read_title">阅读页面</string>
-    <string name="intro_title">小说简介</string>
-    <string name="search_title">搜索哦页面</string>
-
-    <string name="title_home">书架</string>
-    <string name="title_dashboard">书屋</string>
+    <!-- 应用名称 -->
+    <string name="app_name">公羊阅读</string>
 
     <!-- 顶部标题栏 -->
-    <string name="title_signup">注册页面</string>
+    <string name="title_classify">公羊书屋</string>
+    <string name="title_intro">小说简介</string>
+    <string name="title_search">搜索哦页面</string>
+    <string name="title_signup">注册页面</string>app_name
     <string name="title_signin">登录页面</string>
 
     <!-- 底部导航条 -->
     <string name="navigation_shelf">我的书架</string>
     <string name="navigation_classify">公羊书屋</string>
-
 
 </resources>

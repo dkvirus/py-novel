@@ -11,27 +11,26 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".index.MainActivity"
-            android:label="@string/index_title">
+            android:name=".index.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".read.ReadActivity" />
+        <activity android:name=".read.ReadActivity"/>
         <activity
             android:name=".search.SearchActivity"
-            android:label="搜索" />
+            android:label="@string/title_search" />
         <activity
             android:name=".intro.IntroActivity"
-            android:label="小说详情" />
+            android:label="@string/title_intro" />
         <activity
             android:name=".signup.SignupActivity"
             android:label="@string/title_signup" />
