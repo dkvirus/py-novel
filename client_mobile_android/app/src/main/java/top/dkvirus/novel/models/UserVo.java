@@ -1,6 +1,6 @@
 package top.dkvirus.novel.models;
 
-public class UserResult extends CommonResult {
+public class UserVo extends CommonVo {
 
     private User data;
 

@@ -1,34 +1,60 @@
 package top.dkvirus.novel.models;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
 public class Search {
 
-    private String book_name;
+    private int id;
 
-    private String author_name;
+    @SerializedName("user_id")
+    private int userId;
 
-    private String book_url;
+    private String keyword;
 
-    public String getBook_name() {
-        return book_name;
+    private int times;
+
+    @SerializedName("last_update_at")
+    private Date lastUpdateAt;
+
+    public int getId() {
+        return id;
     }
 
-    public void setBook_name(String book_name) {
-        this.book_name = book_name;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getAuthor_name() {
-        return author_name;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setAuthor_name(String author_name) {
-        this.author_name = author_name;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public String getBook_url() {
-        return book_url;
+    public String getKeyword() {
+        return keyword;
     }
 
-    public void setBook_url(String book_url) {
-        this.book_url = book_url;
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public int getTimes() {
+        return times;
+    }
+
+    public void setTimes(int times) {
+        this.times = times;
+    }
+
+    public Date getLastUpdateAt() {
+        return lastUpdateAt;
+    }
+
+    public void setLastUpdateAt(Date lastUpdateAt) {
+        this.lastUpdateAt = lastUpdateAt;
     }
 }

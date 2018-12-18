@@ -35,7 +35,7 @@
             android:name=".signup.SignupActivity"
             android:label="@string/title_signup" />
         <activity android:name=".signin.SigninActivity"
-            android:label="@string/title_signin"></activity>
+            android:label="@string/title_signin"/>
     </application>
 
 </manifest>

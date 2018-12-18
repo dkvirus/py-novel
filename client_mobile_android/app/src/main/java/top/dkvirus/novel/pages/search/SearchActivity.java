@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -13,16 +12,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import top.dkvirus.novel.configs.Api;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import top.dkvirus.novel.configs.Constant;
-import top.dkvirus.novel.models.SearchResult;
+import top.dkvirus.novel.models.Novel;
+import top.dkvirus.novel.models.NovelListVo;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.utils.HttpUtil;
 
@@ -80,34 +79,33 @@ public class SearchActivity extends AppCompatActivity implements View.OnClickLis
         }
 
         // 内容不为空，发请求，请求回来之后展示列表
-        HttpUtil.get(Api.GET_SEARCH_NOVEL + "?keyword=" + keyword,
-            new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.d(TAG, "onFailure: 根据关键字查询小说列表失败");
-                }
+        Map<String, Object> map = new HashMap<>();
+        map.put("keyword", keyword);
+        Call<NovelListVo> call = HttpUtil.getApiService().getSearchNovel(map);
+        call.enqueue(new Callback<NovelListVo>() {
+            @Override
+            public void onResponse(Call<NovelListVo> call, Response<NovelListVo> response) {
+                Log.d(TAG, "onResponse: 根据关键字查询小说列表成功");
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    Log.d(TAG, "onResponse: 根据关键字查询小说列表成功");
+                showSearchList(response.body().getData());
+            }
 
-                    String responseData =  response.body().string();
-                    SearchResult searchResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<SearchResult>(){});
-
-                    showSearchList(searchResult);
-                }
-            });
+            @Override
+            public void onFailure(Call<NovelListVo> call, Throwable t) {
+                Log.d(TAG, "onFailure: 根据关键字查询小说列表失败");
+            }
+        });
 
     }
 
     /**
      * 展示书架列表
      */
-    private void showSearchList (final SearchResult result) {
+    private void showSearchList (final List<Novel> novelList) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                SearchAdapter adapter = new SearchAdapter(result.getData());
+                SearchAdapter adapter = new SearchAdapter(novelList);
                 mRecyclerView.setAdapter(adapter);
             }
         });

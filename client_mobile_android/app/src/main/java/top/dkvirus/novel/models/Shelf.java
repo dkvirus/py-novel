@@ -1,18 +1,54 @@
 package top.dkvirus.novel.models;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
+/**
+ * 书架 dto 类
+ */
 public class Shelf {
 
+    // 主键
     private int id;
 
-    private String author_name;
+    // 用户主键
+    @SerializedName("user_id")
+    private int userId;
 
-    private String book_name;
+    // 作者名称
+    @SerializedName("author_name")
+    private String authorName;
 
-    private String book_desc;
+    // 小说名称
+    @SerializedName("book_name")
+    private String bookName;
 
-    private String book_cover_url;
+    // 小说描述文字 or 小说简介
+    @SerializedName("book_desc")
+    private String bookDesc;
 
-    private String recent_chapter_url;
+    // 小说封面图片
+    @SerializedName("book_cover_url")
+    private String bookCoverUrl;
+
+    // 用户最新阅读小说的章节地址
+    @SerializedName("recent_chapter_url")
+    private String recentChapterUrl;
+
+    // 用户最后一次阅读小说时间
+    @SerializedName("last_update_at")
+    private Date lastUpdateAt;
+
+    // 小说分类名称
+    @SerializedName("classify_name")
+    private String classifyName;
+
+    public Shelf () {}
+
+    public Shelf (String recentChapterUrl) {
+        this.recentChapterUrl = recentChapterUrl;
+    }
 
     public int getId() {
         return id;
@@ -22,43 +58,67 @@ public class Shelf {
         this.id = id;
     }
 
-    public String getAuthor_name() {
-        return author_name;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setAuthor_name(String author_name) {
-        this.author_name = author_name;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
-    public String getBook_name() {
-        return book_name;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public void setBook_name(String book_name) {
-        this.book_name = book_name;
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
-    public String getBook_desc() {
-        return book_desc;
+    public String getBookName() {
+        return bookName;
     }
 
-    public void setBook_desc(String book_desc) {
-        this.book_desc = book_desc;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
-    public String getBook_cover_url() {
-        return book_cover_url;
+    public String getBookDesc() {
+        return bookDesc;
     }
 
-    public void setBook_cover_url(String book_cover_url) {
-        this.book_cover_url = book_cover_url;
+    public void setBookDesc(String bookDesc) {
+        this.bookDesc = bookDesc;
     }
 
-    public String getRecent_chapter_url() {
-        return recent_chapter_url;
+    public String getBookCoverUrl() {
+        return bookCoverUrl;
     }
 
-    public void setRecent_chapter_url(String recent_chapter_url) {
-        this.recent_chapter_url = recent_chapter_url;
+    public void setBookCoverUrl(String bookCoverUrl) {
+        this.bookCoverUrl = bookCoverUrl;
+    }
+
+    public String getRecentChapterUrl() {
+        return recentChapterUrl;
+    }
+
+    public void setRecentChapterUrl(String recentChapterUrl) {
+        this.recentChapterUrl = recentChapterUrl;
+    }
+
+    public Date getLastUpdateAt() {
+        return lastUpdateAt;
+    }
+
+    public void setLastUpdateAt(Date lastUpdateAt) {
+        this.lastUpdateAt = lastUpdateAt;
+    }
+
+    public String getClassifyName() {
+        return classifyName;
+    }
+
+    public void setClassifyName(String classifyName) {
+        this.classifyName = classifyName;
     }
 }

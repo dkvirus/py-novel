@@ -1,11 +1,17 @@
 package top.dkvirus.novel.models;
 
+/**
+ * 章节 dto 类
+ */
 public class Chapter {
 
+    // 主键
     private String uuid;
 
+    // 章节名称
     private String name;
 
+    // 章节地址
     private String url;
 
     public String getUuid() {

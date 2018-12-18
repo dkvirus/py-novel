@@ -1,11 +1,13 @@
 package top.dkvirus.novel.models;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class ShelfResult extends CommonResult {
+/**
+ * 书架 vo 类
+ */
+public class ShelfVo extends CommonVo{
 
-    private List<Shelf> data = new ArrayList<Shelf>();
+    private List<Shelf> data;
 
     public List<Shelf> getData() {
         return data;
@@ -14,4 +16,5 @@ public class ShelfResult extends CommonResult {
     public void setData(List<Shelf> data) {
         this.data = data;
     }
+
 }

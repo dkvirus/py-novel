@@ -3,7 +3,10 @@ package top.dkvirus.novel.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClassifyResult extends CommonResult {
+/**
+ * 小说分类 vo 类
+ */
+public class ClassifyVo extends CommonVo {
 
     private List<Classify> data = new ArrayList<>();
 
@@ -14,4 +17,5 @@ public class ClassifyResult extends CommonResult {
     public void setData(List<Classify> data) {
         this.data = data;
     }
+
 }

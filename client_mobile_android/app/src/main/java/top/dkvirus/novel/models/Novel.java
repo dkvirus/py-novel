@@ -1,50 +1,126 @@
 package top.dkvirus.novel.models;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.Date;
+
 public class Novel {
 
-    private String title;
+    // 主键
+    private int id;
 
-    private String content;
+    // 小说分类主键
+    @SerializedName("classify_id")
+    private int classifyId;
 
-    private String prev_url;
+    // 小说分类名称
+    @SerializedName("classify_name")
+    private String classifyName;
 
-    private String next_url;
+    // 作者名称
+    @SerializedName("author_name")
+    private String authorName;
 
-    public String getTitle() {
-        return title;
+    // 小说名称
+    @SerializedName("book_name")
+    private String bookName;
+
+    // 小说简介
+    @SerializedName("book_desc")
+    private String bookDesc;
+
+    // 小说封面地址
+    @SerializedName("book_cover_url")
+    private String bookCoverUrl;
+
+    // 小说地址
+    @SerializedName("book_url")
+    private String bookUrl;
+
+    // 最后更新时间
+    @SerializedName("last_update_at")
+    private Date lastUpdateAt;
+
+    @SerializedName("recent_chapter_url")
+    private String recentChapterUrl;
+
+    public int getId() {
+        return id;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getContent() {
-        return content;
+    public int getClassifyId() {
+        return classifyId;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setClassifyId(int classifyId) {
+        this.classifyId = classifyId;
     }
 
-    public String getPrev_url() {
-        return prev_url;
+    public String getAuthorName() {
+        return authorName;
     }
 
-    public void setPrev_url(String prev_url) {
-        this.prev_url = prev_url;
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
 
-    public String getNext_url() {
-        return next_url;
+    public String getBookName() {
+        return bookName;
     }
 
-    public void setNext_url(String next_url) {
-        this.next_url = next_url;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
-    public String toString () {
-        return "title = " + title + "\n"
-                + "prev_url = " + prev_url + "\n"
-                + "next_url = " + next_url + "\n";
+    public String getBookDesc() {
+        return bookDesc;
+    }
+
+    public void setBookDesc(String bookDesc) {
+        this.bookDesc = bookDesc;
+    }
+
+    public String getBookCoverUrl() {
+        return bookCoverUrl;
+    }
+
+    public void setBookCoverUrl(String bookCoverUrl) {
+        this.bookCoverUrl = bookCoverUrl;
+    }
+
+    public String getBookUrl() {
+        return bookUrl;
+    }
+
+    public void setBookUrl(String bookUrl) {
+        this.bookUrl = bookUrl;
+    }
+
+    public Date getLastUpdateAt() {
+        return lastUpdateAt;
+    }
+
+    public void setLastUpdateAt(Date lastUpdateAt) {
+        this.lastUpdateAt = lastUpdateAt;
+    }
+
+    public String getClassifyName() {
+        return classifyName;
+    }
+
+    public void setClassifyName(String classifyName) {
+        this.classifyName = classifyName;
+    }
+
+    public String getRecentChapterUrl() {
+        return recentChapterUrl;
+    }
+
+    public void setRecentChapterUrl(String recentChapterUrl) {
+        this.recentChapterUrl = recentChapterUrl;
     }
 }

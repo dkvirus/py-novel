@@ -8,11 +8,6 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Map;
 
 import okhttp3.Callback;
@@ -20,14 +15,51 @@ import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import top.dkvirus.novel.configs.Config;
 import top.dkvirus.novel.configs.Constant;
+import top.dkvirus.novel.pages.BuildConfig;
+import top.dkvirus.novel.services.ApiService;
 
 public class HttpUtil {
 
     private static final String TAG = Constant.LOG;
 
     private static final String apiPrefix = Config.API_PREFIX;
+
+    private static ApiService apiService = null;
+
+    /**
+     * 获取 apiService 实例对象
+     */
+    public static ApiService getApiService () {
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+
+        // 生产/开发环境自动切换日志模式
+        if (BuildConfig.DEBUG) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        }
+
+
+        client.addInterceptor(logging);
+
+        if (apiService == null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://novel.dkvirus.top/api/test/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(client.build())
+                    .build();
+
+            apiService = retrofit.create(ApiService.class);
+        }
+
+        return apiService;
+    }
 
     /**
      * get 请求

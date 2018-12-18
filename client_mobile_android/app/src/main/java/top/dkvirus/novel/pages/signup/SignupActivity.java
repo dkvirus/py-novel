@@ -2,7 +2,6 @@ package top.dkvirus.novel.pages.signup;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,7 +21,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import top.dkvirus.novel.configs.Api;
 import top.dkvirus.novel.configs.Constant;
-import top.dkvirus.novel.models.UserResult;
+import top.dkvirus.novel.models.UserVo;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.signin.SigninActivity;
 import top.dkvirus.novel.utils.HttpUtil;
@@ -140,7 +139,7 @@ public class SignupActivity extends AppCompatActivity implements View.OnClickLis
                 Log.d(TAG, "onResponse: 校验用户是否已注册成功");
 
                 String responseData =  response.body().string();
-                UserResult userResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<UserResult>(){});
+                UserVo userResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<UserVo>(){});
 
                 if (!"0000".equals(userResult.getCode())) {
                     runOnUiThread(new Runnable() {

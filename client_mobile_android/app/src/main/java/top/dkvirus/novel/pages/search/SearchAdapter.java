@@ -10,13 +10,14 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import top.dkvirus.novel.models.Novel;
 import top.dkvirus.novel.models.Search;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.intro.IntroActivity;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder> {
 
-    private List<Search> searchList;
+    private List<Novel> mNovelList;
 
     static class ViewHolder extends  RecyclerView.ViewHolder {
         View searchView;
@@ -33,8 +34,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
         }
     }
 
-    public SearchAdapter(List<Search> searchList) {
-        this.searchList = searchList;
+    public SearchAdapter(List<Novel> novelList) {
+        this.mNovelList = novelList;
     }
 
     @Override
@@ -49,9 +50,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                Search search = searchList.get(position);
+                Novel novel = mNovelList.get(position);
 
-                IntroActivity.actionStart(view.getContext(), search.getBook_url());
+                IntroActivity.actionStart(view.getContext(), novel.getBookUrl());
             }
         });
 
@@ -60,13 +61,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(SearchAdapter.ViewHolder holder, int position) {
-        Search search = searchList.get(position);
-        holder.novelAuthorName.setText(search.getAuthor_name());
-        holder.novelBookName.setText(search.getBook_name());
+        Novel novel = mNovelList.get(position);
+        holder.novelAuthorName.setText(novel.getAuthorName());
+        holder.novelBookName.setText(novel.getBookName());
     }
 
     @Override
     public int getItemCount() {
-        return searchList.size();
+        return mNovelList.size();
     }
 }

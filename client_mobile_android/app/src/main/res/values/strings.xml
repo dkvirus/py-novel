@@ -5,7 +5,7 @@
     <!-- 顶部标题栏 -->
     <string name="title_classify">公羊书屋</string>
     <string name="title_intro">小说简介</string>
-    <string name="title_search">搜索哦页面</string>
+    <string name="title_search">搜索页面</string>
     <string name="title_signup">注册页面</string>app_name
     <string name="title_signin">登录页面</string>
 

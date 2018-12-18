@@ -3,7 +3,7 @@ package top.dkvirus.novel.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchResult extends CommonResult {
+public class SearchVo extends CommonVo {
 
     private List<Search> data = new ArrayList<Search>();
 

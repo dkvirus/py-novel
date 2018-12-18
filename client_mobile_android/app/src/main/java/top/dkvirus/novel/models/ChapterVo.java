@@ -3,7 +3,10 @@ package top.dkvirus.novel.models;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChapterResult extends CommonResult {
+/**
+ * 章节 vo 类
+ */
+public class ChapterVo extends CommonVo {
 
     private List<Chapter> data = new ArrayList<Chapter>();
 

@@ -11,21 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import top.dkvirus.novel.configs.Api;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import top.dkvirus.novel.configs.Constant;
-import top.dkvirus.novel.models.BookResult;
 import top.dkvirus.novel.models.Classify;
-import top.dkvirus.novel.models.ClassifyResult;
-import top.dkvirus.novel.models.DetailResult;
-import top.dkvirus.novel.models.ShelfResult;
+import top.dkvirus.novel.models.ClassifyVo;
+import top.dkvirus.novel.models.Novel;
+import top.dkvirus.novel.models.NovelListVo;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.utils.HttpUtil;
 
@@ -51,29 +48,34 @@ public class ClassifyFragment extends Fragment {
         LinearLayoutManager linearLayoutManager2 = new LinearLayoutManager(view.getContext());
         novelView.setLayoutManager(linearLayoutManager2);
 
-        HttpUtil.get(Api.GET_NOVEL_CLASSIFY, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "onFailure: 查询小说分类失败");
-            }
+
+        handleGetClassify();
+
+        return view;
+    }
+
+    /**
+     * 获取小说分类列表
+     */
+    private void handleGetClassify () {
+        Call<ClassifyVo> call = HttpUtil.getApiService().getClassify();
+        call.enqueue(new retrofit2.Callback<ClassifyVo>() {
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call<ClassifyVo> call, final Response<ClassifyVo> response) {
                 Log.d(TAG, "onResponse: 查询小说分类成功");
 
-                String responseData =  response.body().string();
-                final ClassifyResult classifyResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<ClassifyResult>(){});
+                final List<Classify> classifyList = response.body().getData();
 
                 MainActivity mainActivity = (MainActivity) getActivity();
                 mainActivity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        ClassifyAdapter classifyAdapter = new ClassifyAdapter(classifyResult.getData());
+                        ClassifyAdapter classifyAdapter = new ClassifyAdapter(classifyList);
                         classifyView.setAdapter(classifyAdapter);
                     }
                 });
 
-                List<Classify> classifyList = classifyResult.getData();
 
                 if (classifyList == null) {
                     return;
@@ -82,35 +84,47 @@ public class ClassifyFragment extends Fragment {
                 // 根据分类查询小说
                 handleGetNovelByClassifyId(classifyList.get(0).getId());
             }
-        });
 
-        return view;
+            @Override
+            public void onFailure(retrofit2.Call<ClassifyVo> call, Throwable t) {
+                Log.d(TAG, "onFailure: 查询小说分类失败");
+            }
+        });
     }
 
+    /**
+     * 根据小说分类 id 获取对应的小说列表
+     * @param classifyId 小说分类 id
+     */
     private void handleGetNovelByClassifyId (int classifyId) {
-        HttpUtil.get(Api.GET_SEARCH_NOVEL + "?classify_id=" + classifyId, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "onFailure: 根据分类查询小说失败");
-            }
 
+        Map<String, Object> map = new HashMap<>();
+        map.put("classify_id", classifyId);
+
+        Call<NovelListVo> call = HttpUtil.getApiService().getSearchNovel(map);
+        call.enqueue(new Callback<NovelListVo>() {
             @Override
-            public void onResponse(Call call, final Response response) throws IOException {
+            public void onResponse(Call<NovelListVo> call, Response<NovelListVo> response) {
                 Log.d(TAG, "onResponse: 根据分类查询小说成功");
 
-                String responseData =  response.body().string();
-                final BookResult detailResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<BookResult>(){});
+                final List<Novel> novelList = response.body().getData();
 
                 MainActivity activity = (MainActivity) getActivity();
                 activity.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        NovelAdapter novelAdapter = new NovelAdapter(detailResult.getData());
+
+                        NovelAdapter novelAdapter = new NovelAdapter(novelList);
                         novelView.setAdapter(novelAdapter);
                     }
                 });
+            }
 
+            @Override
+            public void onFailure(Call<NovelListVo> call, Throwable t) {
+                Log.d(TAG, "onFailure: 根据分类查询小说失败");
             }
         });
+
     }
 }

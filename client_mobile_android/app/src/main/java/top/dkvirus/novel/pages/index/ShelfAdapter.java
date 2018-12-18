@@ -13,11 +13,14 @@ import top.dkvirus.novel.models.Shelf;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.read.ReadActivity;
 
+/**
+ * 书架列表适配器
+ */
 public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.ViewHolder> {
 
-    private List<Shelf> shelfList;
+    private List<Shelf> mShelfList;
 
-    static class ViewHolder extends  RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         View novelView;
         RelativeLayout novelCover;
         TextView novelAuthorName;
@@ -33,7 +36,7 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.ViewHolder> 
     }
 
     public ShelfAdapter(List<Shelf> shelfList) {
-        this.shelfList = shelfList;
+        this.mShelfList = shelfList;
     }
 
     @Override
@@ -48,9 +51,9 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.ViewHolder> 
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                Shelf shelf = shelfList.get(position);
+                Shelf shelf = mShelfList.get(position);
 
-                ReadActivity.actionStart(view.getContext(), shelf.getRecent_chapter_url());
+                ReadActivity.actionStart(view.getContext(), shelf.getRecentChapterUrl(), shelf.getId());
             }
         });
 
@@ -59,13 +62,13 @@ public class ShelfAdapter extends RecyclerView.Adapter<ShelfAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Shelf shelf = shelfList.get(position);
-        holder.novelAuthorName.setText(shelf.getAuthor_name());
-        holder.novelBookName.setText(shelf.getBook_name());
+        Shelf shelf = mShelfList.get(position);
+        holder.novelAuthorName.setText(shelf.getAuthorName());
+        holder.novelBookName.setText(shelf.getBookName());
     }
 
     @Override
     public int getItemCount() {
-        return shelfList.size();
+        return mShelfList.size();
     }
 }

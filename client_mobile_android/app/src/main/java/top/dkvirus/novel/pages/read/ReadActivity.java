@@ -2,7 +2,6 @@ package top.dkvirus.novel.pages.read;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,38 +11,32 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import top.dkvirus.novel.configs.Api;
+import retrofit2.Call;
+import retrofit2.Callback;
 import top.dkvirus.novel.configs.Constant;
 import top.dkvirus.novel.models.Chapter;
-import top.dkvirus.novel.models.ChapterResult;
-import top.dkvirus.novel.models.Novel;
-import top.dkvirus.novel.models.NovelResult;
-import top.dkvirus.novel.models.ShelfResult;
+import top.dkvirus.novel.models.ChapterVo;
+import top.dkvirus.novel.models.CommonVo;
+import top.dkvirus.novel.models.Content;
+import top.dkvirus.novel.models.ContentVo;
+import top.dkvirus.novel.models.Shelf;
 import top.dkvirus.novel.pages.R;
-import top.dkvirus.novel.pages.index.ShelfAdapter;
-import top.dkvirus.novel.pages.search.SearchActivity;
 import top.dkvirus.novel.utils.HttpUtil;
 
 public class ReadActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = Constant.LOG;
 
-    private WebView content;
+    private WebView body;
 
     private TextView title;
 
-    private Novel novel;
+    private Content content;
+
+    private int shelfId;
 
     private List<Chapter> chapterList = new ArrayList<>();
 
@@ -57,9 +50,11 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
         // 接收其它页面传递过来的参数
         Intent intent = getIntent();
         String chapterUrl = intent.getStringExtra("chapterUrl");
+        int id = intent.getIntExtra("id", -1);
+        shelfId = id;
 
         // 获取页面控件
-        content = findViewById(R.id.book_content);
+        body = findViewById(R.id.book_content);
         title = findViewById(R.id.book_title);
 
         Button prevBtn = findViewById(R.id.btn_prev);
@@ -75,9 +70,10 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 处理页面跳转
      */
-    public static void actionStart (Context context, String chapterUrl) {
+    public static void actionStart (Context context, String chapterUrl, int id) {
         Intent intent = new Intent(context, ReadActivity.class);
         intent.putExtra("chapterUrl", chapterUrl);
+        intent.putExtra("id", id);
         context.startActivity(intent);
     }
 
@@ -89,22 +85,16 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
         // https://www.biquge5200.cc/98_98081
         chapterUrl = chapterUrl.substring(0, chapterUrl.lastIndexOf("/"));
 
-        Map<String, Object> map = new HashMap<>();
-        map.put("url", chapterUrl);
-
-        HttpUtil.get(Api.GET_NOVEL_CHAPTER, map, new Callback() {
+        Call<ChapterVo> call = HttpUtil.getApiService().getChapter(chapterUrl);
+        call.enqueue(new Callback<ChapterVo>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "onFailure: 查询小说章节失败");
+            public void onResponse(Call<ChapterVo> call, retrofit2.Response<ChapterVo> response) {
+                Log.d(TAG, "onResponse: 查询小说章节成功");
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d(TAG, "onResponse: 查询小说章节成功");
-
-                String responseData =  response.body().string();
-                ChapterResult chapterResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<ChapterResult>(){});
-
+            public void onFailure(Call<ChapterVo> call, Throwable t) {
+                Log.d(TAG, "onFailure: 查询小说章节失败");
             }
         });
 
@@ -115,86 +105,81 @@ public class ReadActivity extends AppCompatActivity implements View.OnClickListe
      * 查询内容详情
      */
     private void handleSearchDetail (final String chapterUrl, final Boolean isUpdate) {
-        HttpUtil.get(Api.GET_NOVEL_CONTENT + "?url=" + chapterUrl,
-            new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.d(TAG, "onFailure: 请求小说内容失败");
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    Log.d(TAG, "onResponse: 请求小说内容成功");
-
-                    String responseData =  response.body().string();
-                    NovelResult novelResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<NovelResult>(){});
-
-                    showContent(novelResult);
-
-                    // 更新章节
-                    if (isUpdate == true) {
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("recent_chapter_url", chapterUrl);
-
-                        // 获取当前登录用户 ID
-                        SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
-                        int userId = preferences.getInt("userId", 0);
-
-                        HttpUtil.put(Api.EDIT_SHELF + "/" + userId, null, new Callback() {
-                            @Override
-                            public void onFailure(Call call, IOException e) {
-                                Log.d(TAG, "onFailure: 更新最新阅读章节失败");
-                            }
-
-                            @Override
-                            public void onResponse(Call call, Response response) throws IOException {
-                                Log.d(TAG, "onResponse: 更新最新阅读章节成功");
-                            }
-                        });
-                    }
-
-                }
-            });
-    }
-
-    private void showContent (final NovelResult novelResult) {
-        runOnUiThread(new Runnable() {
+        Call<ContentVo> call = HttpUtil.getApiService().getContent(chapterUrl);
+        call.enqueue(new Callback<ContentVo>() {
             @Override
-            public void run() {
-                novel = novelResult.getData();
-                Log.d(TAG, "run: " + novel.toString());
+            public void onResponse(Call<ContentVo> call, retrofit2.Response<ContentVo> response) {
+                Log.d(TAG, "onResponse: 请求小说内容成功");
 
-                content.loadDataWithBaseURL(null, novel.getContent(), "text/html", "utf-8", null);
-                title.setText(novel.getTitle());
+                // 显示小说正文内容
+                final Content result = response.body().getData();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        content = result;
+
+                        body.loadDataWithBaseURL(null, content.getContent(), "text/html", "utf-8", null);
+                        title.setText(result.getTitle());
+                    }
+                });
+
+                // 更新章节
+                if (isUpdate == true) {
+
+                    // TODO 不是根据 userid 更新的，是根据书架 id 更新的
+
+
+                    Call<CommonVo> call2 = HttpUtil.getApiService().editShelf(shelfId, new Shelf(chapterUrl));
+                    call2.enqueue(new Callback<CommonVo>() {
+                        @Override
+                        public void onResponse(Call<CommonVo> call, retrofit2.Response<CommonVo> response) {
+                            Log.d(TAG, "onResponse: 更新最新阅读章节成功");
+                        }
+
+                        @Override
+                        public void onFailure(Call<CommonVo> call, Throwable t) {
+                            Log.d(TAG, "onFailure: 更新最新阅读章节失败");
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ContentVo> call, Throwable t) {
+                Log.d(TAG, "onFailure: 请求小说内容失败");
             }
         });
 
     }
 
+    /**
+     * 点击上一章/下一章按钮
+     */
     @Override
     public void onClick(View view) {
 
-        Log.d(TAG, "onClick: " + novel.getNext_url());
-        Log.d(TAG, "onClick: " + novel.getNext_url().indexOf(".html"));
+        Log.d(TAG, "onClick: " + content.getNextUrl());
+        Log.d(TAG, "onClick: " + content.getNextUrl().indexOf(".html"));
 
         switch (view.getId()) {
             case R.id.btn_prev:
                 Log.d(TAG, "onClick: 上一章");
-                if (novel.getPrev_url().indexOf(".html") == -1) {
+                if (content.getPrevUrl().indexOf(".html") == -1) {
                     Toast.makeText(ReadActivity.this, "没有更多了", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                handleSearchDetail(novel.getPrev_url(), true);
+                handleSearchDetail(content.getPrevUrl(), true);
                 break;
             case R.id.btn_next:
                 Log.d(TAG, "onClick: 下一章");
 
-                if (novel.getNext_url().indexOf(".html") == -1) {
+                if (content.getNextUrl().indexOf(".html") == -1) {
                     Toast.makeText(ReadActivity.this, "已经是最新章节了", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                handleSearchDetail(novel.getNext_url(), true);
+                handleSearchDetail(content.getNextUrl(), true);
                 break;
         }
     }

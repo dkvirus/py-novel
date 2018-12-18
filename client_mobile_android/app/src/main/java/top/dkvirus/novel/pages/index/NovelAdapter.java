@@ -6,34 +6,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
-import top.dkvirus.novel.models.Book;
+import top.dkvirus.novel.models.Novel;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.intro.IntroActivity;
 
 public class NovelAdapter extends RecyclerView.Adapter<NovelAdapter.ViewHolder> {
 
-    private List<Book> detailList;
+    private List<Novel> novelList;
 
-    public NovelAdapter (List<Book> detailList) {
-        this.detailList = detailList;
+    public NovelAdapter (List<Novel> novelList) {
+        this.novelList = novelList;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         View novelView;
         TextView bookName;
         TextView authorName;
-//        TextView bookDesc;
 
         public ViewHolder (View view) {
             super(view);
             novelView = view;
             bookName = view.findViewById(R.id.book_name);
             authorName = view.findViewById(R.id.author_name);
-//            bookDesc = view.findViewById(R.id.book_desc);
         }
 
     }
@@ -50,9 +47,9 @@ public class NovelAdapter extends RecyclerView.Adapter<NovelAdapter.ViewHolder> 
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                Book book = detailList.get(position);
+                Novel novel = novelList.get(position);
 
-                IntroActivity.actionStart(view.getContext(), book.getBook_url());
+                IntroActivity.actionStart(view.getContext(), novel.getBookUrl());
             }
         });
 
@@ -61,14 +58,13 @@ public class NovelAdapter extends RecyclerView.Adapter<NovelAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        Book book = detailList.get(i);
-        viewHolder.authorName.setText(book.getAuthor_name());
-        viewHolder.bookName.setText(book.getBook_name());
-//        viewHolder.bookDesc.setText(book.getBook_desc());
+        Novel novel = novelList.get(i);
+        viewHolder.authorName.setText(novel.getAuthorName());
+        viewHolder.bookName.setText(novel.getBookName());
     }
 
     @Override
     public int getItemCount() {
-        return detailList.size();
+        return novelList.size();
     }
 }

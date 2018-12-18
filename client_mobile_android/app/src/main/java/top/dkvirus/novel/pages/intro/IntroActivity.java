@@ -11,19 +11,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-import top.dkvirus.novel.configs.Api;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import top.dkvirus.novel.configs.Constant;
-import top.dkvirus.novel.models.Detail;
-import top.dkvirus.novel.models.DetailResult;
+import top.dkvirus.novel.models.CommonVo;
+import top.dkvirus.novel.models.Novel;
+import top.dkvirus.novel.models.NovelVo;
+import top.dkvirus.novel.models.Shelf;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.index.MainActivity;
 import top.dkvirus.novel.utils.HttpUtil;
@@ -32,19 +27,19 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
 
     private static final String TAG = Constant.LOG;
 
-    private Detail detail;
+    private Novel mNovel;
 
-    private TextView book_name;
+    private TextView mBookName;
 
-    private TextView author_name;
+    private TextView mAuthorName;
 
-    private TextView last_update_at;
+    private TextView mLastUpdateAt;
 
-    private TextView classify_name;
+    private TextView mClassifyName;
 
-    private TextView book_desc;
+    private TextView mBookDesc;
 
-    private Button join_shelf;
+    private Button mJoinShelf;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,14 +54,14 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
         Log.d(TAG, "onCreate: " + novelUrl);
 
         // 初始化控件
-        book_name = findViewById(R.id.book_name);
-        author_name = findViewById(R.id.author_name);
-        last_update_at = findViewById(R.id.last_update_at);
-        classify_name = findViewById(R.id.classify_name);
-        book_desc = findViewById(R.id.book_desc);
-        join_shelf = findViewById(R.id.join_shelf);
+        mBookName = findViewById(R.id.book_name);
+        mAuthorName = findViewById(R.id.author_name);
+        mLastUpdateAt = findViewById(R.id.last_update_at);
+        mClassifyName = findViewById(R.id.classify_name);
+        mBookDesc = findViewById(R.id.book_desc);
+        mJoinShelf = findViewById(R.id.join_shelf);
 
-        join_shelf.setOnClickListener(this);
+        mJoinShelf.setOnClickListener(this);
 
         handleSearchNovel(novelUrl);
     }
@@ -80,6 +75,9 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
         context.startActivity(intent);
     }
 
+    /**
+     * 点击事件
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -97,31 +95,33 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
         SharedPreferences preferences = getSharedPreferences("data", MODE_PRIVATE);
         int userId = preferences.getInt("userId", -1);
 
-        Map<String, Object> map = new HashMap<String, Object>();
-        map.put("author_name", detail.getAuthor_name());
-        map.put("book_name", detail.getBook_name());
-        map.put("book_desc", detail.getBook_desc());
-        map.put("book_cover_url", "https://novel.dkvirus.top/images/cover.png");
-        map.put("recent_chapter_url", detail.getRecent_chapter_url());
-        map.put("user_id", userId);
+        Shelf shelf = new Shelf();
+        shelf.setAuthorName(mNovel.getAuthorName());
+        shelf.setBookName(mNovel.getBookName());
+        shelf.setBookDesc(mNovel.getBookDesc());
+        shelf.setBookCoverUrl(mNovel.getBookCoverUrl());
+        shelf.setRecentChapterUrl(mNovel.getRecentChapterUrl());
+        shelf.setUserId(userId);
 
-        HttpUtil.post(Api.ADD_SHELF, map, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d(TAG, "onFailure: 将小说添加到书架失败");
-            }
 
+        Call<CommonVo> call = HttpUtil.getApiService().addShelf(shelf);
+        call.enqueue(new Callback<CommonVo>() {
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call<CommonVo> call, Response<CommonVo> response) {
                 Log.d(TAG, "onResponse: 将小说添加到书架成功");
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        // 跳转到书架页面
-                        MainActivity.actionStart(IntroActivity.this);
+                    // 跳转到书架页面
+                    MainActivity.actionStart(IntroActivity.this);
                     }
                 });
+            }
+
+            @Override
+            public void onFailure(Call<CommonVo> call, Throwable t) {
+                Log.d(TAG, "onFailure: 将小说添加到书架失败");
             }
         });
 
@@ -131,39 +131,36 @@ public class IntroActivity extends AppCompatActivity implements View.OnClickList
      * 请求小说详情
      */
     private void handleSearchNovel (String novelUrl) {
-        HttpUtil.get(Api.GET_NOVEL_INTRO + "?url=" + novelUrl,
-            new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.d(TAG, "onFailure: 请求小说详情失败");
-                }
+        Call<NovelVo> call = HttpUtil.getApiService().getDetail(novelUrl);
+        call.enqueue(new Callback<NovelVo>() {
+            @Override
+            public void onResponse(Call<NovelVo> call, Response<NovelVo> response) {
+                Log.d(TAG, "onResponse: 请求小说详情成功");
 
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    Log.d(TAG, "onResponse: 请求小说详情成功");
+                showDetail(response.body().getData());            }
 
-                    String responseData =  response.body().string();
-                    DetailResult detailResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<DetailResult>(){});
+            @Override
+            public void onFailure(Call<NovelVo> call, Throwable t) {
+                Log.d(TAG, "onFailure: 请求小说详情失败");
+            }
+        });
 
-                    showDetail(detailResult);
-                }
-            });
     }
 
     /**
      * 显示小说详情信息
      */
-    private void showDetail (final DetailResult detailResult) {
+    private void showDetail (final Novel novel) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                detail = detailResult.getData();
+                mNovel = novel;
 
-                book_name.setText(detail.getBook_name());
-                author_name.setText(detail.getAuthor_name());
-                last_update_at.setText(detail.getLast_update_at());
-                classify_name.setText(detail.getClassify_name());
-                book_desc.setText(detail.getBook_desc());
+                mBookName.setText(mNovel.getBookName());
+                mAuthorName.setText(mNovel.getAuthorName());
+                mLastUpdateAt.setText(mNovel.getLastUpdateAt().toString());
+                mClassifyName.setText(mNovel.getClassifyName());
+                mBookDesc.setText(mNovel.getBookDesc());
             }
         });
 

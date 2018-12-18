@@ -22,7 +22,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 import top.dkvirus.novel.configs.Api;
 import top.dkvirus.novel.configs.Constant;
-import top.dkvirus.novel.models.UserResult;
+import top.dkvirus.novel.models.UserVo;
 import top.dkvirus.novel.pages.R;
 import top.dkvirus.novel.pages.index.MainActivity;
 import top.dkvirus.novel.pages.signup.SignupActivity;
@@ -99,7 +99,7 @@ public class SigninActivity extends AppCompatActivity implements View.OnClickLis
                 Log.d(TAG, "onResponse: 查询用户信息成功");
 
                 String responseData =  response.body().string();
-                UserResult userResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<UserResult>(){});
+                UserVo userResult = HttpUtil.parseJSONWithGSON(responseData, new TypeToken<UserVo>(){});
 
                 if (!"0000".equals(userResult.getCode())) {
                      runOnUiThread(new Runnable() {
