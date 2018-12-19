@@ -1,6 +1,4 @@
-// var apiPrefix = 'https://novel.dkvirus.top/api'
-// var apiPrefix = 'http://localhost:5000/api'
-// var apiPrefix = 'http://localhost:3000/api/v2'
+// var apiPrefix = 'https://novel.dkvirus.top/api/test'
 var apiPrefix = 'https://novel.dkvirus.top/api/v2'
 
 module.exports = {
@@ -21,4 +19,5 @@ module.exports = {
 
   GET_USER_INFO: `${apiPrefix}/gysw/user/info`,               // 查询用户信息
   ADD_USER_INFO: `${apiPrefix}/gysw/user/info`,               // 添加用户信息
+  EDIT_USER_INFO: `${apiPrefix}/gysw/user/info/:user_id`,     // 更新用户信息
 }

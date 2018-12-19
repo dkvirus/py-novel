@@ -30,6 +30,7 @@ Page({
     // 获取 openid，继而获取 user_id，通过 user_id 查询书架列表
     this.setData({ isLoading: true })
     var that = this
+    wx.clearStorageSync()   // 修复 onShow() 重复查询 bug
     wx.cloud.callFunction({
       name: 'getOpenid',
       complete: res => {
@@ -57,7 +58,6 @@ Page({
       url: api.GET_USER_INFO,
       data: { client_type: 'OPENID', username: openId },
     }).then(function (res) {
-      console.log(res)
       if (res.id) {
         wx.setStorageSync('user_id', res.id)
         that.setData({ userInfo: res })
@@ -71,8 +71,8 @@ Page({
         method: 'POST',
         data: { client_type: 'OPENID', username: openId }
       }).then(function (res2) {
-        wx.setStorageSync('user_id', res2.insertId)
-        that.handleSearchShelf(res2.insertId)
+        wx.setStorageSync('user_id', res2.id)
+        that.handleSearchShelf(res2.id)
       })
     })
   },
