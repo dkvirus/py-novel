@@ -20,4 +20,6 @@ module.exports = {
   GET_USER_INFO: `${apiPrefix}/gysw/user/info`,               // 查询用户信息
   ADD_USER_INFO: `${apiPrefix}/gysw/user/info`,               // 添加用户信息
   EDIT_USER_INFO: `${apiPrefix}/gysw/user/info/:user_id`,     // 更新用户信息
+
+  SEND_FEEDBACK_EMAIL: `${apiPrefix}/gysw/email/feedback`,    // 发送用户反馈邮件
 }

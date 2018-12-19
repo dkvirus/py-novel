@@ -1,6 +1,7 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/feedback/feedback",
     "pages/read/read",
     "pages/search/search",
     "pages/classify/classify",
@@ -31,6 +32,12 @@
         "text": "书屋",
         "iconPath": "./images/book-shop.png",
         "selectedIconPath": "./images/book-shop-selected.png"
+      },
+      {
+        "pagePath": "pages/feedback/feedback",
+        "text": "反馈",
+        "iconPath": "./images/book-feedback.png",
+        "selectedIconPath": "./images/book-feedback-selected.png"
       }
     ]
   },
