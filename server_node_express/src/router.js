@@ -36,6 +36,7 @@ module.exports = function (app) {
     // 邮箱验证码
     app.post('/gysw/email/code', email.sendEmailCode);                  // 发送 email 验证码
     app.post('/gysw/email/validate', email.validateEmailCode);          // 检验验证码是否正确
+    app.post('/gysw/email/feedback', email.sendFeedbackEmail);          // 发送用户反馈邮箱
     
     // 短信验证码
     app.post('/gysw/mobile/code', mobile.sendMobileCode);               // 发送短信验证码

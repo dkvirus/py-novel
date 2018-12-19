@@ -60,4 +60,34 @@ module.exports = {
         }
         
     },
+
+    /**
+     * 发送用户反馈邮件
+     */
+    sendFeedbackEmail: function (req, res) {
+        const { title, content, userId } = req.body;           
+        
+        const mailOption={
+            from: email_account,                          // 发件人
+            to: 'me@dkvirus.com',                         // 收件人
+            subject: '【公羊阅读】用户反馈',             // 纯文本
+            html: `
+                <h1>标题：${title}</h1>
+                <p>内容：${content}</p>
+                <p>反馈人：${userId}</p>   
+            `,
+        };
+
+        try {
+            transporter.sendMail(mailOption, async function (err, info) {
+                if (err) {
+                    return res.json({ code: '9999', message: err });
+                }
+                
+                res.json({ code: '0000', message: '已发送邮件', data: {} });
+            });   
+        } catch (e) {
+            res.json({ code: '9999', message: e });
+        }
+    },
 }

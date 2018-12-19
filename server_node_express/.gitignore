@@ -1,5 +1,4 @@
 node_modules
 
-src/configs/config.js
+config.js
 
-email.js
