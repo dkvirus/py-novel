@@ -9,6 +9,7 @@ Page({
   data: {
     title: '',
     content: '',
+    isLoading: false,     // 蒙版状态值
   },
 
   /**
@@ -39,18 +40,22 @@ Page({
       })
     }
 
+    this.setData({ isLoading: true })
+
     request({
       url: api.SEND_FEEDBACK_EMAIL,
       method: 'POST',
       data: { title, content, userId }
     }).then(function (res) {
-      that.setData({ title: '', content: '' })
+      that.setData({ title: '', content: '', isLoading: false })
       wx.showToast({
         title: '提交成功',
       })
       wx.switchTab({
         url: '../index/index',
       })
+    }).catch(function (err) {
+      that.setData({ isLoading: false })
     })
   },
 

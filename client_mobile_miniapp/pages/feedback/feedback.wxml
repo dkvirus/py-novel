@@ -10,4 +10,5 @@
 
   <button class="btn" type="primary" bindtap="handleSubmit">提交</button>
 
+  <mask loading="{{isLoading}}" />
 </view>
