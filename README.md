@@ -8,8 +8,8 @@
 - [x] Node【Node+Express+Mariadb】：为了适用多端，重构服务端接口，不改动之前 Python 实现版本，使用 node 实现 `/api/v2` 的接口；[node服务端详情](./server_node_express)
 - [x] Vue：Web 端展示选用 Vue 框架，UI 选用 iview 框架，已适配手机浏览器阅读；[浏览器客户端详情+图示](./client_web_spa_vue)
 - [x] 微信小程序：看小说大多数情况还是在手机上看的，移动客户端再开发一个微信小程序端；[小程序客户端详情+图示](./client_mobile_miniapp)
-- [x] 移动端：Android 原生-Java；(开发中)[安卓原生Java端详情+图示](./client_mobile_android)
-- [ ] 移动端：Flutter。
+- [x] 移动端：Android 原生-Java；[安卓原生Java端详情+图示](./client_mobile_android)
+- [x] 移动端：Flutter（开发中）。[移动端混合开发Flutter详情+图示](./client_mobile_flutter)
 - [ ] 移动端：React-native。
 - [ ] 移动端：Taro。
 - [ ] 移动端：Weex。
