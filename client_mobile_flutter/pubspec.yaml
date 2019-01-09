@@ -1,5 +1,5 @@
 name: client_mobile_flutter
-description: A new Flutter project.
+description: 公羊阅读的Flutter实现.
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -7,7 +7,7 @@ description: A new Flutter project.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.0+1
+version: 0.0.1
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -15,6 +15,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+    
+  css_colors: ^1.0.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -40,6 +42,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/wocao.png
+    - images/cover.png
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

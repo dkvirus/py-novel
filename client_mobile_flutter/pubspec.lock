@@ -57,6 +57,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.6"
+  css_colors:
+    dependency: "direct main"
+    description:
+      name: css_colors
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   csslib:
     dependency: transitive
     description:
@@ -77,7 +84,7 @@ packages:
       name: english_words
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.4"
+    version: "3.1.5"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -389,3 +396,4 @@ packages:
     version: "2.1.15"
 sdks:
   dart: ">=2.0.0-dev.68.0 <3.0.0"
+  flutter: ">=0.4.4 <2.0.0"
