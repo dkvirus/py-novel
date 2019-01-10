@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import './views/shelf.dart';
 import './views/classify.dart';
 import './views/feedback.dart';
+import './views/search.dart';
+import './views/intro.dart';
+import './views/login.dart';
 
 void main() => runApp(new MyApp());
 
@@ -14,7 +17,13 @@ class MyApp extends StatelessWidget {
       theme: new ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      // home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: new Login(),
+      routes: <String, WidgetBuilder> {
+        // 这里可以定义静态路由，不能传递参数
+        '/search': (_) => new Search(),
+        '/intro': (_) => new Intro(),
+      },
     );
   }
 }

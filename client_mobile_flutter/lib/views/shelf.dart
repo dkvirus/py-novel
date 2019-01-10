@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'dart:convert';
 
 class Shelf extends StatefulWidget {
   @override
@@ -41,13 +39,20 @@ class ShelfState extends State<Shelf> {
               ),
               new Padding(
                 padding: EdgeInsets.only(left: 10.0),
-                child: new Text('下午好！大橙子', style: TextStyle(fontSize: 22.0),),
+                child: new Text(
+                  '下午好！大橙子',
+                  style: TextStyle(fontSize: 22.0),
+                ),
               )
             ],
           ),
           new Row(
             children: <Widget>[
-              new Icon(Icons.add),
+              new IconButton(
+                  icon: new Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/search');
+                  }),
             ],
           )
         ],
@@ -183,7 +188,7 @@ class ShelfState extends State<Shelf> {
 
     return new Scaffold(
         body: new ListView(
-          children: <Widget>[_getHeader(), _getShelfList(data)],
-        ));
+      children: <Widget>[_getHeader(), _getShelfList(data)],
+    ));
   }
 }
