@@ -12,16 +12,28 @@ module.exports = {
             return res.json({ code: '9999', message: '用户名和客户端类型字段不能为空' })
         }
         
-        let sql = 'select id, nickname, avatar_url from gysw_user where 1 = 1';
+        // 根据手机号查询
+        let sql = 'select id, nickname, avatar_url, password from gysw_user where 1 = 1';
         if (client_type === 'OPENID') {
             sql += ` and username = "${username}" and client_type = "OPENID"`;
         } else {
-            sql += ` and username = "${username}" and password = "${password}" and client_type = "${client_type}"`;
+            sql += ` and username = "${username}" and client_type = "${client_type}"`;
         }
 
         const result = await dbexec(sql);
-        result.data = result.data[0] || {};
-        
+
+        if (result.data.length === 0) {         // 未注册
+            res.json({ code: '9999', message: '请先注册', data: {} });
+            return;
+        }
+
+        result.data = result.data[0];
+        if (result.data.password !== password) {    // 密码输入错误
+            res.json({ code: '9999', message: '账号或密码输入错误', data: {} });
+            return;
+        }
+
+        delete result.data.password;        
         res.json(result);
     },
 
