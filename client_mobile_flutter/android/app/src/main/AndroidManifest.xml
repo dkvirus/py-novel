@@ -14,8 +14,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:name="io.flutter.app.FlutterApplication"
-        android:label="client_mobile_flutter"
-        android:icon="@mipmap/ic_launcher">
+        android:label="公羊阅读"
+        android:icon="@mipmap/ram">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
