@@ -20,7 +20,7 @@ class HttpUtils {
 
   /// default options
   static const String API_PREFIX = 'https://novel.dkvirus.top/api/test';
-  static const int CONNECT_TIMEOUT = 5000;
+  static const int CONNECT_TIMEOUT = 10000;
   static const int RECEIVE_TIMEOUT = 3000;
 
   /// http request methods
@@ -31,20 +31,23 @@ class HttpUtils {
   static const String DELETE = 'delete';
 
   /// request method
-  static Future<Map<String, dynamic>> request (
+  static Future<Map> request (
     String url, 
     context, { 
     data, 
     method
   }) async {
+    data = data ?? {};
+    method = method ?? 'GET';
     /// 打印请求相关信息：请求地址、请求方式、请求参数
     print('请求地址：【' + method + '  ' + url + '】');
-    print('请求参数：' + data.toString() ?? '{}');
+    print('请求参数：' + data.toString());
 
     Dio dio = createInstance(context);
-    Map<String, dynamic> result;
+    var result;
     try {
-      Response response = await dio.request(url, data: data, options: new Options(method: method ?? 'get'));
+      Response response = await dio.request(url, data: data, options: new Options(method: method));
+
       result = response.data;
 
       /// 打印响应相关信息
