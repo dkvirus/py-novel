@@ -13,6 +13,7 @@ class ApiUtils {
   static const String EDIT_SHELF = '/gysw/shelf/:id';                         // 修改书架小说最新阅读章节
 
   static const String GET_NOVEL_BY_CLASSIFY_ID = '/gysw/search/novel';        // 根据分类 ID 获取小说列表
+  static const String GET_NOVEL_BY_KEYWORD = '/gysw/search/novel';            // 根据关键字获取小说列表
   static const String GET_NOVEL_HOT_LIST = '/gysw/search/hot';                // 获取热门小说列表
   static const String GET_NOVEL_HISTORY_LIST = '/gysw/search/hist/:user_id';  // 获取搜索历史列表
   static const String ADD_NOVEL_HISTORY = '/gysw/search/hist';                // 添加一条搜索记录

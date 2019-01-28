@@ -188,8 +188,13 @@ class _SignupState extends State<SignupPage> {
           labelText: '验证码',
         ),
         validator: (String value) {
+          _formKey.currentState.save();
           if (_mobile == null) {
             return '手机号不能为空';
+          }
+          print(value);
+          if (value == '') {
+            return '验证码不能为空';
           }
         },
         onSaved: (String value) => _code = value,

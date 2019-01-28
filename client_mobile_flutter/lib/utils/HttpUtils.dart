@@ -43,6 +43,15 @@ class HttpUtils {
     print('请求地址：【' + method + '  ' + url + '】');
     print('请求参数：' + data.toString());
 
+    /// restful 请求处理   
+    /// /gysw/search/hist/:user_id        user_id=27
+    /// 最终胜出 url 为     /gysw/search/hist/27
+    data.forEach((key, value) {
+      if (url.indexOf(key) != -1) {
+        url = url.replaceAll(':$key', value.toString());
+      }
+    });
+
     Dio dio = createInstance(context);
     var result;
     try {

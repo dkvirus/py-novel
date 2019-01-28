@@ -38,8 +38,6 @@ class _ShelfState extends State<ShelfPage> {
 
   @override 
   Widget build(BuildContext context) {
-    
-
     if (_shelfList == null) {
       return Container();
     }
@@ -60,7 +58,7 @@ class _ShelfState extends State<ShelfPage> {
         new IconButton(
           icon: new Icon(Icons.search),
           onPressed: () {
-            print('跳转到搜索页面');
+            Navigator.of(context).pushNamed('/search');
           },
         ),
         new PopupMenuButton(
