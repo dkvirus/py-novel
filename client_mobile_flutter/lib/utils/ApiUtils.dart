@@ -5,6 +5,8 @@ class ApiUtils {
   static const String GET_MOBILE_CODE = '/gysw/mobile/code';                  // 获取手机验证码
   static const String VALIDATE_MOBILE_CODE = '/gysw/mobile/validate';         // 校验手机验证码是否正确
 
+  static const String SEND_FEEDBACK = '/gysw/email/feedback';                 // 发送反馈邮件
+
   static const String GET_SHELF_LIST = '/gysw/shelf';                         // 获取书架列表
   static const String ADD_SHELF = '/gysw/shelf';                              // 新增书架销售
   static const String DELETE_SHELF = '/gysw/shelf/:id';                       // 删除书架小说

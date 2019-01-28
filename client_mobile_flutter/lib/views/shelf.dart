@@ -1,6 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
+import '../utils/HttpUtils.dart';
+import '../utils/ApiUtils.dart';
 
+/// 数据结构：
+/// {
+/// id: 40, 
+/// user_id: 27, 
+/// author_name: 我吃西红柿, 
+/// book_name: 雪鹰领主, 
+/// book_desc: 在帝国的安阳行省，有一个很小很不起眼的贵族领地，叫——雪鹰领！故事，就从这里开始！, 
+/// book_cover_url: , 
+/// recent_chapter_url: https://www.biquge5200.cc/2_2598/1847694.html, 
+/// last_update_at: 0000-00-00 00:00:00
+/// }
 class ShelfPage extends StatefulWidget {
   @override
   State createState() => _ShelfState();
@@ -8,107 +22,33 @@ class ShelfPage extends StatefulWidget {
 
 class _ShelfState extends State<ShelfPage> {
   
+  // 书架列表，用来接收服务端返回的数据
+  var _shelfList;
+
+  // 是否删除
+  bool _isDelete = false;
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 100)).then((_) {
+      _handleGetShelf(context);
+    });
+  }
+
   @override 
   Widget build(BuildContext context) {
-    var data = [
-      {
-        "id": 22,
-        "user_id": 9,
-        "author_name": "七品",
-        "book_name": "兵者",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/98_98081/161850582.html",
-        "last_update_at": "2019-01-09T04:13:44.000Z"
-      },
-      {
-        "id": 23,
-        "user_id": 9,
-        "author_name": "九灯和善",
-        "book_name": "超品巫师",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/84_84888/161857956.html",
-        "last_update_at": "2019-01-09T03:57:43.000Z"
-      },
-      {
-        "id": 24,
-        "user_id": 9,
-        "author_name": "巫九",
-        "book_name": "都市阴阳师",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/92_92627/161863549.html",
-        "last_update_at": "2019-01-09T03:48:00.000Z"
-      },
-      {
-        "id": 22,
-        "user_id": 9,
-        "author_name": "七品",
-        "book_name": "兵者",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/98_98081/161850582.html",
-        "last_update_at": "2019-01-09T04:13:44.000Z"
-      },
-      {
-        "id": 23,
-        "user_id": 9,
-        "author_name": "九灯和善",
-        "book_name": "超品巫师",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/84_84888/161857956.html",
-        "last_update_at": "2019-01-09T03:57:43.000Z"
-      },
-      {
-        "id": 24,
-        "user_id": 9,
-        "author_name": "巫九",
-        "book_name": "都市阴阳师",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/92_92627/161863549.html",
-        "last_update_at": "2019-01-09T03:48:00.000Z"
-      },
-      {
-        "id": 23,
-        "user_id": 9,
-        "author_name": "九灯和善",
-        "book_name": "超品巫师",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/84_84888/161857956.html",
-        "last_update_at": "2019-01-09T03:57:43.000Z"
-      },
-      {
-        "id": 24,
-        "user_id": 9,
-        "author_name": "巫九",
-        "book_name": "都市阴阳师",
-        "book_desc": "",
-        "book_cover_url": "https://novel.dkvirus.top/images/cover.png",
-        "recent_chapter_url":
-            "https://www.biquge5200.cc/92_92627/161863549.html",
-        "last_update_at": "2019-01-09T03:48:00.000Z"
-      },
-    ];
+    
 
-    return new DefaultTabController(
-      length: 3,
-      child: new Scaffold(
+    if (_shelfList == null) {
+      return Container();
+    }
+
+    return Scaffold(
       appBar: _buildAppBar(context),    // 标题栏
-      body: new ListView(
-        children: <Widget>[_buildShelfList(data)],
-    )),
-    );
+      body: ListView(
+        children: <Widget>[_buildShelfList(_shelfList)],
+    ));
   }
 
   /*
@@ -144,56 +84,113 @@ class _ShelfState extends State<ShelfPage> {
    * 书架 ui
    */
   Widget _buildShelfList(data) {
-    return new Container(
-      margin: EdgeInsets.only(top: 10.0),
-      child: new GridView.count(
-        shrinkWrap: true,
-        physics: new NeverScrollableScrollPhysics(),
-        crossAxisCount: 2,
-        mainAxisSpacing: 10.0,
-        crossAxisSpacing: 2.0,
-        padding: EdgeInsets.only(left: 20.0, right: 20.0),
-        children: new List.generate(data.length, (index) {
-          return _buildShelfItem(data, index);
-        }),
-      ));
+    return Card(
+      margin: EdgeInsets.all(10.0),
+      elevation: 10.0,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        child: GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0,
+          childAspectRatio: 0.7,    // 宽 / 高 = 0.7
+          padding: EdgeInsets.all(5.0),
+          children: List.generate(data.length, (index) {
+            return _buildShelfItem(data, index);
+          }),
+        )),
+    );
   }
 
   /*
    * 单个列表项
    */
   Widget _buildShelfItem(data, index) {
-    return new Center(
-      child: new Container(
-      width: 140.0,
-      height: 260.0,
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
-          image: new AssetImage("images/cover.png"),
-          fit: BoxFit.cover,
+    return Stack(
+      alignment: Alignment(1.1, -1.05),
+      children: <Widget>[
+        Card(
+          elevation: 5.0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          clipBehavior: Clip.antiAlias,
+          child: Container(
+            decoration: new BoxDecoration(
+              image: new DecorationImage(
+                image: new AssetImage("images/cover.png"),
+                fit: BoxFit.cover,
+              ),
+            ),
+            child: new Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                new Align(
+                  alignment: Alignment(-0.6, 0.0),
+                  child: new Text(
+                    data[index]['book_name'],
+                    style: TextStyle(fontSize: 22.0, color: Colors.grey),
+                  ),
+                ),
+                new Align(
+                  alignment: Alignment(0.4, 0.0),
+                  child: new Text(
+                    '(' + data[index]['author_name'] + ')',
+                    style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-      ),
-      margin: EdgeInsets.only(bottom: 10.0),
-      child: new Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: <Widget>[
-          new Align(
-            alignment: Alignment(-0.6, 0.0),
-            child: new Text(
-              data[index]['book_name'],
-              style: TextStyle(fontSize: 24.0),
-            ),
-          ),
-          new Align(
-            alignment: Alignment(0.4, 0.0),
-            child: new Text(
-              data[index]['author_name'],
-              style: TextStyle(fontSize: 18.0),
-            ),
-          ),
-        ],
-      ),
-    ));
+        _isDelete ? IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () {
+            _handleDelShelf(data[index]['id']);
+          },
+        ) : Text(''),
+      ],
+    );
+  }
+
+  /*
+   * 获取书架列表数据 
+   */
+  _handleGetShelf (BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int userId = prefs.getInt('userId') ?? -1;   // 取
+
+    if (userId == -1) {
+      // 跳转登录页面
+      Navigator.of(context).pushNamedAndRemoveUntil('/signin', ModalRoute.withName('/signin'));
+      return;
+    }
+
+    var result = await HttpUtils.request(
+      ApiUtils.GET_SHELF_LIST, 
+      context,
+      method: HttpUtils.GET,
+      data: {
+        'user_id': userId,
+      }
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    if (result != null && result['code'] == '0000') {
+      setState(() {
+        _shelfList = result['data'];
+      });
+    }
+  }
+
+  /*
+   * 删除书架中书籍 
+   */
+  _handleDelShelf (id) async {
+    
   }
 
   /*
@@ -207,6 +204,15 @@ class _ShelfState extends State<ShelfPage> {
       
       // 跳转到登录页面
       Navigator.of(context).pushNamedAndRemoveUntil('/signin', ModalRoute.withName('/signin'));
+    } else if (value == 'delete') {
+      if (!mounted) {
+        return;
+      }
+
+      // 删除小说
+      setState(() {
+        _isDelete = true;
+      });
     }
   }
 }

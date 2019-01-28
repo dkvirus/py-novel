@@ -6,7 +6,7 @@ import './feedback.dart';
 class Index extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new IndexState();
+    return IndexState();
   }
 }
 
@@ -15,7 +15,7 @@ class IndexState extends State with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
-    controller = new TabController(length: 3, vsync: this);
+    controller = TabController(length: 3, vsync: this);
     super.initState();
   }
 
@@ -27,24 +27,22 @@ class IndexState extends State with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new TabBarView(
-          controller: controller,
-          children: [new ShelfPage(), new Classify(), new Feedbacks()]),
-      bottomNavigationBar: new Material(
+    return Scaffold(
+      body: TabBarView(
+        controller: controller,
+        children: [ShelfPage(), ClassifyPage(), FeedbackPage()]
+      ),
+      bottomNavigationBar: Material(
         color: Colors.grey,
-        child: new TabBar(controller: controller, tabs: [
-          new Tab(
-            text: '书架',
-            icon: new Icon(Icons.home),
+        child: TabBar(controller: controller, tabs: [
+          Tab(
+            icon: Icon(Icons.home),
           ),
-          new Tab(
-            text: '书屋',
-            icon: new Icon(Icons.notifications),
+          Tab(
+            icon: Icon(Icons.notifications),
           ),
-          new Tab(
-            text: '反馈',
-            icon: new Icon(Icons.cloud),
+          Tab(
+            icon: Icon(Icons.cloud),
           )
         ]),
       ),

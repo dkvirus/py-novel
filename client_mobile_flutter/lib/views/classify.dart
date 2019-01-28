@@ -18,10 +18,10 @@ class _ClassifyState extends State<ClassifyPage> {
 
   @override
   void initState () {
-    super.initState();
     Future.delayed(Duration(milliseconds: 100)).then((_) {
       _handleGetClassify(context);
     });
+    super.initState();
   }
 
   @override
@@ -159,6 +159,10 @@ class _ClassifyState extends State<ClassifyPage> {
       context,
     );
 
+    if (!mounted) {
+      return;
+    }
+
     setState(() {
       classifyList = classifyResult['data'];
     });
@@ -173,6 +177,10 @@ class _ClassifyState extends State<ClassifyPage> {
    */
   _handleGetNovel (BuildContext context, id) async {
     if (id == null) {
+      return;
+    }
+
+    if (!mounted) {
       return;
     }
 

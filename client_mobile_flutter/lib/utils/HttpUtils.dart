@@ -74,20 +74,26 @@ class HttpUtils {
 
     /// 请求拦截器
     dio.interceptor.request.onSend = (Options options){
-      DialogUtils.showLoadingDialog(context);
+      if (context != null) {
+        DialogUtils.showLoadingDialog(context);
+      }
       return options; //continue
     };
 
     /// 响应成功拦截器
     dio.interceptor.response.onSuccess = (Response response) {
-      DialogUtils.closeLoadingDialog(context);
+      if (context != null) {
+        DialogUtils.closeLoadingDialog(context);
+      }
       return response; // continue
     };
 
     /// 响应失败拦截器 
     dio.interceptor.response.onError = (DioError e){
-      DialogUtils.closeLoadingDialog(context);
-      DialogUtils.showToastDialog(context, text: '请求失败');
+      if (context != null) {
+        DialogUtils.closeLoadingDialog(context);
+        DialogUtils.showToastDialog(context, text: '请求失败');
+      }
       return  e;
     };   
 
