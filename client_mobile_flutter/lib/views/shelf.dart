@@ -25,7 +25,7 @@ class ShelfPage extends StatefulWidget {
 class _ShelfState extends State<ShelfPage> {
   
   // 书架列表，用来接收服务端返回的数据
-  var _shelfList;
+  List _shelfList = [];
 
   // 是否删除
   bool _isDelete = false;
@@ -47,8 +47,31 @@ class _ShelfState extends State<ShelfPage> {
     return Scaffold(
       appBar: _buildAppBar(context),    // 标题栏
       body: ListView(
-        children: <Widget>[_buildShelfList(_shelfList)],
+        children: <Widget>[
+          _buildCancelBtn(context),
+          _buildShelfList(context),
+        ],
     ));
+  }
+
+  /*
+   * 删除书架书籍时弹出取消按钮 
+   */
+  _buildCancelBtn (BuildContext context) {
+    if (_isDelete == true) {
+      return Center(
+        child: FlatButton(
+          onPressed: () {
+            setState(() {
+              _isDelete = false;
+            });
+          },
+          child: Text('取消'),
+        ),
+      );
+    }
+
+    return Container();
   }
 
   /*
@@ -84,7 +107,37 @@ class _ShelfState extends State<ShelfPage> {
   /*
    * 书架 ui
    */
-  Widget _buildShelfList(data) {
+  Widget _buildShelfList(BuildContext context) {
+    if (_shelfList == null || _shelfList.length == 0) {
+      return Padding(
+        padding: EdgeInsets.only(top: 30.0),
+        child: Center(
+          child: FlatButton(
+            child: RichText(
+              text: TextSpan(
+                text: '书架控控',
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+                children: <TextSpan>[
+                  TextSpan(
+                      text: '点我添加第一本小说吧~',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontSize: 20.0,
+                      ),
+                  ),
+                ],
+              ),
+            ),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/search');
+            },
+          ),
+      ),
+      );
+    }
+
     return Card(
       margin: EdgeInsets.all(10.0),
       elevation: 10.0,
@@ -98,8 +151,8 @@ class _ShelfState extends State<ShelfPage> {
           crossAxisSpacing: 10.0,
           childAspectRatio: 0.7,    // 宽 / 高 = 0.7
           padding: EdgeInsets.all(5.0),
-          children: List.generate(data.length, (index) {
-            return _buildShelfItem(data, index);
+          children: List.generate(_shelfList.length, (index) {
+            return _buildShelfItem(_shelfList, index);
           }),
         )),
     );
@@ -116,8 +169,14 @@ class _ShelfState extends State<ShelfPage> {
           onTap: () {
             // 跳转到阅读页面
             Navigator.of(context).push(new MaterialPageRoute(builder: (_) {
-              return new ReadPage(url: data[index]['recent_chapter_url'], bookName: data[index]['book_name']);
-            }));
+              return ReadPage(
+                url: data[index]['recent_chapter_url'], 
+                bookName: data[index]['book_name'],
+                id: data[index]['id'],
+              );
+            })).then((_) {
+              _handleGetShelf(context);
+            });
           },
           child: Card(
             elevation: 5.0,

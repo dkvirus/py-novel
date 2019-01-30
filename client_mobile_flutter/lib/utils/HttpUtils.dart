@@ -19,7 +19,7 @@ class HttpUtils {
   static Dio dio;
 
   /// default options
-  static const String API_PREFIX = 'https://novel.dkvirus.top/api/test';
+  static const String API_PREFIX = 'https://novel.dkvirus.top/api/v2';
   static const int CONNECT_TIMEOUT = 10000;
   static const int RECEIVE_TIMEOUT = 3000;
 
@@ -39,9 +39,6 @@ class HttpUtils {
   }) async {
     data = data ?? {};
     method = method ?? 'GET';
-    /// 打印请求相关信息：请求地址、请求方式、请求参数
-    print('请求地址：【' + method + '  ' + url + '】');
-    print('请求参数：' + data.toString());
 
     /// restful 请求处理   
     /// /gysw/search/hist/:user_id        user_id=27
@@ -51,6 +48,10 @@ class HttpUtils {
         url = url.replaceAll(':$key', value.toString());
       }
     });
+
+    /// 打印请求相关信息：请求地址、请求方式、请求参数
+    print('请求地址：【' + method + '  ' + url + '】');
+    print('请求参数：' + data.toString());
 
     Dio dio = createInstance(context);
     var result;

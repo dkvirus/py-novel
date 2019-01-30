@@ -17,7 +17,7 @@ class _SearchState extends State<SearchPage> {
   List _hotList = [];
   List _historyList = [];
   List _novelList = [];
-  String _keyword;
+  String _keyword = '';
 
   @override
   void initState () {
@@ -381,11 +381,11 @@ class _SearchState extends State<SearchPage> {
   _handleGetNovelByKeyword (BuildContext context, String keyword) async {
     _formKey.currentState.save();
 
-    if (keyword != '' || keyword != null) {
+    if (keyword != null) {
       _keyword = keyword;
     }
 
-    if (_keyword == '' ||_keyword == null) {
+    if (_keyword == '' || _keyword == null) {
       DialogUtils.showToastDialog(context, text: '查询关键字不能为空');
       return;   
     }

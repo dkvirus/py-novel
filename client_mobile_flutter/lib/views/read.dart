@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/HttpUtils.dart';
 import '../utils/ApiUtils.dart';
 import '../utils/DialogUtils.dart';
@@ -13,16 +13,18 @@ import '../utils/DialogUtils.dart';
 class ReadPage extends StatefulWidget {
   final String url;
   final String bookName;
-  ReadPage({this.url, this.bookName});
+  final int id;
+  ReadPage({this.url, this.bookName, this.id});
 
   @override
-  _ReadState createState () => _ReadState(url, bookName);
+  _ReadState createState () => _ReadState(url, bookName, id);
 }
 
 class _ReadState extends State<ReadPage> {
   String _url = '';
   String _bookName = '';
-  _ReadState(this._url, this._bookName);
+  int _id;
+  _ReadState(this._url, this._bookName, this._id);
 
   // 目录用到的变量
   String _order = 'asc';
@@ -37,7 +39,7 @@ class _ReadState extends State<ReadPage> {
   @override
   void initState() {
     Future.delayed(Duration(milliseconds: 100)).then((_) {
-      _handleGetDetail(context, _url);
+      _handleGetDetail(context, _url, false);
       _handleGetChapter(context);
     });
     super.initState();
@@ -213,7 +215,7 @@ class _ReadState extends State<ReadPage> {
           return GestureDetector(
             onTap: () {
               Navigator.of(context).pop();
-              _handleGetDetail(context, _list[index]['url']);
+              _handleGetDetail(context, _list[index]['url'], true);
             },
             child: Padding(
               padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
@@ -257,7 +259,11 @@ class _ReadState extends State<ReadPage> {
             flex: 1,
             child: FlatButton(
               onPressed: () {
-                _handleGetDetail(context, _detail['prev_url']);
+                if (_detail['prev_url'] == null || _detail['prev_url'] == '') {
+                  DialogUtils.showToastDialog(context, text: '当前是第一章了哦~');
+                  return;
+                }
+                _handleGetDetail(context, _detail['prev_url'], true);
               },
               child: Text('上一章'),
             ),
@@ -266,7 +272,11 @@ class _ReadState extends State<ReadPage> {
             flex: 1,
             child: FlatButton(
               onPressed: () {
-                _handleGetDetail(context, _detail['next_url']);
+                if (_detail['next_url'] == null || _detail['next_url'] == '') {
+                  DialogUtils.showToastDialog(context, text: '已经是最新章节了哦~');
+                  return;
+                }
+                _handleGetDetail(context, _detail['next_url'], true);
               },
               child: Text('下一章'),
             ),
@@ -279,7 +289,7 @@ class _ReadState extends State<ReadPage> {
   /*
    * 查询小说阅读章节详情 
    */
-  _handleGetDetail (BuildContext context, String url) async {
+  _handleGetDetail (BuildContext context, String url, bool isUpdated) async {
     if (url != null || url != '') {
       _url = url;
     }
@@ -304,6 +314,22 @@ class _ReadState extends State<ReadPage> {
     setState(() {
       _detail = result['data'];
     });
+
+    if (!isUpdated) {
+      return;
+    }
+
+    // 保存最新阅读章节
+    await HttpUtils.request(
+      ApiUtils.EDIT_SHELF, 
+      context,
+      method: HttpUtils.PUT,
+      data: {
+        'id': _id,
+        'recent_chapter_url': _url,
+      }
+    );
+    
   }
 
   /*
@@ -325,6 +351,10 @@ class _ReadState extends State<ReadPage> {
     if (result['code'] != '0000') {
       DialogUtils.showToastDialog(context, text: result['message']);
       return;
+    }
+
+    if (result['data'].length == 0) {
+      _handleGetChapter(context);
     }
 
     if (!mounted) {
