@@ -9,3 +9,5 @@ build/
 .flutter-plugins
 
 .idea
+
+build

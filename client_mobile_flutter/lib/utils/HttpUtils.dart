@@ -84,17 +84,17 @@ class HttpUtils {
 
     /// 请求拦截器
     dio.interceptor.request.onSend = (Options options){
-      if (context != null) {
-        DialogUtils.showLoadingDialog(context);
-      }
+      // if (context != null) {
+      //   DialogUtils.showLoadingDialog(context);
+      // }
       return options; //continue
     };
 
     /// 响应成功拦截器
     dio.interceptor.response.onSuccess = (Response response) {
-      if (context != null) {
-        DialogUtils.closeLoadingDialog(context);
-      }
+      // if (context != null) {
+      //   DialogUtils.closeLoadingDialog(context);
+      // }
       return response; // continue
     };
 

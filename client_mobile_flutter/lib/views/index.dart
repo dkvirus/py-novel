@@ -36,13 +36,13 @@ class IndexState extends State with SingleTickerProviderStateMixin {
         color: Colors.grey,
         child: TabBar(controller: controller, tabs: [
           Tab(
-            icon: Icon(Icons.home),
+            icon: Icon(IconData(0xe60a, fontFamily: 'iconfont')),
           ),
           Tab(
-            icon: Icon(Icons.notifications),
+            icon: Icon(IconData(0xe648, fontFamily: 'iconfont')),
           ),
           Tab(
-            icon: Icon(Icons.cloud),
+            icon: Icon(IconData(0xe607, fontFamily: 'iconfont')),
           )
         ]),
       ),
