@@ -33,12 +33,33 @@ class _ClassifyState extends State<ClassifyPage> {
     }
 
     return Scaffold(
+      appBar: _buildAppBar(context),
       body: Row(
         children: [
           _buildClassifyList(context),
           _buildNovelList(context),
         ]
       ),
+    );
+  }
+
+  /*
+   * 标题栏
+   */
+  Widget _buildAppBar (BuildContext context) {
+    return AppBar(
+      title: Text('公羊书屋'),
+      actions: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(right: 20.0),
+          child: IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () {
+              Navigator.of(context).pushNamed('/search');
+            },
+          ),
+        ),
+      ],        
     );
   }
 
@@ -110,8 +131,8 @@ class _ClassifyState extends State<ClassifyPage> {
     return GestureDetector(
       onTap: () {
         String bookUrl = data[index]['book_url'];
-        Navigator.of(context).push(new MaterialPageRoute(builder: (_) {
-          return new IntroPage(url: bookUrl);
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
+          return IntroPage(url: bookUrl);
         }));
       },
       child: Card(
@@ -119,25 +140,25 @@ class _ClassifyState extends State<ClassifyPage> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         clipBehavior: Clip.antiAlias,
         child: Container(
-          decoration: new BoxDecoration(
-            image: new DecorationImage(
-              image: new AssetImage("images/cover.png"),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("images/cover.png"),
               fit: BoxFit.cover,
             ),
           ),
-          child: new Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              new Align(
+              Align(
                 alignment: Alignment(-0.6, 0.0),
-                child: new Text(
+                child: Text(
                   data[index]['book_name'],
                   style: TextStyle(fontSize: 18.0, color: Colors.grey),
                 ),
               ),
-              new Align(
+              Align(
                 alignment: Alignment(0.4, 0.0),
-                child: new Text(
+                child: Text(
                   '(' + data[index]['author_name'] + ')',
                   style: TextStyle(fontSize: 14.0, color: Colors.grey),
                 ),

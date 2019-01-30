@@ -3,6 +3,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import '../utils/HttpUtils.dart';
 import '../utils/ApiUtils.dart';
+import '../utils/DialogUtils.dart';
+import './read.dart';
 
 /// 数据结构：
 /// {
@@ -54,23 +56,24 @@ class _ShelfState extends State<ShelfPage> {
    */
   Widget _buildAppBar (BuildContext context) {
     return AppBar(
+      title: Text('我的书架'),
       actions: <Widget>[
-        new IconButton(
-          icon: new Icon(Icons.search),
+        IconButton(
+          icon: Icon(Icons.search),
           onPressed: () {
             Navigator.of(context).pushNamed('/search');
           },
         ),
-        new PopupMenuButton(
+        PopupMenuButton(
           onSelected: _handlePopMenu,
           itemBuilder: (BuildContext context) => <PopupMenuItem<String>>[
-            new PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: 'delete',
-              child: new Text('删除')
+              child: Text('删除小说')
             ),
-            new PopupMenuItem<String>(
+            PopupMenuItem<String>(
               value: 'signup',
-              child: new Text('退出登录')
+              child: Text('退出登录')
             )
           ]
         )
@@ -109,42 +112,50 @@ class _ShelfState extends State<ShelfPage> {
     return Stack(
       alignment: Alignment(1.1, -1.05),
       children: <Widget>[
-        Card(
-          elevation: 5.0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
-          clipBehavior: Clip.antiAlias,
-          child: Container(
-            decoration: new BoxDecoration(
-              image: new DecorationImage(
-                image: new AssetImage("images/cover.png"),
-                fit: BoxFit.cover,
+        GestureDetector( 
+          onTap: () {
+            // 跳转到阅读页面
+            Navigator.of(context).push(new MaterialPageRoute(builder: (_) {
+              return new ReadPage(url: data[index]['recent_chapter_url'], bookName: data[index]['book_name']);
+            }));
+          },
+          child: Card(
+            elevation: 5.0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+            clipBehavior: Clip.antiAlias,
+            child: Container(
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("images/cover.png"),
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            child: new Column(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                new Align(
-                  alignment: Alignment(-0.6, 0.0),
-                  child: new Text(
-                    data[index]['book_name'],
-                    style: TextStyle(fontSize: 22.0, color: Colors.grey),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  Align(
+                    alignment: Alignment(-0.6, 0.0),
+                    child: Text(
+                      data[index]['book_name'],
+                      style: TextStyle(fontSize: 22.0, color: Colors.grey),
+                    ),
                   ),
-                ),
-                new Align(
-                  alignment: Alignment(0.4, 0.0),
-                  child: new Text(
-                    '(' + data[index]['author_name'] + ')',
-                    style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                  Align(
+                    alignment: Alignment(0.4, 0.0),
+                    child: Text(
+                      '(' + data[index]['author_name'] + ')',
+                      style: TextStyle(fontSize: 16.0, color: Colors.grey),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
         _isDelete ? IconButton(
           icon: Icon(Icons.delete),
           onPressed: () {
-            _handleDelShelf(data[index]['id']);
+            _handleDelShelf(context, data[index]['id']);
           },
         ) : Text(''),
       ],
@@ -180,6 +191,7 @@ class _ShelfState extends State<ShelfPage> {
     if (result != null && result['code'] == '0000') {
       setState(() {
         _shelfList = result['data'];
+        _isDelete = false;
       });
     }
   }
@@ -187,8 +199,23 @@ class _ShelfState extends State<ShelfPage> {
   /*
    * 删除书架中书籍 
    */
-  _handleDelShelf (id) async {
-    
+  _handleDelShelf (BuildContext context, int id) async {
+    var result = await HttpUtils.request(
+      ApiUtils.DELETE_SHELF, 
+      context,
+      method: HttpUtils.DELETE,
+      data: {
+        'id': id,
+      },
+    );
+
+    if (result['code'] != '0000') {
+      DialogUtils.showToastDialog(context, text: result['message']);
+      return;
+    }
+
+    // 删除成功后重新请求
+    _handleGetShelf(context);
   }
 
   /*

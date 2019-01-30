@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder> {
         // 这里可以定义静态路由，不能传递参数
         '/index': (_) => new Index(),
-        '/search': (_) => new Search(),
+        '/search': (_) => new SearchPage(),
         '/intro': (_) => new IntroPage(),
         '/signin': (_) => new SigninPage(),
         '/signup': (_) => new SignupPage(),
