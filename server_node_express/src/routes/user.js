@@ -28,7 +28,7 @@ module.exports = {
         }
 
         result.data = result.data[0];
-        if (result.data.password !== password) {    // 密码输入错误
+        if (client_type !== 'OPENID' && result.data.password !== password) {    // 密码输入错误
             res.json({ code: '9999', message: '账号或密码输入错误', data: {} });
             return;
         }
