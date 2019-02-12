@@ -54,26 +54,32 @@ Page({
    */
   handleSearchUserInfo: function (openId) {
     var that = this
-    request({
-      url: api.GET_USER_INFO,
-      data: { client_type: 'OPENID', username: openId },
-    }).then(function (res) {
-      if (res.id) {
-        wx.setStorageSync('user_id', res.id)
-        that.setData({ userInfo: res })
-        that.handleSearchShelf(res.id)
-        return;
-      }
 
-      // 没有查到用户信息，新增一条用户
-      request({
-        url: api.ADD_USER_INFO,
-        method: 'POST',
-        data: { client_type: 'OPENID', username: openId }
-      }).then(function (res2) {
-        wx.setStorageSync('user_id', res2.id)
-        that.handleSearchShelf(res2.id)
-      })
+    wx.request({
+      url: api.GET_USER_INFO,
+      header: {
+        'content-type': 'application/json' // 默认值
+      },
+      data: { client_type: 'OPENID', username: openId },
+      success (res) {
+        var result = res.data
+        if (result.code === '0000' && result.data && result.data.id) {
+          wx.setStorageSync('user_id', res.id)
+          that.setData({ userInfo: res })
+          that.handleSearchShelf(res.id)
+          return;
+        }
+
+        // 没有查到用户信息，新增一条用户
+        request({
+          url: api.ADD_USER_INFO,
+          method: 'POST',
+          data: { client_type: 'OPENID', username: openId }
+        }).then(function (res2) {
+          wx.setStorageSync('user_id', res2.id)
+          that.handleSearchShelf(res2.id)
+        })
+      }
     })
   },
 
