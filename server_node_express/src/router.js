@@ -4,6 +4,7 @@ const novel = require('./routes/novel');
 const user = require('./routes/user');
 const email = require('./routes/email');
 const mobile = require('./routes/mobile');
+const oauth = require('./routes/oauth');
 
 module.exports = function (app) {
 
@@ -41,6 +42,9 @@ module.exports = function (app) {
     // 短信验证码
     app.post('/gysw/mobile/code', mobile.sendMobileCode);               // 发送短信验证码
     app.post('/gysw/mobile/validate', mobile.validateMobileCode);       // 检验验证码是否正确
+
+    // 认证
+    app.post('/gysw/oauth/token', oauth.getToken);                       // 获取 token
 
     // Not Found
     app.use('*', function (req, res) { res.json({ code: '9999', message: '没有找到对应的路由' }) });

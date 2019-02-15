@@ -10,8 +10,6 @@ const moment = require('moment');
 
 module.exports = function () {
     return function (req, res, next) {
-        if (req.originalUrl === '/favicon.ico') return;
-
         const now = moment(new Date()).format('YYYY-MM-DD HH:mm:ss SSS');
         console.log(`
 Timer: ${chalk.green(now)} ——【${chalk.green(req.method)}  ${chalk.green(req.originalUrl)}】
