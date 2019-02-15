@@ -1,7 +1,10 @@
 // var apiPrefix = 'https://novel.dkvirus.top/api/test'
 var apiPrefix = 'https://novel.dkvirus.top/api/v2'
+// var apiPrefix = 'http://localhost:3000/api/test'
 
 module.exports = {
+  GET_TOKEN: `${apiPrefix}/gysw/oauth/token`,                 // 获取 token
+
   GET_CLASSIFY: `${apiPrefix}/gysw/novel/classify`,           // 查询小说分类
   GET_CHAPTER: `${apiPrefix}/gysw/novel/chapter`,             // 根据小说url查章节
   GET_CONTENT: `${apiPrefix}/gysw/novel/content`,             // 根据章节url查内容

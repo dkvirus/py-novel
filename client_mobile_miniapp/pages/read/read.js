@@ -208,19 +208,76 @@ Page({
   handleShowChapter: function () {
     // 当前阅读章节
     var { detail, chapter } = this.data
-    var index = chapter.all.findIndex(item => item.name === detail.title.trim())
-    var page = chapter.page.find(item => index <= item.end && index >= item.start)
-    var list = chapter.all.slice(page.start, page.end)
-    var id = list.find(item => item.name === detail.title.trim()).id
 
-    this.handleHideMenus()
-    this.setData({ 
-      isShowChapter: true, 
-      'chapter.isShowPage': false, 
-      'chapter.list': list,
-      'chapter.defaultPage': page,
-      'chapter.id': id || '',
-    })
+    if (chapter.all.length === 0) {   // 查询为空
+      console.log(11)
+      var that = this
+      console.log(that.data.novelUrl)
+      
+      request({
+        url: api.GET_CHAPTER,
+        data: { url: that.data.novelUrl },
+      }).then(function (res) {
+        // 拼接分页数据  288 => 2、88,,,,2880 => 28、80
+        var integer = Math.floor(res.length / 100)        // 整数部分
+        var remainder = res.length % 100                  // 余数
+        var page = []
+        for (var i = 1; i <= integer; i++) {
+          var obj = {}
+          obj.id = String(i)
+          obj.start = (i - 1) * 100
+          obj.end = i * 100
+          obj.desc = `${(i - 1) * 100 + 1}-${i * 100}`
+          page.push(obj)
+        }
+        page.push({
+          id: String(integer + 1),
+          desc: `${integer * 100 + 1}-${integer * 100 + remainder}`,
+          start: integer * 100,
+          end: integer * 100 + remainder,
+        })
+
+        that.setData({
+          'chapter.list': res.slice(0, 100),
+          'chapter.page': page,
+          'chapter.all': res,
+          'chapter.defaultPage': page[0],
+        })
+        
+        try {
+          var index = chapter.all.findIndex(item => item.name === detail.title.trim())
+          var page = chapter.page.find(item => index <= item.end && index >= item.start)
+          var list = chapter.all.slice(page.start, page.end)
+          var id = list.find(item => item.name === detail.title.trim()).id
+        } catch (e) {
+          
+        }
+
+        this.handleHideMenus()
+        this.setData({
+          isShowChapter: true,
+          'chapter.isShowPage': false,
+          'chapter.list': list,
+          'chapter.defaultPage': page,
+          'chapter.id': id || '',
+        })
+      })
+
+    } else {
+      var index = chapter.all.findIndex(item => item.name === detail.title.trim())
+      var page = chapter.page.find(item => index <= item.end && index >= item.start)
+      var list = chapter.all.slice(page.start, page.end)
+      var id = list.find(item => item.name === detail.title.trim()).id
+
+      this.handleHideMenus()
+      this.setData({
+        isShowChapter: true,
+        'chapter.isShowPage': false,
+        'chapter.list': list,
+        'chapter.defaultPage': page,
+        'chapter.id': id || '',
+      })
+    }
   },
 
   /**

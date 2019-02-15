@@ -26,6 +26,7 @@ Page({
    */
   handleSearchClassify: function () {
     var that = this
+    console.log('classify')
     // 查询数据
     request({
       url: api.GET_CLASSIFY,

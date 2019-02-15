@@ -18,12 +18,23 @@ class Home extends React.Component {
             ],
             selectedTab: 'shelf'
         };
+        this.handleGoSearch = this.handleGoSearch.bind(this);
     }
 
     // 顶部标题栏
     static navigationOptions = {
-        headerTitle: <Text>书架</Text>,
-        headerRight: <Image source={require('../images/setting.png')} style={{ width: 40, height: 40 }}></Image>
+        headerTitle: <Text style={{ marginLeft: 20, fontSize: 18 }}>书架</Text>,
+        headerRight: (
+            <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableNativeFeedback onPress={() => this.handleGoSearch()}>
+                    <Image source={require('../images/plus.png')} style={{ width: 40, height: 40 }}></Image>
+                </TouchableNativeFeedback>
+                
+                <TouchableNativeFeedback onPress={() => console.log('xxx')}>
+                    <Image source={require('../images/setting.png')} style={{ width: 30, height: 30, marginRight: 20 }}></Image>
+                </TouchableNativeFeedback>
+            </View>    
+        )
     };
 
     /**
@@ -62,18 +73,15 @@ class Home extends React.Component {
                     selectedIcon={require('../images/book-shelf-selected.png')}
                     selected={true}
                 >
-                    <View style={styles.container}>
-                        <View style={styles.body}>
+                    <View style={styles.body}>
+                        <View style={styles.bodyWrap}>
                             <TouchableNativeFeedback onPress={() => this.handleGoRead('https://www.biquge5200.cc/84_84888/152458677.html')}>
                                 <View style={styles.item}>
-                                    <Text>都市阴阳师</Text>
-                                    <Text>巫九</Text>
-                                </View>
-                            </TouchableNativeFeedback>
-
-                            <TouchableNativeFeedback onPress={() => this.handleGoSearch()}>
-                                <View style={styles.item}>
-                                    <Text>+</Text>
+                                    <Image style={styles.cover} source={require('../images/cover.png')}></Image>
+                                    <View style={styles.right}>
+                                        <Text style={styles.bookname}>都市阴阳师</Text>
+                                        <Text>巫九</Text>
+                                    </View>
                                 </View>
                             </TouchableNativeFeedback>
                         </View>
@@ -94,14 +102,8 @@ class Home extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        // backgroundColor: '#ccc',
-        height: '100%',
-    },
     body: {
         width: '100%',
-        display: 'flex',
-        alignItems: 'center',
         paddingTop: 10,
     },
     bodyWrap: {
@@ -110,13 +112,32 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         paddingVertical: 20,
         paddingHorizontal: 10,
+        display: 'flex',
     },
     item: {
         height: 100,
-        width: 100,
         marginBottom: 20,
         borderRadius: 4,
-        borderWidth: 0.5,
+        borderBottomWidth: 0.5,
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    cover: {
+        height: 90,
+        width: 70,
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    right: {
+        flex: 1,
+        height: 70,
+        display: 'flex',
+        justifyContent: 'space-around',
+    },
+    bookname: {
+        fontSize: 20,
+        fontWeight: '700',
     },
     tabbar: {
         position: 'absolute',

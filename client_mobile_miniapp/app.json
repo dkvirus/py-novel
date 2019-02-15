@@ -1,10 +1,10 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/classify/classify",
     "pages/feedback/feedback",
     "pages/read/read",
     "pages/search/search",
-    "pages/classify/classify",
     "pages/intro/intro"
   ],
   "window": {

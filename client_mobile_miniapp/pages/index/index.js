@@ -64,9 +64,9 @@ Page({
       success (res) {
         var result = res.data
         if (result.code === '0000' && result.data && result.data.id) {
-          wx.setStorageSync('user_id', res.id)
-          that.setData({ userInfo: res })
-          that.handleSearchShelf(res.id)
+          wx.setStorageSync('user_id', result.data.id)
+          that.setData({ userInfo: result.data })
+          that.handleSearchShelf(result.data.id)
           return;
         }
 
@@ -87,6 +87,11 @@ Page({
    * 查询书架里小说
    */
   handleSearchShelf: function (userId) {
+    if (!userId) {
+      this.setData({ isLoading: false })
+      return;
+    }
+
     var that = this
     request({
       url: api.GET_SHELF,
