@@ -1,4 +1,6 @@
 class ApiUtils {
+  static const String GET_TOKEN = '/gysw/oauth/token';                        // 获取 token
+
   static const String GET_USER_INFO = '/gysw/user/info';                      // 登录接口，获取用户信息
   static const String POST_USER_INFO = '/gysw/user/info';                     // 注册接口，新增用户信息
   

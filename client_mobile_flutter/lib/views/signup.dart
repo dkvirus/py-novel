@@ -334,6 +334,16 @@ class _SignupState extends State<SignupPage> {
         return;
       }
 
+      // 获取 token
+      var tokenResult = await HttpUtils.request(ApiUtils.GET_TOKEN, context,
+        data: {
+          'username': _mobile, 
+          'password': _password, 
+          'client_type': 'MOBILE'
+        },
+        method: HttpUtils.POST,
+      );
+
       DialogUtils.showToastDialog(context, text: '注册成功，即将跳转到首页');
 
       // 本地保存用户 userId、username 和 password
@@ -341,6 +351,7 @@ class _SignupState extends State<SignupPage> {
       await prefs.setInt('userId', addUserResult['data']['id']);   // 存
       await prefs.setString('username', _mobile);
       await prefs.setString('password', _password);
+      await prefs.setString('token', tokenResult['data']['token']);
 
       // 跳转首页
       Navigator.of(context).pushNamedAndRemoveUntil('/index', ModalRoute.withName('/index'));

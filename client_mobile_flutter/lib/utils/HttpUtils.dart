@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'dart:async';
+import 'package:shared_preferences/shared_preferences.dart';
 import './DialogUtils.dart';
+import './ApiUtils.dart';
 
 /*
  * 封装 restful 请求
@@ -42,7 +44,7 @@ class HttpUtils {
 
     /// restful 请求处理   
     /// /gysw/search/hist/:user_id        user_id=27
-    /// 最终胜出 url 为     /gysw/search/hist/27
+    /// 最终生成 url 为     /gysw/search/hist/27
     data.forEach((key, value) {
       if (url.indexOf(key) != -1) {
         url = url.replaceAll(':$key', value.toString());
@@ -59,6 +61,25 @@ class HttpUtils {
       Response response = await dio.request(url, data: data, options: new Options(method: method));
 
       result = response.data;
+
+      if (result['code'] == '9999' && result['message'].toString().indexOf('认证失败') > -1) {
+        // 重新请求 token
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        String username = prefs.getString('username') ?? '';
+        String password = prefs.getString('password') ?? '';
+        var tokenResult = await HttpUtils.request(ApiUtils.GET_TOKEN, context,
+          data: {
+            'username': username, 
+            'password': password, 
+            'client_type': 'MOBILE'
+          },
+          method: HttpUtils.POST,
+        );
+        await prefs.setString('token', tokenResult['data']['token']);
+
+        // 重新发送请求
+        HttpUtils.request(url, context, data: data, method:method);
+      }
 
       /// 打印响应相关信息
       print('响应数据：' + response.toString());
@@ -83,10 +104,19 @@ class HttpUtils {
     }
 
     /// 请求拦截器
-    dio.interceptor.request.onSend = (Options options){
+    dio.interceptor.request.onSend = (Options options) async {
       // if (context != null) {
       //   DialogUtils.showLoadingDialog(context);
       // }
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String token = prefs.getString('token') ?? '';
+
+      if (token != '') {
+        options.headers = {
+          'Authorization': 'Bearer ' + token,
+        };
+      }
+
       return options; //continue
     };
 

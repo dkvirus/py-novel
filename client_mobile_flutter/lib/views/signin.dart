@@ -182,6 +182,7 @@ class _SigninPageState extends State<SigninPage> {
           ),
           color: Colors.black,
           onPressed: () {
+            print('denglu');
             if (_formKey.currentState.validate()) {
               ///只有输入的内容符合要求通过才会到达此处
               _formKey.currentState.save();
@@ -265,6 +266,8 @@ class _SigninPageState extends State<SigninPage> {
    * 处理登录逻辑，登录成功跳转到首页
    */
   _handleSignin (BuildContext context) async {
+    print('xxxxxxx');
+
     var result = await HttpUtils.request(ApiUtils.GET_USER_INFO, context, 
       data: { 
         'username': _mobile, 
@@ -279,11 +282,22 @@ class _SigninPageState extends State<SigninPage> {
       return;
     }
 
+    // 获取 token
+    var tokenResult = await HttpUtils.request(ApiUtils.GET_TOKEN, context,
+      data: {
+        'username': _mobile, 
+        'password': _password, 
+        'client_type': 'MOBILE'
+      },
+      method: HttpUtils.POST,
+    );
+
     // 登录成功，保存 userId、username 和 password
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setInt('userId', result['data']['id']);   // 存
     await prefs.setString('username', _mobile);
     await prefs.setString('password', _password);
+    await prefs.setString('token', tokenResult['data']['token']);
 
     // 跳转首页
     Navigator.of(context).pushNamedAndRemoveUntil('/index', ModalRoute.withName('/index'));
