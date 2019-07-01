@@ -11,12 +11,17 @@ module.exports = {
         const url = req.query.url;
 
         try {
-            request({ url, encoding: null }, function (err, resp, body) {
+            request({
+                url,
+                encoding: null,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.37 70.100 Safari/537.36'
+                }
+            }, function (err, resp, body) {
                 if (err) return res.json({ code: '9999', message: err });
 
                 const html = iconv.decode(body, 'gbk');
                 const $ = cheerio.load(html);
-
                 const result = {};
                 result.title = $('div.bookname h1').text();                     // 章节标题
                 result.content = $('div#content').html();                       // 章节内容
@@ -35,14 +40,20 @@ module.exports = {
      */
     getNovelChapter: async function (req, res) {
         const url = req.query.url;
-        
+
         try {
-            request({ url, encoding: null }, function (err, resp, body) {
+            request({
+                url,
+                encoding: null,
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.37 70.100 Safari/537.36'
+                }
+            }, function (err, resp, body) {
                 if (err) return res.json({ code: '9999', message: err });
-                
+
                 const html = iconv.decode(body, 'gbk');
                 const $ = cheerio.load(html);
-    
+
                 const result = [];
                 const $dds = $('dd a').slice(9);
                 if ($dds.length === 0) return res.json({ code: '0000', data: result });
@@ -60,7 +71,7 @@ module.exports = {
         } catch (e) {
             res.json({ code: '9999', message: e });
         }
-        
+
     },
 
     /**
@@ -70,12 +81,18 @@ module.exports = {
         const url = req.query.url;
 
         try {
-            request({ url, encoding: null }, function (err, resp, body) {
+            request({
+                url,
+                encoding: null, 
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.37 70.100 Safari/537.36'
+                }
+            }, function (err, resp, body) {
                 if (err) return res.json({ code: '9999', message: err });
-                
+
                 const html = iconv.decode(body, 'gbk');
                 const $ = cheerio.load(html);
-                
+
                 const result = {};
                 result.book_name = $('div#info h1').text();                                             // 书名
                 result.author_name = $('div#info p').eq(0).text().split('：')[1];                       // 作者
