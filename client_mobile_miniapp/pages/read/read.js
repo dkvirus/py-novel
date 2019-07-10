@@ -355,7 +355,7 @@ Page({
     } else {
       this.setData({ 'setting.font': 34 })
     }
-    this.handleHideSetting()
+    // this.handleHideSetting()
   },
 
   /**
@@ -364,6 +364,6 @@ Page({
   handleChangeBg: function (e) {
     var bg = e.currentTarget.dataset.bg
     this.setData({ 'setting.bg': bg })
-    this.handleHideSetting()
+    // this.handleHideSetting()
   },
 })

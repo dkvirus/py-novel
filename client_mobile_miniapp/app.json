@@ -13,7 +13,7 @@
     "navigationBarTitleText": "公羊书屋",
     "navigationBarTextStyle": "white",
     "navigationStyle": "custom",
-    "enablePullDownRefresh": true
+    "enablePullDownRefresh": false
   },
   "tabBar": {
     "color": "#626567",
@@ -46,5 +46,6 @@
     "downloadFile": 10000
   },
   "debug": true,
-  "cloud": true
+  "cloud": true,
+  "sitemapLocation": "sitemap.json"
 }
