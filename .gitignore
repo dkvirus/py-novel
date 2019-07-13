@@ -22,3 +22,12 @@ yarn-error.log*
 *.sln
 *.sw*
 
+.project
+.settings
+.classpath
+dump.rdb
+
+package-lock.json
+yarn.lock
+
+server_node_eggjs
