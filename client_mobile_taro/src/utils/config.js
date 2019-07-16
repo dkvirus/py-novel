@@ -1,0 +1,1 @@
+export const apiPrefix = 'https://novel.dkvirus.top/api/v2'

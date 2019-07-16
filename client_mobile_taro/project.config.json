@@ -1,0 +1,13 @@
+{
+  "miniprogramRoot": "./dist",
+  "projectname": "client_mobile_taro",
+  "description": "公羊阅读,小说阅读工具",
+  "appid": "wx52d2bf5809cd0743",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false
+  },
+  "compileType": "miniprogram"
+}

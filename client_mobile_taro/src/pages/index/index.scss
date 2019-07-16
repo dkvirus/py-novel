@@ -1,0 +1,54 @@
+.header {
+  height: 160rpx;
+  width: 100%;
+  background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.shelf-list {
+  width: 90%;
+  margin: 20rpx auto;
+  padding: 20rpx;
+  overflow: hidden;
+  background: #fff;
+  border-radius: 10rpx;
+
+  .shelf-item {
+    width: 50%;
+    box-sizing: border-box;
+    height: 400px;
+    padding: 30px;
+    float: left;
+
+    .shelf-wrapper {
+      width: 100%;
+      height: 100%;
+      background: yellow;
+      position: relative;
+
+      .shelf-cover {
+        width: 100%;
+        height: 100%;
+        box-shadow: 6rpx 10rpx 6rpx #ccc;
+      }
+
+      .shelf-novelname {
+        font-size: 34rpx;
+        position: absolute;
+        left: 20%;
+        top: 25%;
+      }
+      .shelf-authorname {
+        font-size: 26rpx;
+        position: absolute;
+        top: 50%;
+        left: 40%;
+      }
+    }
+
+  }
+}
+
+

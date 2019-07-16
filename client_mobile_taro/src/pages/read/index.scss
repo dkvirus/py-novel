@@ -1,0 +1,25 @@
+.menu {
+    padding: 40px 0;
+    font-size: 28px;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    .content {
+        flex: 1;
+        overflow: auto;
+        padding: 10px 30px;
+    }
+    
+    .footer {
+        height: 60px;
+        line-height: 60px;
+        box-shadow: 0 -1px 10px #cccccc;
+        font-size: 30px;
+        padding-left: 20px;
+    }
+}
+
