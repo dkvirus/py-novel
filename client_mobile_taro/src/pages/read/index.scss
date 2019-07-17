@@ -1,25 +1,114 @@
 .menu {
-    padding: 40px 0;
-    font-size: 28px;
+  padding: 40px 0;
+  font-size: 28px;
 }
 
 .container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 
-    .content {
-        flex: 1;
-        overflow: auto;
-        padding: 10px 30px;
-    }
-    
-    .footer {
-        height: 60px;
-        line-height: 60px;
-        box-shadow: 0 -1px 10px #cccccc;
-        font-size: 30px;
-        padding-left: 20px;
-    }
+  .content {
+    flex: 1;
+    overflow: auto;
+    padding: 10px 30px;
+  }
+
+  .footer {
+    height: 60px;
+    line-height: 60px;
+    box-shadow: 0 -1px 10px #cccccc;
+    font-size: 30px;
+    padding-left: 20px;
+  }
 }
 
+.chapter {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  overflow: hidden;
+
+  .chapter-header {
+    height: 100px;
+    line-height: 100px;
+    color: rgb(81, 81, 81);
+    font-size: 42px;
+    padding-left: 30px;
+  }
+  .chapter-menus {
+    height: 60px;
+    box-sizing: border-box;
+    font-size: 30px;
+    color: rgb(52, 52, 52);
+
+    .align-center {
+      text-align: center;
+    }
+  }
+  .chapter-list {
+    flex: 1;
+    overflow: auto;
+    font-size: 32px;
+    color: rgb(92, 92, 92);
+    box-sizing: border-box;
+    border-top: 2px solid rgb(234, 234, 234);
+
+    .chapter-item {
+      padding: 18px 40px;
+    }
+
+    .chapter-active {
+      color: rgb(171, 34, 39);
+    }
+  }
+}
+
+.setting {
+  background: rgb(15, 15, 15);
+  padding: 20px 30px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  .font {
+    height: 120px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    .label {
+      width: 60px;
+      color: rgb(107, 115, 117);
+      font-size: 30px;
+    }
+
+    .btn-font {
+      width: 25%;
+      border: 2px solid rgb(107, 115, 117);
+      border-radius: 10px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+
+  .bg {
+    width: 100%;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+
+    .bg-box {
+      width: 155px;
+      height: 80px;
+      border-radius: 10px;
+      margin-right: 20px;
+      display: inline-block;
+    }
+  }
+}

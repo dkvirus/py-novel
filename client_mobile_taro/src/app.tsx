@@ -20,15 +20,16 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/read/index',
       'pages/index/index',
+      'pages/read/index',
     ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#0068C4',
       navigationBarTitleText: '公羊阅读',
       navigationBarTextStyle: 'white',
-      enablePullDownRefresh: false
+      navigationStyle: 'custom',
+      enablePullDownRefresh: false,
     }
   }
 
