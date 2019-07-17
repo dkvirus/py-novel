@@ -1,0 +1,95 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  .search {
+    padding: 12rpx 18rpx;
+    background-color: #fff;
+    overflow: hidden;
+    position: relative;
+
+    .input {
+      width: 100%;
+      height: 74px;
+      background-color: #f7f7f7;
+      border-radius: 40px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #999;
+      font-size: 34px;
+    }
+  }
+
+  .body {
+    flex: 1;
+    position: relative;
+
+    .classify {
+      height: 100%;
+      width: 180px;
+      background: #fff;
+      float: left;
+
+      .classify-item {
+        padding: 24px;
+        text-align: center;
+        color: #333;
+        font-size: 28px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      .classify-active {
+        background: #0068C4;
+        color: #fff;
+      }
+    }
+
+    .novel {
+      height: 100%;
+      width: calc(100vw - 180px);
+      box-sizing: border-box;
+      position: absolute;
+      left: 180px;
+      padding: 20px;
+
+      .novel-item {
+        width: 50%;
+        box-sizing: border-box;
+        height: 300px;
+        padding: 20px 30px;
+        float: left;
+
+        .novel-wrapper {
+          width: 100%;
+          height: 100%;
+          position: relative;
+
+          .novel-cover {
+            width: 100%;
+            height: 100%;
+            box-shadow: 6rpx 10rpx 6rpx #ccc;
+          }
+
+          .novel-novelname {
+            font-size: 34px;
+            position: absolute;
+            left: 20%;
+            top: 25%;
+          }
+
+          .novel-authorname {
+            font-size: 26px;
+            position: absolute;
+            top: 50%;
+            left: 40%;
+          }
+        }
+      }
+    }
+  }
+}

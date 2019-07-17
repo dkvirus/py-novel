@@ -1,5 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro'
-import Index from './pages/index'
+import Index from './pages/shelf/index'
 
 import './app.scss'
 
@@ -20,8 +20,11 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/index/index',
+      'pages/classify/index',
+      'pages/shelf/index',
       'pages/read/index',
+      'pages/intro/index',
+      'pages/search/index',
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -30,7 +33,27 @@ class App extends Component {
       navigationBarTextStyle: 'white',
       navigationStyle: 'custom',
       enablePullDownRefresh: false,
-    }
+    },
+    tabBar: {
+      backgroundColor: '#fafafa',
+      borderStyle: 'white',
+      selectedColor: '#51d1cc',
+      color: '#666',
+      list: [
+        {
+          pagePath: 'pages/shelf/index',
+          iconPath: 'images/book-shelf.png',
+          selectedIconPath: 'images/book-shelf-selected.png',
+          text: '书架'
+        },
+        {
+          pagePath: 'pages/classify/index',
+          iconPath: 'images/book-shop.png',
+          selectedIconPath: 'images/book-shop-selected.png',
+          text: '书屋'
+        },
+      ]
+    },
   }
 
   componentDidMount () {}

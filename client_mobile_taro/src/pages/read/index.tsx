@@ -1,5 +1,5 @@
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, RichText, ScrollView, Slider } from '@tarojs/components'
+import { View, RichText, ScrollView } from '@tarojs/components'
 import { AtDrawer, AtActionSheet, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
