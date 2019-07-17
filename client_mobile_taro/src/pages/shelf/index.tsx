@@ -1,6 +1,7 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
 import { AtAvatar } from 'taro-ui'
+
 import icon_cover from '../../images/cover.png'
 import request from '../../utils/request'
 import * as api from '../../utils/api'
@@ -50,6 +51,7 @@ export default class Index extends Component<{}, State> {
     // 请求用户信息，拿到 userId
     const userId = 9
     Taro.setStorageSync('openId', 'o02_15SJd-Kgc5rC3nMmPgOePaPE')
+    Taro.setStorageSync('user_id', 9)
     this.handleGetShelfList(userId)
     this.handleGetUserInfo()
   }

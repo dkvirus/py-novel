@@ -20,10 +20,10 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/classify/index',
       'pages/shelf/index',
-      'pages/read/index',
       'pages/intro/index',
+      'pages/classify/index',
+      'pages/read/index',
       'pages/search/index',
     ],
     window: {
