@@ -84,13 +84,9 @@ export default class ClassifyPage extends Component {
     /**
      * 跳转小说介绍页面
      */
-    handleGoDetailPage (novel: Novel) {
-        const novelUrl = novel.book_url
-        const bookName = novel.book_name
-        const authorName = novel.author_name
-
+    handleGoIntroPage (novel: Novel) {
         Taro.navigateTo({
-            url: `/pages/intro/index?novelUrl=${novelUrl}&bookName=${bookName}&authorName=${authorName}`
+            url: `/pages/intro/index?novelUrl=${novel.book_url}`
         })
     }
 
@@ -130,7 +126,7 @@ export default class ClassifyPage extends Component {
                         {
                             novelList.map((novel: Novel) => (
                                 <View className="novel-item" 
-                                    key={novel.book_name} onClick={() => this.handleGoDetailPage(novel)}>
+                                    key={novel.book_name} onClick={() => this.handleGoIntroPage(novel)}>
                                     <View className="novel-wrapper">
                                         <Image src={icon_cover} className="novel-cover"></Image>
 
