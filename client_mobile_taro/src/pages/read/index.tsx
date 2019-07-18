@@ -117,6 +117,7 @@ export default class ReadPage extends Component {
                 nextUrl: next_url,
                 settingVisible: false,
                 menuVisible: false,
+                chapterVisible: false,
             })
 
             request({
@@ -179,12 +180,12 @@ export default class ReadPage extends Component {
                                 <View>白天</View>
                             </View>
                         ) : (
-                                <View className='at-col'
-                                    onClick={() => this.handleUpdateState({ isDark: !isDark, bgColor: 'rgb(0, 0, 0)' })}>
-                                    <View className='at-icon at-icon-star'></View>
-                                    <View>黑夜</View>
-                                </View>
-                            )
+                            <View className='at-col'
+                                onClick={() => this.handleUpdateState({ isDark: !isDark, bgColor: 'rgb(0, 0, 0)' })}>
+                                <View className='at-icon at-icon-star'></View>
+                                <View>黑夜</View>
+                            </View>
+                        )
                     }
                 </View>
             </AtActionSheet>
@@ -337,7 +338,7 @@ export default class ReadPage extends Component {
             <View className="container" style={{ backgroundColor: bgColor }}>
                 <View className="navbar" style={{ backgroundColor: bgColor, color: isDark ? '#666' : '#333' }}>
                     <AtIcon value="chevron-left" onClick={() => this.handleBack()}></AtIcon>
-                    公羊阅读
+                    <View className="at-article__p title">{title}</View>
                 </View>
 
                 <View className="content">
@@ -348,10 +349,7 @@ export default class ReadPage extends Component {
                 </View>
 
                 <View className="at-row footer">
-                    <View className='at-col at-col-6 title'>
-                        {title}
-                    </View>
-                    <View className='at-col at-col-3'
+                    <View className='at-col at-col-3 at-col__offset-6'
                         onClick={() => this.handleTurnPage(prevUrl, 'prev')}>
                         上一章
                     </View>

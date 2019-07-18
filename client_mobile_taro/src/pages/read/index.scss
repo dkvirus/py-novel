@@ -8,6 +8,10 @@
   display: flex;
   flex-direction: column;
 
+  .title {
+    display: inline-block;
+  }
+
   .content {
     flex: 1;
     overflow: auto;
@@ -20,12 +24,6 @@
     box-shadow: 0 -1px 10px #cccccc;
     font-size: 30px;
     padding-left: 20px;
-
-    .title {
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
   }
 }
 
