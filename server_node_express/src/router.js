@@ -33,6 +33,7 @@ module.exports = function (app) {
     app.post('/gysw/user/info', user.addUserInfo);                      // 新增用户
     app.put('/gysw/user/info/:id', user.editUserInfo);                  // 更新用户信息
     app.get('/gysw/user/validate', user.validateUser);                  // 校验用户是否已注册
+    app.get('/gysw/user/wxinfo', user.getWxUserInfo);                   // 获取微信用户信息
 
     // 邮箱验证码
     app.post('/gysw/email/code', email.sendEmailCode);                  // 发送 email 验证码

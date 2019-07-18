@@ -1,4 +1,6 @@
 const moment = require('moment');
+const request = require('request');
+const { wxAppId, wxAppSecret } = require('../../config');
 
 module.exports = {
     /**
@@ -45,7 +47,7 @@ module.exports = {
         const { client_type, username, password = '' } = req.body;
         const now = new Date();
         const result = await dbexec(sql, [username, password, client_type, now]);
-        result.data = result.data = { id: result.data.insertId };
+        result.data = { id: result.data.insertId };
         res.json(result);
     },
 
@@ -91,5 +93,42 @@ module.exports = {
         const result = await dbexec(sql, username);
         result.data = result.data[0] || {};
         res.json(result);
+    },
+
+    /**
+     * 获取微信用户信息
+     */
+    getWxUserInfo: function (req, res) {
+        const { code } = req.query
+
+        try {
+            request({
+                url: `https://api.weixin.qq.com/sns/jscode2session?appid=${wxAppId}&secret=${wxAppSecret}&js_code=${code}&grant_type=authorization_code`,
+            }, async function (err, result) {
+                if (err) {
+                    res.json({ code: '9999', message: '获取用户信息失败', data: {} });
+                } else {
+                    const { openid } = JSON.parse(result.body)
+                    let userId = ''
+                    
+                    // 查询用户信息
+                    let querySql = 'select id from gysw_user where username = ? and client_type = "OPENID"';
+                    const queryResult = await dbexec(querySql, [openid]);
+
+                    // 用户不存在，则新增用户
+                    if (queryResult.data.length === 0) {
+                        const insertSql = 'insert into gysw_user(username, client_type, create_at) values (?, "OPENID", now())';
+                        const insertResult = await dbexec(insertSql, [openid]);
+                        userId = insertResult.data.insertId
+                    } else {
+                        userId = queryResult.data[0].id
+                    }
+
+                    res.json({ code: '0000', message: '获取用户信息成功', data: { userId, openId: openid } })
+                }
+            })
+        } catch (e) {
+            res.json({ code: '9999', message: e });
+        }
     },
 }
