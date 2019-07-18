@@ -42,31 +42,31 @@ export default class Index extends Component<{}, State> {
     }
 
     componentWillMount() {
-        // Taro.login().then(res => {
-        //     if (res.code) {
-        //         request({
-        //             url: api.GET_USER_WXINFO,
-        //             data: { code: res.code },
-        //         }).then(res => {
-        //             Taro.setStorageSync('userId', res.userId)
-        //             Taro.setStorageSync('openId', res.openId)
-        //             this.handleGetShelfList()
-        //         })
-        //     } else {
-        //         Taro.showToast({
-        //             title: '登录失败',
-        //             icon: 'none',
-        //         })
-        //     }
-        // })
+        Taro.login().then(res => {
+            if (res.code) {
+                request({
+                    url: api.GET_USER_WXINFO,
+                    data: { code: res.code },
+                }).then(res => {
+                    Taro.setStorageSync('userId', res.userId)
+                    Taro.setStorageSync('openId', res.openId)
+                    this.handleGetShelfList()
+                })
+            } else {
+                Taro.showToast({
+                    title: '登录失败',
+                    icon: 'none',
+                })
+            }
+        })
         
         this.handleGetUserInfo()
         this.handleGeneGreeting()
     }
 
-    // componentDidShow () {
-    //     this.handleGetShelfList()
-    // }
+    componentDidShow () {
+        this.handleGetShelfList()
+    }
 
     /**
      * 查询小说列表
