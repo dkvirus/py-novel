@@ -21,7 +21,6 @@ interface Chapter {
 
 export default class ReadPage extends Component {
     config: Config = {
-        
     }
 
     state = {
@@ -42,17 +41,18 @@ export default class ReadPage extends Component {
         isDark: false,              // 白天还是黑夜
 
         settingVisible: false,      // 设置抽屉是否可见。字体大小、背景颜色、亮度
-        bgColor: 'rgb(244, 243, 249)',
+        bgColor: '#fff',
         font: 14,
     }
 
     componentWillMount() {
-        const { bookName = '兵者', chapterUrl = 'https://www.biquge5200.cc/98_98081/155305426.html', novelId = 22 } = this.$router.params
+        const { bookName = '', chapterUrl = '', novelId } = this.$router.params
         const novelUrl = chapterUrl.split('/').slice(0, 4).join('/')   // 用于查询目录
 
-        this.setState({ bookName, novelId })
         this.handleGetChapterList(novelUrl)
-        this.handleGetNovelContent(chapterUrl)
+        this.setState({ bookName, novelId }, () => {
+            this.handleGetNovelContent(chapterUrl)
+        })
     }
 
     /**
@@ -66,7 +66,7 @@ export default class ReadPage extends Component {
             // 拼接分页数据  288 => 2、88,,,,2880 => 28、80
             const integer = Math.floor(res.length / 100)        // 整数部分
             const remainder = res.length % 100                  // 小数部分
-            
+
             const page: Array<Page> = []
 
             /**
@@ -85,7 +85,7 @@ export default class ReadPage extends Component {
                 } else {
                     obj.end = (i + 1) * 100 - 1
                 }
-                
+
                 obj.desc = `${obj.start + 1} - ${obj.end + 1}`
 
                 page.push(obj)
@@ -102,7 +102,7 @@ export default class ReadPage extends Component {
     /**
      * 查询小说内容
      */
-    handleGetNovelContent (url) {
+    handleGetNovelContent(url) {
         const { novelId } = this.state
 
         request({
@@ -115,23 +115,25 @@ export default class ReadPage extends Component {
                 content,
                 prevUrl: prev_url,
                 nextUrl: next_url,
+                settingVisible: false,
+                menuVisible: false,
             })
 
-            return request({
+            request({
                 url: api.EDIT_SHELF,
                 method: 'PUT',
                 data: {
-                    recent_chapter_url: url, 
+                    recent_chapter_url: url,
                     id: novelId,
                 }
             })
-        }).then(res => {})
+        })
     }
 
     /**
      * 更改状态
      */
-    handleUpdateState (variable: any, value?: any) {
+    handleUpdateState(variable: any, value?: any) {
         if (typeof variable === 'string') {
             this.setState({
                 [variable]: value
@@ -144,20 +146,20 @@ export default class ReadPage extends Component {
     /**
      * 返回书架页面
      */
-    handleBack () {
+    handleBack() {
         Taro.navigateBack()
     }
 
     /**
      * 渲染设置抽屉
      */
-    renderMenu () {
+    renderMenu() {
         const { isDark, menuVisible } = this.state
 
         return (
             <AtActionSheet isOpened={menuVisible}>
                 <View className='at-row menu'>
-                    <View className='at-col' 
+                    <View className='at-col'
                         onClick={() => this.handleUpdateState({ menuVisible: false, chapterVisible: true })}>
                         <View className='at-icon at-icon-bullet-list'></View>
                         <View>目录</View>
@@ -169,26 +171,20 @@ export default class ReadPage extends Component {
                         <View>设置</View>
                     </View>
 
-                    <View className='at-col'
-                        onClick={() => this.handleBack()}>
-                        <View className='at-icon at-icon-chevron-left'></View>
-                        <View>返回</View>
-                    </View>
-                    
                     {
                         isDark ? (
-                            <View className='at-col' 
-                                onClick={() => this.handleUpdateState({isDark: !isDark, bgColor: 'rgb(244, 243, 249)'})}>
+                            <View className='at-col'
+                                onClick={() => this.handleUpdateState({ isDark: !isDark, bgColor: '#fff' })}>
                                 <View className='at-icon at-icon-loading-2'></View>
                                 <View>白天</View>
                             </View>
                         ) : (
-                            <View className='at-col' 
-                                onClick={() => this.handleUpdateState({ isDark: !isDark, bgColor: 'rgb(0, 0, 0)' })}>
-                                <View className='at-icon at-icon-star'></View>
-                                <View>黑夜</View>
-                            </View>
-                        )
+                                <View className='at-col'
+                                    onClick={() => this.handleUpdateState({ isDark: !isDark, bgColor: 'rgb(0, 0, 0)' })}>
+                                    <View className='at-icon at-icon-star'></View>
+                                    <View>黑夜</View>
+                                </View>
+                            )
                     }
                 </View>
             </AtActionSheet>
@@ -198,15 +194,15 @@ export default class ReadPage extends Component {
     /**
      * 章节 > 点击章节
      */
-    handleClickChapter (url) {
+    handleClickChapter(url) {
         this.setState({ chapterVisible: false })
         this.handleGetNovelContent(url)
-    }   
+    }
 
     /**
      * 章节 > 章节排序
      */
-    handleOrderChapter () {
+    handleOrderChapter() {
         const list = this.state.list
         list.reverse()
         this.setState({ list })
@@ -215,7 +211,7 @@ export default class ReadPage extends Component {
     /**
      * 渲染章节抽屉
      */
-    renderChapter () {
+    renderChapter() {
         const { chapterVisible, bookName, title, all = [], list = [], page = [], isShowPage } = this.state
 
         return (
@@ -234,7 +230,7 @@ export default class ReadPage extends Component {
                             onClick={() => this.handleUpdateState({ isShowPage: !isShowPage })}>切换翻页</View>
                         {
                             !isShowPage && <View className="at-col align-center"
-                            onClick={() => this.handleOrderChapter()}>排序</View>
+                                onClick={() => this.handleOrderChapter()}>排序</View>
                         }
                     </View>
 
@@ -249,13 +245,13 @@ export default class ReadPage extends Component {
                                     >{item.desc}</View>
                                 ))
                             ) : (
-                                list.map((item: Chapter) => (
-                                    <View 
-                                        className={`chapter-item ${item.name === title.trim() ? 'chapter-active' : ''}`}
-                                        key={item.uuid}
-                                        onClick={() => this.handleClickChapter(item.url)}>{item.name}</View>
-                                ))
-                            )
+                                    list.map((item: Chapter) => (
+                                        <View
+                                            className={`chapter-item ${item.name === title.trim() ? 'chapter-active' : ''}`}
+                                            key={item.uuid}
+                                            onClick={() => this.handleClickChapter(item.url)}>{item.name}</View>
+                                    ))
+                                )
                         }
                     </ScrollView>
                 </View>
@@ -266,11 +262,11 @@ export default class ReadPage extends Component {
     /**
      * 渲染设置
      */
-    renderSetting () {
+    renderSetting() {
         const { settingVisible, font } = this.state
 
         const bgs = [
-            'rgb(244, 243, 249)',
+            '#fff',
             'rgb(158, 151, 167)',
             'rgb(177, 160, 132)',
             'rgb(165, 168, 185)',
@@ -283,15 +279,15 @@ export default class ReadPage extends Component {
                     <View className="font">
                         <View className="label">字体</View>
 
-                        <AtIcon 
+                        <AtIcon
                             value="reload" color="rgb(107, 115, 117)" size={30}
                             onClick={() => this.handleUpdateState({ font: 14 })}></AtIcon>
 
-                        <AtIcon 
+                        <AtIcon
                             value="subtract-circle" color="rgb(107, 115, 117)" size={30}
                             onClick={() => this.handleUpdateState({ font: font - 2 })}></AtIcon>
 
-                        <AtIcon 
+                        <AtIcon
                             value="add-circle" color="rgb(107, 115, 117)" size={30}
                             onClick={() => this.handleUpdateState({ font: font + 2 })}></AtIcon>
                     </View>
@@ -315,43 +311,54 @@ export default class ReadPage extends Component {
     /**
      * 主页面：上一页 | 下一页
      */
-    handleTurnPage (url) {
-        const { prevUrl, nextUrl } = this.state
-
-        if (prevUrl.indexOf('.html') === -1 && nextUrl.indexOf('.html') !== -1) {
-            return Taro.showToast({ title: '已经是第一章了', icon: 'none' }) 
-        }
-        if (prevUrl.indexOf('.html') !== -1 && nextUrl.indexOf('.html') === -1) {
-            return Taro.showToast({ title: '已经是最新章节了', icon: 'none' })
+    handleTurnPage(url, info) {
+        if (url.indexOf('.html') === -1) {
+            if (info === 'prev') {
+                Taro.showToast({
+                    title: '已经是第一章了',
+                    icon: 'none',
+                })
+            } else if (info === 'next') {
+                Taro.showToast({
+                    title: '已经是最新章节了',
+                    icon: 'none',
+                })
+            }
+            return
         }
 
         this.handleGetNovelContent(url)
     }
 
     render() {
-        const { content, title, prevUrl, nextUrl, bgColor, font } = this.state
+        const { content, title, prevUrl, nextUrl, bgColor, font, isDark } = this.state
 
         return (
             <View className="container" style={{ backgroundColor: bgColor }}>
+                <View className="navbar" style={{ backgroundColor: bgColor, color: isDark ? '#666' : '#333' }}>
+                    <AtIcon value="chevron-left" onClick={() => this.handleBack()}></AtIcon>
+                    公羊阅读
+                </View>
+
                 <View className="content">
-                    <RichText style={{ fontSize: font + 'px', lineHeight: font * 1.5 + 'px' }} 
-                        className="at-article__p"    
+                    <RichText style={{ fontSize: font + 'px', lineHeight: font * 1.5 + 'px' }}
+                        className="at-article__p"
                         nodes={content}
                         onClick={() => this.handleUpdateState({ menuVisible: true, settingVisible: false })}></RichText>
                 </View>
 
                 <View className="at-row footer">
-                    <View className='at-col at-col-6'>
+                    <View className='at-col at-col-6 title'>
                         {title}
                     </View>
                     <View className='at-col at-col-3'
-                        onClick={() => this.handleTurnPage(prevUrl)}>
+                        onClick={() => this.handleTurnPage(prevUrl, 'prev')}>
                         上一章
-                    </View> 
+                    </View>
                     <View className='at-col at-col-3'
-                        onClick={() => this.handleTurnPage(nextUrl)}>
+                        onClick={() => this.handleTurnPage(nextUrl, 'next')}>
                         下一章
-                    </View> 
+                    </View>
                 </View>
 
                 {this.renderMenu()}

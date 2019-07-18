@@ -18,5 +18,4 @@ export const GET_SEARCH_NOVEL = '/gysw/search/novel';           // 查询小说�
 export const GET_USER_INFO = '/gysw/user/info';                 // 查询用户信息
 export const ADD_USER_INFO = '/gysw/user/info';                 // 添加用户信息
 export const EDIT_USER_INFO = '/gysw/user/info/{user_id}';      // 更新用户信息
-
-export const SEND_FEEDBACK_EMAIL = '/gysw/email/feedback';      // 发送用户反馈邮件
+export const GET_USER_WXINFO = '/gysw/user/wxinfo';             // 获取微信用户信息

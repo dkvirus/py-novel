@@ -20,10 +20,10 @@ class App extends Component {
    */
   config: Config = {
     pages: [
-      'pages/search/index',
       'pages/shelf/index',
-      'pages/intro/index',
       'pages/classify/index',
+      'pages/search/index',
+      'pages/intro/index',
       'pages/read/index',
     ],
     window: {
@@ -35,10 +35,10 @@ class App extends Component {
       enablePullDownRefresh: false,
     },
     tabBar: {
-      backgroundColor: '#fafafa',
+      color: '#626567',
+      selectedColor: '#2A8CE5',
+      backgroundColor: '#FBFBFB',
       borderStyle: 'white',
-      selectedColor: '#51d1cc',
-      color: '#666',
       list: [
         {
           pagePath: 'pages/shelf/index',

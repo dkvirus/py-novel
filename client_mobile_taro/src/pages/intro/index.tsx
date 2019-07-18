@@ -1,6 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, ScrollView, Image } from '@tarojs/components'
-import { AtDrawer, AtNavBar } from 'taro-ui'
+import { AtDrawer, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
 import * as api from '../../utils/api'
@@ -203,7 +203,7 @@ export default class IntroPage extends Component {
      * 加入书架
      */
     handleJoinShelf () {
-        const userId = Taro.getStorageSync('user_id')
+        const userId = Taro.getStorageSync('userId')
         const { bookName, authorName, bookDesc, recentChapterUrl } = this.state
 
         request({
@@ -234,10 +234,6 @@ export default class IntroPage extends Component {
                     recent_chapter_url: recentChapterUrl,
                 }
             }).then(res => {
-                Taro.showToast({
-                    title: '加入书架成功',
-                    icon: 'success'
-                })
                 Taro.switchTab({
                     url: '/pages/shelf/index' 
                 })
@@ -255,13 +251,10 @@ export default class IntroPage extends Component {
 
         return (
             <View className="container">
-                <AtNavBar
-                    onClickLeftIcon={() => this.handleBack()}
-                    color="#000"
-                    leftText="返回"
-                    title="小说详情"
-                    leftIconType="chevron-left"
-                />
+                <View className="navbar">
+                    <AtIcon value="chevron-left" onClick={() => this.handleBack()}></AtIcon>
+                    公羊阅读
+                </View>
 
                 <View className="at-row info">
                     <View className="at-col at-col-3">

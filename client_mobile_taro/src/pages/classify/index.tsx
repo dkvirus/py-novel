@@ -104,6 +104,10 @@ export default class ClassifyPage extends Component {
 
         return (
             <View className="container">
+                <View className="navbar">
+                    公羊阅读
+                </View>
+
                 <View className="search">
                     <View className="input" onClick={() => this.handleGoSearchPage()}>
                         <View className="at-icon at-icon-search"></View>

@@ -20,6 +20,12 @@
     box-shadow: 0 -1px 10px #cccccc;
     font-size: 30px;
     padding-left: 20px;
+
+    .title {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 }
 
@@ -33,8 +39,11 @@
     height: 100px;
     line-height: 100px;
     color: rgb(81, 81, 81);
-    font-size: 42px;
+    font-size: 38px;
     padding-left: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .chapter-menus {
     height: 60px;

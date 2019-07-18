@@ -1,6 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Image } from '@tarojs/components'
-import { AtNavBar, AtSearchBar, AtGrid, AtList, AtListItem } from 'taro-ui'
+import { AtSearchBar, AtGrid, AtList, AtListItem, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
 import * as api from '../../utils/api'
@@ -38,7 +38,7 @@ export default class SearchPage extends Component {
      * 查看历史记录列表
      */
     handleGetHistList() {
-        const userId = Taro.getStorageSync('user_id')
+        const userId = Taro.getStorageSync('userId')
         request({
             url: api.GET_SEARCH_HIST,
             data: { user_id: userId },
@@ -71,8 +71,6 @@ export default class SearchPage extends Component {
      * 根据关键词查询
      */
     handleSearchSubmit(keyword) {
-        // return
-
         if (!keyword) {
             Taro.showToast({
                 title: '请输入内容',
@@ -211,13 +209,10 @@ export default class SearchPage extends Component {
 
         return (
             <View>
-                <AtNavBar
-                    onClickLeftIcon={() => this.handleBack()}
-                    color="#000"
-                    leftText="返回"
-                    title="搜索"
-                    leftIconType="chevron-left"
-                />
+                <View className="navbar">
+                    <AtIcon value="chevron-left" onClick={() => this.handleBack()}></AtIcon>
+                    公羊阅读
+                </View>
 
                 {this.renderSearch()}
                 { novelList.length && keyword && this.renderNovel() }
