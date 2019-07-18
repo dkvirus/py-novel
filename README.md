@@ -26,7 +26,7 @@ dk 本人很喜欢看小说，so，开了这个工程，将遇到的感兴趣的
 
 ## 更新日志
 
-latest: 开发完 Flutter 版公羊阅读。
+latest: 开发完 Taro 版公羊阅读。
 
 [更新日志](./CHANGELOG.md)
 
