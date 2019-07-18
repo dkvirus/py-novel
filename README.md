@@ -18,8 +18,8 @@ dk 本人很喜欢看小说，so，开了这个工程，将遇到的感兴趣的
 - [x] 微信小程序：看小说大多数情况还是在手机上看的，移动客户端再开发一个微信小程序端；[小程序客户端详情+图示](./client_mobile_miniapp)
 - [x] 移动端：Android 原生-Java；[安卓原生Java端详情+图示](./client_mobile_android)
 - [x] 移动端：Flutter。[移动端混合开发Flutter详情+图示](./client_mobile_flutter)
+- [x] 移动端：Taro。[移动端混合开发Taro详情+图示](./client_mobile_taro)
 - [ ] 移动端：React-native。
-- [ ] 移动端：Taro。
 - [ ] 移动端：Weex。
 - [ ] 移动端：Android 原生-Kotlin。
 - [ ] 移动端：IOS 原生-swift。
@@ -37,6 +37,7 @@ latest: 开发完 Flutter 版公羊阅读。
     |-- client_mobile_flutter       # 移动端开发，flutter 框架
     |-- client_mobile_miniapp       # 移动端开发，微信小程序
     |-- client_mobile_rn            # 移动端开发，react-native 框架
+    |-- client_mobile_taro          # 移动端开发，Taro 框架
     |-- client_web_spa_vue          # web端，vue单页应用
     |-- server_node_express         # node 提供数据接口 /api/v2
     |-- server_python               # python 提供数据接口 /api/v1
