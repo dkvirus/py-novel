@@ -1,70 +1,106 @@
-.wrapper {
-  padding-left: 20%;
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.search {
+  padding: 12rpx 18rpx;
+  background-color: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+.input {
+  width: 100%;
+  height: 74rpx;
+  background-color: #f7f7f7;
+  border-radius: 40rpx;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 34rpx;
+}
+
+.body {
+  flex: 1;
+  position: relative;
+}
+
+.classify {
+  height: 100%;
+  width: 180rpx;
+  background: #fff;
+  float: left;
+}
+
+.classify-item {
+  padding: 24rpx;
+  text-align: center;
+  color: #333;
+  font-size: 28rpx;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
 }
 
-.left {
-  width: 20%;
-  box-sizing: border-box;
-  float: left;
-  background: #fff;
-  font-size: 34rpx;
-  color: #888;
-  position: fixed;
-  left: 0;
-  top: 5vh;
-}
-.classify-item {
-  padding: 20rpx 10rpx;
-}
-.active {
-  background: #0068C4;
+.classify-active {
+  background: #0068c4;
   color: #fff;
 }
 
-.right {
-  width: 100%;
-  box-sizing: border-box;
-  float: left;
-}
-.like {
-  padding: 10rpx;
-  overflow: hidden;
-  border-bottom: 1px solid rgb(236, 241, 244);
-}
-.like-item {
-  width: 48%;
-  height: 200rpx;
-  box-sizing: border-box;
-  float: left;
-  padding: 10rpx;
-  margin-bottom: 20rpx;
-}
-.like-wrapper {
-  padding: 10rpx;
-  box-sizing: content-box;
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border-radius: 10rpx;
+.novel {
   height: 100%;
+  width: calc(100vw - 180rpx);
+  box-sizing: border-box;
+  position: absolute;
+  left: 180rpx;
+  padding: 20rpx;
 }
-.cover {
-  width: 25%;
+
+.novel-item {
+  width: 50%;
+  box-sizing: border-box;
+  height: 300rpx;
+  padding: 20rpx 30rpx;
+  float: left;
 }
-.cover-image {
+
+.novel-wrapper {
   width: 100%;
-  height: 120rpx;
+  height: 100%;
+  position: relative;
 }
-.like .intro {
-  margin-left: 20rpx;
+
+.novel-cover {
+  width: 100%;
+  height: 100%;
+  box-shadow: 6rpx 10rpx 6rpx #ccc;
+  border-radius: 16px;
 }
-.like .novelname {
-  color: rgb(29, 29, 29);
+
+.novel-novelname {
   font-size: 34rpx;
-  margin-bottom: 20rpx;
+  position: absolute;
+  left: 20%;
+  top: 20%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
 }
-.like .authorname {
-  color: rgb(114, 114, 120);
-  font-size: 28rpx;
+
+.novel-authorname {
+  font-size: 26rpx;
+  position: absolute;
+  top: 70%;
+  right: 10%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
 }

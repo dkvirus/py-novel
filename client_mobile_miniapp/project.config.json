@@ -17,7 +17,6 @@
 	"debugOptions": {
 		"hidedInDevtools": []
 	},
-	"cloudfunctionRoot": "cloudfunctions/",
 	"isGameTourist": false,
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},

@@ -1,159 +1,110 @@
 var api = require('../../utils/api.js')
 var { request } = require('../../utils/request.js')
 
-wx.cloud.init({ traceUser: true })
-
-// pages/index/index.js
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
-    novelList: [],
-    settingEnable: false,
-    greeting: '早上好',    // 问候语
-    isLoading: false,     // 蒙版状态值
-    userInfo: {           // 用户信息
-      id: 0,
-      nickname: '',
-      avatar_url: '',
-      gender: '',
-      address: '',
-    },     
+    novelList: [],        // 书架小说列表
+    settingEnable: false, // 是否编辑状态
+    greeting: '',         // 问候语
+    userInfo: {},         // 用户信息
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    // 获取 openid，继而获取 user_id，通过 user_id 查询书架列表
-    this.setData({ isLoading: true })
-    var that = this
-    wx.clearStorageSync()   // 修复 onShow() 重复查询 bug
-    wx.cloud.callFunction({
-      name: 'getOpenid',
-      complete: res => {
-        wx.setStorageSync('openId', res.result)
-
-        // 根据 openid 查询 userId
-        that.handleSearchUserInfo(res.result)
+    const that = this
+    wx.login({
+      success (res) {
+        if (res.code) {
+          request({
+            url: api.GET_USER_WXINFO,
+            data: { code: res.code },
+          }).then(res => {
+            var { nickName = '', avatarUrl = '' } = res
+            that.setData({ 
+              'userInfo.nickName': nickName,
+              'userInfo.avatarUrl': avatarUrl,
+            })
+            wx.setStorageSync('userId', res.userId)
+            wx.setStorageSync('openId', res.openId)
+            that.handleGetShelfList()
+          })
+        } else {
+          wx.showToast({
+            title: '登录失败',
+            icon: 'none',
+          })
+        }
       }
     })
+
     this.handleGreeting()
   },
 
+  /**
+   * 页面出现时执行该方法
+   * intro 页面点击 "加入书架" 按钮，加入成功之后跳转至 "书架页面"，
+   * 此时需要刷新下页面内容
+   */
   onShow: function () {
-    var userId = wx.getStorageSync('user_id')
+    var userId = wx.getStorageSync('userId')
     if (!userId) return
-    this.handleSearchShelf(userId)
+    this.handleGetShelfList()
   },
 
   /**
-   * 查询用户信息
+   * 更新用户信息，添加头像和昵称
    */
-  handleSearchUserInfo: function (openId) {
-    var that = this
+  handleUpdateUserInfo: function (e) {
+    var { avatarUrl, city, country, gender, nickName, province } = e.detail.userInfo
+    var address = `${country}、${province}、${city}`
+    var genderObj = {
+      1: '男性',
+      2: '女性',
+    }
+    gender = genderObj[gender] || '未知'
 
-    wx.request({
-      url: api.GET_USER_INFO,
-      header: {
-        'content-type': 'application/json' // 默认值
+    // 保存到 data 中
+    this.setData({
+      'userInfo.nickName': nickName,
+      'userInfo.avatarUrl': avatarUrl,
+    })
+
+    // 更新到库中
+    var userId = wx.getStorageSync('userId')
+    if (!userId) return
+
+    request({
+      url: api.EDIT_USER_INFO,
+      method: 'put',
+      data: { 
+        user_id: userId,
+        nickname: nickName,
+        avatar_url: avatarUrl,
+        gender,
+        address,
       },
-      data: { client_type: 'OPENID', username: openId },
-      success (res) {
-        var result = res.data
-        if (result.code === '0000' && result.data && result.data.id) {
-          wx.setStorageSync('user_id', result.data.id)
-          that.setData({ userInfo: result.data })
-          that.handleSearchShelf(result.data.id)
-          return;
-        }
-
-        // 没有查到用户信息，新增一条用户
-        request({
-          url: api.ADD_USER_INFO,
-          method: 'POST',
-          data: { client_type: 'OPENID', username: openId }
-        }).then(function (res2) {
-          wx.setStorageSync('user_id', res2.id)
-          that.handleSearchShelf(res2.id)
-        })
-      }
+    }).then(res => {
+      console.log(res)
     })
   },
 
   /**
    * 查询书架里小说
    */
-  handleSearchShelf: function (userId) {
-    if (!userId) {
-      this.setData({ isLoading: false })
-      return;
-    }
+  handleGetShelfList: function () {
+    const userId = wx.getStorageSync('userId')
+    if (!userId) return
 
-    var that = this
     request({
       url: api.GET_SHELF,
       data: { user_id: userId }
-    }).then(function (res) {
-      that.setData({ novelList: res, isLoading: false, settingEnable: false })
-    }).catch(function (err) {
-      that.setData({ isLoading: false })
-    })
-  },
-
-  /**
-   * 获取用户信息
-   */
-  handleUpdateUserInfo: function (e) {
-    var { avatarUrl, city, country, gender, nickName, province } = e.detail.userInfo
-    var address = `${country}、${province}、${city}`
-    if (gender === 1) {
-      gender = '男性'
-    } else if (gender === 2) {
-      gender = '女性'
-    } else {
-      gender = '未知'
-    }
-    this.setData({ 
-      'userInfo.nickname': nickName,
-      'userInfo.avatar_url': avatarUrl,
-      'userInfo.gender': gender,
-      'userInfo.address': address,   
-    })
-
-    var userId = wx.getStorageSync('user_id')
-    if (!userId) return
-    var userInfo = this.data.userInfo
-
-    request({
-      url: api.EDIT_USER_INFO,
-      method: 'put',
-      data: { user_id: userId, ...userInfo },
-    }).then(function (res) {
-      console.log(res)
-    })
-  },
-
-  /**
-   * 跳转查询页面 
-   */
-  handleRedirectSearch: function () {
-    wx.navigateTo({
-      url: '../search/search',
-    })
-  },
-
-  /**
-   * 跳转阅读页面 
-   */
-  handleRedirectRead: function (e) {
-    var chapterUrl = e.currentTarget.dataset.url
-    var bookName = e.currentTarget.dataset.bookname
-    var id = e.currentTarget.dataset.id
-    wx.navigateTo({
-      url: `../read/read?chapterUrl=${chapterUrl}&bookName=${bookName}&novelId=${id}`,
+    }).then(res => {
+      this.setData({ novelList: res, settingEnable: false })
     })
   },
 
@@ -161,15 +112,23 @@ Page({
    * 删除首页书架里的小说
    */
   handleRemoveNovel: function (e) {
-    var that = this
     var id = e.currentTarget.dataset.id
     request({
       url: api.DEL_SHELF,
       method: 'DELETE',
       data: { id },
-    }).then(function (res) {
-      var userId = wx.getStorageSync('user_id')
-      that.handleSearchShelf(userId)
+    }).then(res => {
+      this.handleGetShelfList()
+    })
+  },
+
+  /**
+   * 跳转阅读页面 
+   */
+  handleGoReadPage: function (e) {
+    var { url, bookname, id } = e.currentTarget.dataset
+    wx.navigateTo({
+      url: `../read/read?chapterUrl=${url}&bookName=${bookname}&novelId=${id}`,
     })
   },
 

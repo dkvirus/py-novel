@@ -1,71 +1,53 @@
-<view class="wrapper padTop">
-  <view class="header"></view>
+<view class="navbar">
+  <image class="icon" src="../../images/back-black.png"
+    bindtap="handleBack"></image>
+  公羊阅读
+</view>
 
-  <view class="tab" style="padding-bottom: 0;">
-    <view>搜索 🔍 页面</view>
-  </view>
+<!-- 搜索 -->
+<view class="search">
+  <input type="text" class="input" placeholder="搜索"
+    bindinput="handleInputChange" value="{{inputValue}}"></input>
+  <button class="submit" bindtap="handleGetNovelList">确定</button>
+</view>
 
-  <view class="search">
-    <view class="back" bindtap="handleBackSearch"
-      wx:if="{{novelList.length > 0}}">
-      <image class="btn-back" src="../../images/back.png"></image>
-    </view>
-    <view class="back" bindtap="handleBackShelf"
-      wx:if="{{novelList.length === 0}}">
-      <image class="btn-back" src="../../images/back-black.png"></image>
-    </view>
-    <view class="searchWrapper">
-      <input class="searchInput" bindinput="handleInputChange" value="{{inputValue}}"
-      placeholder="小说名/作者" placeholder-class="searchInputPlac" confirm-type="search" />
-    </view>
-    <view class="searchIconWrap" bindtap="handleSearchNovel">
-      <image class="searchIcon" src="../../images/search.png"/> 
-    </view>
-  </view>
-
-  <view class="tab" wx:if="{{novelList.length > 0}}">
-    <view>搜索结果</view>  
-  </view>
-  <view class="like" wx:if="{{novelList.length > 0}}">
-    <view class="like-item" wx:for="{{novelList}}" wx:key="{{item.url}}">
-      <view class="like-wrapper"
-        bindtap="handleRedirectIntro" data-url="{{item.book_url}}"
-        data-bookname="{{item.book_name}}" data-authorname="{{item.author_name}}">
-        <view class="cover">
-          <image class="cover-image" src="../../images/cover.png"></image>
-        </view>
-        <view class="intro">
-          <view class="novelname">{{item.book_name}}</view>
-          <view class="authorname">{{item.author_name}}</view>
+<!-- 小说列表 -->
+<view class="novel" wx:if="{{novelList.length > 0}}">
+  <view class="novel-title">找到了这些书📚</view>
+  <view class="novel-list">
+    <view wx:for="{{novelList}}" wx:key="{{item.book_name}}" 
+      class="novel-item">
+        <view class="novel-wrapper" 
+          bindtap="handleGoIntroPage" data-url="{{item.book_url}}">
+          <image src="../../images/cover.png"
+            class="novel-cover"></image>
+          <view class="novel-novelname">{{item.book_name}}</view>
+          <view class="novel-authorname">{{item.author_name}}</view>
         </view>
       </view>
+  </view>
+</view>
+
+<!-- 热门搜索 -->
+<view class="hot">
+  <view class="hot-title">热门搜索</view>
+  <view class="hot-list">
+    <view class="hot-item" 
+      bindtap="handleClickKeyword" data-keyword="{{item.keyword}}"
+      wx:for="{{hotList}}" wx:key="{{item.keyword}}">
+      {{item.keyword}}
     </view>
   </view>
+</view>
 
-  <view class="tab" wx:if="{{novelList.length === 0}}">
-    <view>热门搜索</view>  
-  </view>
-  <view class="hot" wx:if="{{novelList.length === 0}}">
-    <view class="hot-item" wx:for="{{hotList}}" wx:key="{{item.keyword}}">
-      <view class="hot-wrapper"
-        bindtap="handleSearchKeyword" data-keyword="{{item.keyword}}">
-        {{item.keyword}}
-      </view>
-      <view class="hot-badge">{{index+1}}</view>
-    </view>
-  </view>
-
-  <view class="tab" wx:if="{{novelList.length === 0}}">
-    <view>搜索历史</view>
-  </view>
-  <view class="history" wx:if="{{novelList.length === 0}}">
+<!-- 搜索历史 -->
+<view class="hist">
+  <view class="hist-title">搜索历史</view>
+  <view class="hist-list">
     <view class="hist-item" 
-      bindtap="handleSearchKeyword" data-keyword="{{item.keyword}}"
+      bindtap="handleClickKeyword" data-keyword="{{item.keyword}}"
       wx:for="{{histList}}" wx:key="{{item.keyword}}">
-      <image class="icon" src="../../images/search.png"></image>
-      <view class="hist-search-value">{{item.keyword}}</view>
+      {{item.keyword}}
     </view>
   </view>
-  
-  <mask loading="{{isLoading}}"/> 
 </view>

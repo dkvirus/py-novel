@@ -3,6 +3,25 @@ page {
   background: rgb(244, 243, 249);
   height: 100%;
   color: #333;
+  position: relative;
+}
+
+.navbar {
+  height: 150rpx;
+  box-sizing: border-box;
+  padding-top: 80rpx;
+  padding-left: 20rpx;
+  background-color: #fff;
+  color: #333;
+  font-size: 36rpx;
+  box-shadow: 4rpx 0 6rpx #cccccc;
+  display: flex;
+  align-items: center;  
+}
+
+.icon {
+  width: 50rpx;
+  height: 50rpx;
 }
 
 /* 头部 */

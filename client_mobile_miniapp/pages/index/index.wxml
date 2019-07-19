@@ -1,53 +1,48 @@
-<view class="wrapper padTop">
-  <view class="header"></view>
+<view class="navbar" style="background-color: rgb(244, 243, 249)">
+  公羊阅读
+</view>
 
-  <!-- <view class="tab1">
-    <view class="title">我的书架</view>
+<!-- 个人信息 -->
+<view class="profile">
+  <view class="avatar">
+    <image class="avatar-image" 
+      src="{{userInfo.avatarUrl || '../../images/default_avatar.png'}}"></image>
+  </view>
+
+  <view class="nickname" wx:if="{{userInfo.nickName}}">
+    {{greeting}}{{userInfo.nickName}}
+  </view>
+  <view class="nickname" wx:else>
+    <button open-type="getUserInfo" class="user-btn"
+      bindgetuserinfo="handleUpdateUserInfo">获取微信昵称</button>
+  </view>
+
+  <view class="setting">
     <image class="icon" 
       bindtap="handleSetting"
       src="../../images/{{ settingEnable ? 'back' : 'setting' }}.png"></image>
-  </view> -->
+  </view>
+</view>
 
-  <view class="profile">
-    <view class="avatar">
-      <image class="avatar-image" src="{{userInfo.avatar_url || '../../images/default_avatar.png'}}"></image>
+<!-- 书架列表 -->
+<view class="shelf" wx:if="{{novelList.length > 0}}">
+  <view class="shelf-item" wx:for="{{novelList}}" wx:key="{{item.chapter_url}}">
+    <!-- 书本信息 -->
+    <view class="shelf-wrapper" bindtap="handleGoReadPage" data-id="{{item.id}}"
+      data-url="{{item.recent_chapter_url}}" data-bookname="{{item.book_name}}">
+      <image class="shelf-cover" src="../../images/cover.png"></image>
+      <view class="shelf-novelname">{{item.book_name}}</view>
+      <view class="shelf-authorname">{{item.author_name}}</view>
     </view>
 
-    <view class="nickname" wx:if="{{userInfo.nickname}}">{{greeting}}{{userInfo.nickname}}</view>
-    <view class="nickname" wx:else>
-      <button open-type="getUserInfo" class="user-btn"
-        bindgetuserinfo="handleUpdateUserInfo">获取微信昵称</button>
-    </view>
-    
-
-    <view class="setting">
-      <image class="icon" 
-        bindtap="handleSetting"
-        src="../../images/{{ settingEnable ? 'back' : 'setting' }}.png"></image>
+    <!-- 删除按钮 -->
+    <view class="btn-remove" wx:if="{{settingEnable}}" 
+      bindtap="handleRemoveNovel" data-id="{{item.id}}">
+      <image class="icon" src="../../images/remove.png"></image>
     </view>
   </view>
+</view>
 
-  <view class="shelf">
-    <view class="shelf-item" wx:for="{{novelList}}" wx:key="{{item.chapter_url}}">
-      <view class="shelf-wrapper" bindtap="handleRedirectRead" data-id="{{item.id}}"
-        data-url="{{item.recent_chapter_url}}" data-bookname="{{item.book_name}}">
-        <image class="shelf-cover" src="../../images/cover.png"></image>
-        <view class="shelf-novelname">{{item.book_name}}</view>
-        <view class="shelf-authorname">({{item.author_name}})</view>
-      </view>
-      <view class="btn-remove" wx:if="{{settingEnable}}" 
-        bindtap="handleRemoveNovel" data-id="{{item.id}}">
-        <image class="icon" src="../../images/remove.png"></image>
-      </view>
-    </view>
-    <view class="shelf-item">
-      <view class="shelf-wrapper">
-        <view class="shelf-plus" bindtap="handleRedirectSearch">
-          <image class="shelf-plus-image" src="../../images/plus.png"></image>
-        </view>
-      </view>
-    </view>
-  </view>
-
-  <mask loading="{{isLoading}}"/>  
+<view wx:else class="shelf-empty">
+还没有书籍，去书屋找一找吧~
 </view>

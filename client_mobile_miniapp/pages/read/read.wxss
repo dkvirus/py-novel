@@ -1,75 +1,36 @@
-.wrapper {
-  box-sizing: border-box;
-  width: 100%;
-  height: 100%;
-  position: relative;
-  overflow: hidden;
-}
-
-/* 公共 */
-.icon {
-  height: 50rpx;
-  width: 50rpx;
-}
-.icon70{
-  width: 70rpx;
-  height: 70rpx;
-}
-
-/* 正文 */
-.content {
-  position: absolute;
-  height: 90vh;
-  width: 100%;
-  top: 5vh;
-  left: 0;
-  line-height: 60rpx;
-  box-sizing: border-box;
-  padding: 10rpx 30rpx 0;
-  z-index: 1;
-  overflow: auto;
-}
-/* 底部：电量、章节标题、阅读进度百分比 */
-.footer {
-  position: absolute;
-  height: 5vh;
-  width: 100vw;
-  bottom: 0;
+.container {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 0 30rpx;
-  font-size: 30rpx;
-  box-shadow: 0 -4rpx 4rpx #888;
+  flex-direction: column;
+  height: 100vh;
 }
-.page {
-  width: 30%;
+
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 20rpx 30rpx 10rpx;
+}
+
+.content-text {
+  color: #666;
+}
+
+.footer {
+  height: 60rpx;
+  line-height: 60rpx;
+  box-shadow: 0 -2rpx 10rpx #cccccc;
+  font-size: 30rpx;
+  display: flex;
+  justify-content: flex-end;
+}
+.footer-right {
+  width: 33%;
+  text-align: center;
 }
 
 /* 功能菜单 */
-.menus-header{
-  position: fixed;
-  height: 13vh;
-  width: 100vw;
-  top: 0;
-  left: 0;
-  z-index: 5;
-  background: rgb(15, 15, 15);
-  box-sizing: border-box;
-  padding-top: 5vh;
-  padding-left: 30rpx;
-  line-height: 5vh;
-  display: flex;
-  align-items: center;
-  color: rgba(255, 255, 255, 0.8);
-}
-.btn-back {
-  margin-right: 30rpx;
-}
 .menus-mask {
   position: fixed;
-  height: 77vh;
+  height: 90vh;
   width: 100vw;
   top: 13vh;
   left: 0;
@@ -83,7 +44,7 @@
   bottom: 0;
   left: 0;
   z-index: 5;
-  background: rgb(15, 15, 15);
+  background: rgb(0, 0, 0);
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -98,7 +59,7 @@
 /* 设置功能 */
 .setting-mask {
   position: fixed;
-  height: 70vh;
+  height: 80vh;
   width: 100vw;
   top: 0;
   left: 0;
@@ -107,7 +68,7 @@
 }
 .setting-wrapper {
   position: fixed;
-  height: 30vh;
+  height: 20vh;
   width: 100vw;
   bottom: 0;
   left: 0;
@@ -119,13 +80,7 @@
   flex-direction: column;
   justify-content: space-around;
 }
-/* 亮度 */
-.setting-light {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-}
-/* 字体 */
+
 .setting-font {
   display: flex;
   justify-content: space-around;
@@ -145,7 +100,7 @@
   align-items: center;
   justify-content: center;
 }
-/* 背景颜色 */
+
 .setting-bg {
   width: 100%;
   white-space: nowrap;
@@ -163,9 +118,9 @@
 /* 目录 */
 .chapter-wrapper {
   position: fixed;
-  height: 95vh;
+  height: 100vh;
   width: 80vw;
-  top: 5vh;
+  top: 0;
   left: 0;
   z-index: 10;
   background: rgb(249, 249, 249);
@@ -213,4 +168,8 @@
   z-index: 10;
   background: rgb(155, 155, 155);
   opacity: 0.7;
+}
+.icon70{
+  width: 70rpx;
+  height: 70rpx;
 }

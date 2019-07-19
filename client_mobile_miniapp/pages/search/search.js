@@ -1,11 +1,7 @@
 var api = require('../../utils/api.js')
 var { request } = require('../../utils/request.js')
 
-wx.cloud.init({ traceUser: true })
-var db = wx.cloud.database()
-
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -48,68 +44,64 @@ Page({
         "keyword": "兵者"
       }
     ],         // 搜索历史
-    isLoading: false,      // 蒙版状态值 
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    this.handleSearchHot()
-    this.handleSearchHist()
+    this.handleGetHotList()
+    this.handleGetHistList()
   },
 
   /**
    * 查询热门搜索
    */
-  handleSearchHot: function () {
-    this.setData({ isLoading: true })
-    var that = this
+  handleGetHotList: function () {
     request({
       url: api.GET_SEARCH_HOT,
-    }).then(function (res) {
-      if (res.data && res.data.length === 0) {
-        return wx.showToast({
-          title: '没有找到小说！',
-        })
-      }
-      that.setData({ hotList: res, isLoading: false })      
+    }).then(res => {
+      this.setData({ hotList: res })      
     })
   },
 
   /**
    * 查询历史搜索
    */
-  handleSearchHist: function () {
-    var that = this
-    var userId = wx.getStorageSync('user_id')
+  handleGetHistList: function () {
+    var userId = wx.getStorageSync('userId')
+    if (!userId) return
+
     request({
       url: api.GET_SEARCH_HIST,
       data: { user_id: userId },
-    }).then(function (res) {
-      that.setData({ histList: res })
+    }).then(res => {
+      this.setData({ histList: res })
     })
   },
 
   /**
-   * 处理文本框值变化
+   * 文本框值变化监听函数
    */
   handleInputChange: function (e) {
     var value = e.detail.value
-    this.setData({ inputValue: value })
+    if (!value) {
+      this.setData({ novelList: [], inputValue: '' })
+    } else {
+      this.setData({ inputValue: value })
+    }
   },
 
   /**
-   * 查询小说
+   * 查询小说列表
    */
-  handleSearchNovel: function () {
-    this.setData({ isLoading: true })
-    var that = this
+  handleGetNovelList: function () {
     var inputValue = this.data.inputValue
-    var userId = wx.getStorageSync('user_id')
+    var userId = wx.getStorageSync('userId')
     if (!inputValue) {
       wx.showToast({
         title: '请输入内容',
+        icon: 'none',
       })
       return
     }
@@ -117,14 +109,15 @@ Page({
     request({
       url: api.GET_SEARCH_NOVEL,
       data: { keyword: inputValue },
-    }).then(function (res) {
+    }).then(res => {
       if (res && res.length === 0) {
-        that.setData({ isLoading: false })
-        return wx.showToast({
+        wx.showToast({
           title: '没有找到小说！',
+          icon: 'none',
         })
+        return
       }
-      that.setData({ novelList: res, isLoading: false })
+      this.setData({ novelList: res })
 
       request({
         url: api.ADD_SEARCH_HIST,
@@ -137,37 +130,26 @@ Page({
   /**
    * 关键字查询
    */
-  handleSearchKeyword: function (e) {
-    var keyword = e.currentTarget.dataset.keyword
+  handleClickKeyword: function (e) {
+    var { keyword } = e.currentTarget.dataset
     this.setData({ inputValue: keyword })
-    this.handleSearchNovel()
+    this.handleGetNovelList()
   },
 
   /**
    * 跳转小说介绍页面
    */
-  handleRedirectIntro: function (e) {
-    var novelUrl = e.currentTarget.dataset.url
-    var bookName = e.currentTarget.dataset.bookname
-    var authorName = e.currentTarget.dataset.authorname
+  handleGoIntroPage: function (e) {
+    var { url } = e.currentTarget.dataset
     wx.navigateTo({
-      url: `../intro/intro?novelUrl=${novelUrl}&bookName=${bookName}&authorName=${authorName}`,
+      url: `../intro/intro?novelUrl=${url}`,
     })
   },
 
   /**
-   * 返回查询页首页
+   * 返回上一个页面
    */
-  handleBackSearch: function () {
-    this.setData({ novelList: [], inputValue: '' })
-  },
-
-  /**
-   * 返回我的书架页面
-   */
-  handleBackShelf: function () {
-    wx.switchTab({
-      url: '../index/index',
-    })
+  handleBack: function () {
+    wx.navigateBack()
   },
 })

@@ -1,93 +1,97 @@
-var api = require('./api.js')
+import api from './api'
+import { apiPrefix } from './config'
 
 /**
  * edit by dkvirus:
  * 封装 wx 原生请求方法，统一打印响应日志
  */
-function request(opts) {
-  // 判断 token 是否存在
-  var token = wx.getStorageSync('token')
-  if (!token) {
-    // 请求 token 先
-    var username = wx.getStorageSync('openId')
-    wx.request({
-      url: api.GET_TOKEN,
-      method: 'POST',
-      data: {
-        client_type: 'OPENID',
-        username,
-      },
-      success(res) {
-        var token = res.data.data.token
-        wx.setStorageSync('token', token)
-        request(opts)
-      },
-    })
-  } 
-  if (!opts.url) return;
-  var { method = 'GET' } = opts
-  var { url, data = {} } = handleParam(opts)
-
-  wx.showNavigationBarLoading()
-  wx.showLoading()
-
+function request(opts = {}) {
   return new Promise(function (resolve, reject) {
+    const { method = 'GET' } = opts
+    const { url, data } = handleRestful(opts.url, opts.data)
+    const token = wx.getStorageSync('token')
+    wx.showLoading({ mask: true, title: '拼命加载中....' })
+
     wx.request({
-      url,
+      url: apiPrefix + url,
       data,
       method,
       header: {
         Authorization: `Bearer ${token}`,
       },
-      success: function (res) {
+      success: res => {
         console.log(`请求【${method} ${url}】成功，响应数据：%o`, res)
-        wx.hideNavigationBarLoading();
         wx.hideLoading();
-        if (res.data.code === '0000') {
-          resolve(res.data.data)
-        } else if (res.data.code === '9999' && res.data.message.indexOf('认证') !== -1) {
-          wx.setStorageSync('token', '')
-          request(opts).then(function (res2) {
-            if (res2.data.code === '0000') {
-              resolve(res2.data.data)
-            }
+
+        // 认证失败，token 不存在或者过期
+        if (res.data.code === '9999' && res.data.message.indexOf('认证') !== -1) {
+          const openId = wx.getStorageSync('openId')
+          getToken(openId).then(res => {
+            const token = res.token
+            wx.setStorageSync('token', token)
+            return request(opts)
+          }).then(res => {
+            resolve(res)
+          }).catch(err => {
+            reject(err)
           })
+        } else if (res.data.code === '0000') {
+          resolve(res.data.data)
         } else {
           reject(res)
         }
       },
-      fail: function (res) {
+      fail: err => {
         console.log(`请求【${opts.method} ${url}】失败，响应数据：%o`, res)
-        wx.hideNavigationBarLoading();
         wx.hideLoading();
-        reject(res)
-      },
+        reject(err)
+      }
     })
   })
 }
 
 /**
+ * 拿 token
+ */
+function getToken(openId) {
+  return new Promise(function (resolve, reject) {
+    if (!openId) {
+      resolve({ code: '9999', message: '拿token失败，openId为空', token: '' })
+    } else {
+      wx.request({
+        url: apiPrefix + api.GET_TOKEN,
+        method: 'POST',
+        data: {
+          client_type: 'OPENID',
+          username: openId,
+        },
+        success: (res) => {
+          if (!res.data.data) return
+          resolve({ code: '0000', message: '拿token成功', token: res.data.data.token })
+        },
+        fail: (err) => {
+          resolve({ code: '9999', message: '拿token失败, 网络请求异常', token: '' })
+        }
+      })
+    }
+  })
+}
+
+/**
  * edit by dkvirus:
- * 处理 restful 接口，示例：/user/:id/stop/:xx       参数为 { id: '1': xx: '2' }
+ * 处理 restful 接口，示例：/user/{id}/stop/{xx}       参数为 { id: '1': xx: '2' }
  * 处理之后返回值    /user/1/stop/2
  */
-function handleParam(opts) {
-  var { url, data = {} } = opts
-  var urlArr = url.split('/')
-  var dataCopy = JSON.parse(JSON.stringify(data))
-  urlArr = urlArr.map(item => {
-    if (item.charAt(0) === ':') {
-      var field = String(item).substring(1)
-      item = encodeURIComponent(dataCopy[field])
-      delete dataCopy[field]
+function handleRestful(url, data = {}, isRemove = false) {
+  for (const i in data) {
+    if (url.indexOf(`{${i}}`) !== -1) {
+      url = url.replace(`{${i}}`, data[i])
+      if (isRemove === true) {
+        delete data[i]
+      }
     }
-    return item
-  })
-
-  url = urlArr.join('/');
-  return { url, data: dataCopy };
+  }
+  return { url, data }
 }
 
-module.exports = {
-  request,
-}
+module.exports = { request }

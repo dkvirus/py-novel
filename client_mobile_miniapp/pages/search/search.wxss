@@ -1,223 +1,137 @@
-.wrapper {
+.search {
+  padding: 12rpx 18rpx;
+  background-color: #fff;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+}
+
+.input {
+  width: 80%;
+  height: 74rpx;
+  background-color: #f7f7f7;
+  border-radius: 40rpx;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #999;
+  font-size: 34rpx;
+}
+
+.submit {
+  flex: 1;
+  margin-left: 20rpx;
+  padding: 0 20rpx;
+  height: 74rpx;
+  color: #fff;
+  font-size: 28rpx;
+  line-height: 74rpx;
+  border-radius: 8rpx;
+  background-color: #6190e8;
+}
+
+.hot, .hist, .novel {
+  margin-top: 20rpx;
+  padding: 20rpx;
+}
+
+.hot-title, .hist-title, .novel-title {
+  font-size: 32rpx;
+  line-height: 48rpx;
+  background-color: #f4f3f9;
+  margin-bottom: 10rpx;
+}
+
+.hot-list {
+  background: #fff;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.hot-item {
+  width: 33.3%;
+  height: 130rpx;
+  line-height: 130rpx;
+  text-align: center;
+  box-sizing: border-box;
+  border: 1px solid rgb(244, 243, 249);
+  font-size: 32rpx;
+  color: #333;
+}
+
+.hist-list {
+  background-color: #fff;
+}
+
+.hist-item {
+  padding: 24rpx;
+  font-size: 32rpx;
+  color: #333;
+  line-height: 1.5;
+  position: relative;
+}
+
+.hist-item::after {
+  content: '';
+  position: absolute;
+  transform-origin: center;
+  box-sizing: border-box;
+  pointer-events: none;
+  left: 24rpx;
+  right: 0;
+  bottom: 0;
+  transform: scaleY(0.5);
+  border-bottom: 1px solid #d6e4ef;
+}
+
+.novel-list {
+  background: #fff;
+  overflow: hidden;
+  padding: 30rpx;
+}
+
+.novel-item {
+  width: 50%;
+  box-sizing: border-box;
+  height: 300rpx;
+  padding: 20rpx 40rpx;
+  float: left;
+}
+
+.novel-wrapper {
   width: 100%;
   height: 100%;
-  background: #fff;
-  overflow: hidden;
-}
-
-.title {
-  height: 50rpx;
-  line-height: 50rpx;
-  padding: 0;
-  margin: 0;
-}
-
-.search {
-  height: 120rpx;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  text-align: center;
-  margin: 20rpx 0;
-}
-.back {
-  width: 15%;
-}
-.btn-back {
-  width: 50rpx;
-  height: 50rpx;
-}
-.searchWrapper {
-  width: 70%;
   position: relative;
 }
-.searchInput {
-  padding: 0 40rpx;
-  height: 100rpx;
-  border-radius: 80rpx;
-  background: rgb(236, 241, 244);
-  box-sizing: border-box;
-  font-size: 32rpx;
-  color: rgb(114, 114, 120);
-}
-.searchInputPlac {
-  font-size: 32rpx;
-  color: #888;
-}
 
-.searchIconWrap {
-  width: 15%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.searchIcon {
-  width: 60rpx;
-  height: 60rpx;
-}
-
-
-.tab {
-  font-size: 34rpx;
-  padding: 20rpx 20rpx 30rpx;
-  display: flex;
-  justify-content: space-between;
-}
-.btn-empty {
-  color: rgb(45, 125, 221);
-}
-
-/* 猜你喜欢 */
-.like {
-  padding: 10rpx 30rpx;
-  overflow: hidden;
-  border-bottom: 1px solid rgb(236, 241, 244);
-}
-.like-item {
-  width: 50%;
-  box-sizing: border-box;
-  float: left;
-  padding: 20rpx;
-}
-.like-wrapper {
-  padding: 20rpx;
-  box-sizing: content-box;
-  display: flex;
-  align-items: center;
-  background: #f8f8f8;
-  border-radius: 10rpx;
-}
-.cover {
-  width: 30%;
-}
-.cover-image {
+.novel-cover {
   width: 100%;
-  height: 140rpx;
+  height: 100%;
+  box-shadow: 6rpx 10rpx 6rpx #ccc;
+  border-radius: 16rpx;
 }
-.like .intro {
-  margin-left: 30rpx;
-}
-.like .novelname {
-  color: rgb(29, 29, 29);
+
+.novel-novelname {
   font-size: 34rpx;
-  margin-bottom: 20rpx;
-}
-.like .authorname {
-  color: rgb(114, 114, 120);
-  font-size: 28rpx;
-}
-
-/* 搜索历史 */
-.history {
-  padding: 10rpx 30rpx;
-}
-.hist-item {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin: 30rpx 0;
-}
-.hist-item:first-child {
-  margin-top: 0;
-}
-.hist-search-value {
-  font-size: 34rpx;
-  margin-left: 40rpx;
-}
-.icon {
-  width: 38rpx;
-  height: 38rpx;
-}
-
-
-/* 热门搜索 */
-.hot {
-  padding: 10rpx 30rpx;
-  overflow: hidden;
-  border-bottom: 1px solid rgb(236, 241, 244);
-}
-.hot-item {
-  width: 50%;
-  box-sizing: border-box;
-  float: left;
-  padding: 20rpx;
-  position: relative;
-}
-.hot-badge {
   position: absolute;
-  left: 0;
-  top: 0;
-  width: 40rpx;
-  height: 40rpx;
-  line-height: 40rpx;
-  border-radius: 50%;
-  color: #fff;
-  text-align: center;
-  background: rgb(125, 168, 244);
-}
-.hot-item:nth-child(1) .hot-badge {
-  background: rgb(230, 42, 52);
-}
-.hot-item:nth-child(2) .hot-badge {
-  background: rgb(235, 110, 53);
-}
-.hot-item:nth-child(3) .hot-badge {
-  background: rgb(241, 157, 51);
-}
-.hot-wrapper {
-  padding: 20rpx 60rpx;
-  box-sizing: content-box;
-  display: flex;
-  align-items: center;
-  background: #f9f9f9;
-  color: rgb(16, 30, 194);
-  border-radius: 10rpx;
+  left: 10%;
+  top: 20%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
 }
 
-
-
-
-
-
-
-
-
-
-.title{
-  margin: 30rpx 0;
-  padding: 0 50rpx;
+.novel-authorname {
+  font-size: 26rpx;
+  position: absolute;
+  top: 70%;
+  right: 10%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
 }
-.novelListRem {
-  width: 90%;
-  margin: 0 auto;
-}
-.novelList {
-  width: 90%;
-  margin: 60rpx auto;
-}
-.novelItem {
-  width: 50%;
-  padding: 10rpx;
-  box-sizing: border-box;
-  float: left;
-}
-.novelWrapper {
-  border: 1px solid #fff;
-  background: #fff;
-  padding: 10rpx 20rpx;
-}
-.novelWrapper .novelname {
-  font-size: 36rpx;
-}
-.novelWrapper .authorname {
-  font-size: 28rpx;
-}
-.line {
-  overflow: hidden;
-  text-overflow: ellipsis; 
-  white-space: nowrap;
-}
-
-
-

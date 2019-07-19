@@ -1,16 +1,15 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/classify/classify",
-    "pages/feedback/feedback",
     "pages/read/read",
     "pages/search/search",
+    "pages/classify/classify",
     "pages/intro/intro"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#0068C4",
-    "navigationBarTitleText": "公羊书屋",
+    "navigationBarTitleText": "公羊阅读",
     "navigationBarTextStyle": "white",
     "navigationStyle": "custom",
     "enablePullDownRefresh": false
@@ -32,12 +31,6 @@
         "text": "书屋",
         "iconPath": "./images/book-shop.png",
         "selectedIconPath": "./images/book-shop-selected.png"
-      },
-      {
-        "pagePath": "pages/feedback/feedback",
-        "text": "反馈",
-        "iconPath": "./images/book-feedback.png",
-        "selectedIconPath": "./images/book-feedback-selected.png"
       }
     ]
   },
