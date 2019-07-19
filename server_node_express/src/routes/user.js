@@ -112,7 +112,7 @@ module.exports = {
                     let userId = ''
                     
                     // 查询用户信息
-                    let querySql = 'select id from gysw_user where username = ? and client_type = "OPENID"';
+                    let querySql = 'select id, nickname, avatar_url from gysw_user where username = ? and client_type = "OPENID"';
                     const queryResult = await dbexec(querySql, [openid]);
 
                     // 用户不存在，则新增用户
@@ -124,7 +124,16 @@ module.exports = {
                         userId = queryResult.data[0].id
                     }
 
-                    res.json({ code: '0000', message: '获取用户信息成功', data: { userId, openId: openid } })
+                    res.json({ 
+                        code: '0000', 
+                        message: '获取用户信息成功', 
+                        data: { 
+                            userId, openId: 
+                            openid, 
+                            nickName: queryResult.data && queryResult.data[0] && queryResult.data[0].nickname,
+                            avatarUrl: queryResult.data && queryResult.data[0] && queryResult.data[0].avatar_url,
+                        } 
+                    })
                 }
             })
         } catch (e) {
