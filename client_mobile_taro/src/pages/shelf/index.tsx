@@ -1,10 +1,11 @@
 import Taro, { Component, Config } from '@tarojs/taro'
-import { View, Image } from '@tarojs/components'
-import { AtAvatar, AtNavBar, AtIcon } from 'taro-ui'
+import { View, Image, Button } from '@tarojs/components'
+import { AtAvatar, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
 import * as api from '../../utils/api'
 import icon_cover from '../../images/cover.png'
+import icon_avatar from '../../images/default_avatar.png'
 import './index.scss'
 
 interface Shelf {
@@ -48,6 +49,12 @@ export default class Index extends Component<{}, State> {
                     url: api.GET_USER_WXINFO,
                     data: { code: res.code },
                 }).then(res => {
+                    const { nickName = '', avatarUrl = '' } = res
+                    this.setState({ 
+                        userInfo: {
+                            nickName, avatarUrl,
+                        } 
+                    })
                     Taro.setStorageSync('userId', res.userId)
                     Taro.setStorageSync('openId', res.openId)
                     this.handleGetShelfList()
@@ -60,7 +67,6 @@ export default class Index extends Component<{}, State> {
             }
         })
         
-        this.handleGetUserInfo()
         this.handleGeneGreeting()
     }
 
@@ -80,15 +86,6 @@ export default class Index extends Component<{}, State> {
         }).then(res => {
             this.setState({ shelfList: res, settingEnable: false })
         }).catch(err => { })
-    }
-
-    /**
-     * 获取微信用户信息
-     */
-    handleGetUserInfo() {
-        Taro.getUserInfo().then(res => {
-            this.setState({ userInfo: res.userInfo })
-        })
     }
 
     /**
@@ -133,29 +130,72 @@ export default class Index extends Component<{}, State> {
     }
 
     /**
+     * 更新用户信息。昵称、头像
+     */
+    handleUpdateUserInfo (e) {
+        let { avatarUrl, city, country, gender, nickName, province } = e.detail.userInfo
+        const address = `${country}、${province}、${city}`
+        const genderObj = {
+            1: '男性',
+            2: '女性',
+        }
+        gender = genderObj[gender] || '未知'
+
+        // 保存到 data 中
+        this.setState({
+            userInfo: {
+                nickName,
+                avatarUrl,
+            }
+        })
+
+        // 更新到库中
+        const userId = Taro.getStorageSync('userId')
+        if (!userId) return
+
+        request({
+            url: api.EDIT_USER_INFO,
+            method: 'put',
+            data: { 
+                user_id: userId,
+                nickname: nickName,
+                avatar_url: avatarUrl,
+                gender,
+                address,
+            },
+        }).then(res => {
+            console.log(res)
+        })
+    }
+
+    /**
      * 渲染头部
      */
     renderHeader() {
         const { userInfo, settingEnable, greeting } = this.state
 
-        if (userInfo.nickName) {
-            return (
-                <View className="header at-row">
-                    <AtAvatar circle image={userInfo.avatarUrl}></AtAvatar>
-
-                    <View className="at-col at-col-6">
-                        {greeting}{userInfo.nickName}
-                    </View>
-
-                    <AtIcon value='settings'
-                        size='28' color='#707070'
-                        onClick={() => this.handleUpdateState({ settingEnable: !settingEnable })}></AtIcon>
-                </View>
-            )
-        }
-
         return (
-            <View className="header"></View>
+            <View className="header at-row">
+                <AtAvatar circle image={userInfo.avatarUrl || icon_avatar}></AtAvatar>
+
+                {
+                    userInfo.nickName ? (
+                        <View className="at-col at-col-6">
+                            {greeting}{userInfo.nickName}
+                        </View>
+                    ) : (
+                        <View className="at-col at-col-6">
+                            <Button className="btn-user" 
+                                open-type="getUserInfo"
+                                onGetUserInfo={(e) => this.handleUpdateUserInfo(e)}>获取微信昵称</Button>
+                        </View>
+                    )
+                }
+
+                <AtIcon value='settings'
+                    size='28' color='#707070'
+                    onClick={() => this.handleUpdateState({ settingEnable: !settingEnable })}></AtIcon>
+            </View>
         )
     }
 

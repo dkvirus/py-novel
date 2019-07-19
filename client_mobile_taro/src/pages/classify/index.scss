@@ -4,7 +4,7 @@
   height: 100vh;
 
   .search {
-    padding: 12rpx 18rpx;
+    padding: 12px 18px;
     background-color: #fff;
     overflow: hidden;
     position: relative;
@@ -72,22 +72,32 @@
           .novel-cover {
             width: 100%;
             height: 100%;
-            box-shadow: 6rpx 10rpx 6rpx #ccc;
+            box-shadow: 6px 10px 6px #ccc;
             border-radius: 16px;
           }
 
           .novel-novelname {
             font-size: 34px;
             position: absolute;
-            left: 20%;
-            top: 25%;
+            left: 10%;
+            top: 20%;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            display:-webkit-box;
+            -webkit-box-orient:vertical;
+            -webkit-line-clamp:2;
           }
 
           .novel-authorname {
             font-size: 26px;
             position: absolute;
-            top: 50%;
-            left: 40%;
+            top: 70%;
+            right: 10%;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            display:-webkit-box;
+            -webkit-box-orient:vertical;
+            -webkit-line-clamp:2;
           }
         }
       }

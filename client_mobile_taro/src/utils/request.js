@@ -35,7 +35,6 @@ function request (opts = {}) {
                 }).then(res => {
                     resolve(res)
                 }).catch(err => {
-                    console.log('err is %o', err)
                     reject(err)
                 })
             } else if (res.data.code === '0000') {
@@ -47,27 +46,6 @@ function request (opts = {}) {
             console.log(`请求【${opts.method} ${url}】失败，响应数据：%o`, res)
             Taro.hideLoading();
             reject(err)
-        })
-    })
-}
-
-/**
- * 拿用户信息
- */
-function getUserInfo () {
-    return new Promise(function (resolve, reject) {
-        const openId = Taro.getStorageSync('openId')
-        Taro.request({
-            url: apiPrefix + api.GET_USER_INFO,
-            data: { client_type: 'OPENID', username: openId },
-        }).then(res => {
-            if (res.id) {
-                resolve({ code: '0000', message: '拿userId成功', userId: res.id })
-            } else {
-                resolve({ code: '9999', message: '拿userId失败', userId: '' })
-            }
-        }).catch(err => {
-            resolve({ code: '9999', message: '拿userId失败', userId: '' })
         })
     })
 }
@@ -98,30 +76,8 @@ function getToken(openId) {
 }
 
 /**
- * 拿 openId
- */
-function getOpenId () {
-    return new Promise(function (resolve, reject) {
-        Taro.login().then(res => {
-            if (res.code) {
-                Taro.request({
-                    url: apiPrefix + api.GET_USER_OPENID,
-                    data: { code: res.code },
-                }).then(res => {
-                    resolve({ code: '0000', message: '拿code成功', openId: res.openid })
-                })
-            } else {
-                resolve({ code: '9999', message: '拿code失败', openId: '' })
-            }
-        }).catch(err => {
-            resolve({ code: '9999', message: '拿code失败', openId: '' })
-        })
-    })
-}
-
-/**
  * edit by dkvirus:
- * 处理 restful 接口，示例：/user/:id/stop/:xx       参数为 { id: '1': xx: '2' }
+ * 处理 restful 接口，示例：/user/{id}/stop/{xx}       参数为 { id: '1': xx: '2' }
  * 处理之后返回值    /user/1/stop/2
  */
 function handleRestful(url, data = {}, isRemove = false) {
