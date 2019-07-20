@@ -30,6 +30,7 @@ Node + Express + Mariadb 提供后台接口服务。
 - 启动 redis，通常命令是 `$ redis-server`；
   做发短信和发邮件时用到了 redis 依赖，需要先启动；或者将 src/app.js 中导入 redis 那一行代码删掉就可以不启动 redis 了
 - 启动项目 `$ npm run dev`；
+- 可选：导入数据库脚本。server_node_express/novel.sql
 
 `config.js` 文件，主要是连接数据库的参数，dk 由于使用自己的数据库将该文件忽略上传了，本地启动服务时需要自己添加该文件。
 
