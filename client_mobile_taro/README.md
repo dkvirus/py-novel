@@ -2,6 +2,14 @@
 
 Taro + Typescript 实现 `公羊阅读` 客户端。
 
+目前线上的小程序用的是 Taro 写的版本，原生小程序版本的代码已撤下来了。
+
+## 二维码
+
+小程序二维码，扫一扫，直接看！
+
+![小程序二维码](./images/小程序二维码.jpg)
+
 ## 页面展示
 
 ![image.png](https://cdn.nlark.com/yuque/0/2019/png/103389/1563444732432-6f9bb2f1-7150-42ad-a6e0-fa887c005ea9.png#align=left&display=inline&height=588&name=image.png&originHeight=588&originWidth=740&size=127097&status=done&width=740)
