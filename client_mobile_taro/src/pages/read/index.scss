@@ -13,8 +13,8 @@
   }
 
   .content {
-    flex: 1;
-    overflow: auto;
+    height: calc(100vh - 210px);
+    box-sizing: border-box;
     padding: 10px 30px;
   }
 

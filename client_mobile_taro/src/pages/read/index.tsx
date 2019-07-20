@@ -30,10 +30,11 @@ export default class ReadPage extends Component {
         content: '',
         prevUrl: '',
         nextUrl: '',
+        scrollTop: 0,               // 点击"下一章"时，文章滚动条能回到页面顶部
 
-        all: [],        // 所有列表信息
-        page: [],       // 大分页 1-100、101-200、201-300
-        list: [],       // 小分页展示的数据 
+        all: [],                    // 所有列表信息
+        page: [],                   // 大分页 1-100、101-200、201-300
+        list: [],                   // 小分页展示的数据 
         isShowPage: false,          // 是否显示大分页
         chapterVisible: false,      // 左侧章节抽屉是否可见
 
@@ -42,7 +43,7 @@ export default class ReadPage extends Component {
 
         settingVisible: false,      // 设置抽屉是否可见。字体大小、背景颜色、亮度
         bgColor: '#fff',
-        font: 14,
+        font: 15,
     }
 
     componentWillMount() {
@@ -118,6 +119,7 @@ export default class ReadPage extends Component {
                 settingVisible: false,
                 menuVisible: false,
                 chapterVisible: false,
+                scrollTop: Math.random(),  // scrollTop 值不变时滚动条位置不会变
             })
 
             request({
@@ -152,16 +154,44 @@ export default class ReadPage extends Component {
     }
 
     /**
+     * 显示目录
+     * 根据当前阅读章节显示对应的目录
+     */
+    handleShowChapter () {
+        const { title, all = [], page = [] } = this.state
+        try {
+            const index = all.findIndex((item:Chapter) => item.name.indexOf(title.trim()) !== -1) || 0
+            const currentPage = page.find((item:Page) => item.start <= index && item.end >= index)
+            const list = all.slice(currentPage.start, currentPage.end + 1)
+
+            this.setState({ 
+                menuVisible: false, 
+                chapterVisible: true,
+                list, 
+            })
+        } catch (e) {
+            Taro.showToast({
+                title: '页面打小差了，再试一下吧~',
+                icon: 'none',
+            })
+            this.setState({
+                menuVisible: false, 
+            })
+        }
+    }
+
+    /**
      * 渲染设置抽屉
      */
     renderMenu() {
         const { isDark, menuVisible } = this.state
 
         return (
-            <AtActionSheet isOpened={menuVisible}>
+            <AtActionSheet isOpened={menuVisible}
+                onClose={() => this.handleUpdateState({ menuVisible: false })}>
                 <View className='at-row menu'>
                     <View className='at-col'
-                        onClick={() => this.handleUpdateState({ menuVisible: false, chapterVisible: true })}>
+                        onClick={() => this.handleShowChapter()}>
                         <View className='at-icon at-icon-bullet-list'></View>
                         <View>目录</View>
                     </View>
@@ -206,18 +236,19 @@ export default class ReadPage extends Component {
     handleOrderChapter() {
         const list = this.state.list
         list.reverse()
-        this.setState({ list })
+        this.setState({ list, scrollTop: Math.random() })
     }
 
     /**
      * 渲染章节抽屉
      */
     renderChapter() {
-        const { chapterVisible, bookName, title, all = [], list = [], page = [], isShowPage } = this.state
+        const { chapterVisible, bookName, title, all = [], list = [], page = [], isShowPage, scrollTop } = this.state
 
         return (
             <AtDrawer
                 show={chapterVisible}
+                onClose={() => this.handleUpdateState({ chapterVisible: false })}
                 mask
             >
                 <View className="chapter">
@@ -235,7 +266,7 @@ export default class ReadPage extends Component {
                         }
                     </View>
 
-                    <ScrollView scrollY={true} className="chapter-list">
+                    <ScrollView scrollY={true} className="chapter-list" scrollTop={scrollTop}>
                         {
                             isShowPage ? (
                                 page.map((item: Page) => (
@@ -275,7 +306,8 @@ export default class ReadPage extends Component {
         ]
 
         return (
-            <AtActionSheet isOpened={settingVisible}>
+            <AtActionSheet isOpened={settingVisible}
+                onClose={() => this.handleUpdateState({ settingVisible: false })}>
                 <View className="setting">
                     <View className="font">
                         <View className="label">字体</View>
@@ -331,8 +363,13 @@ export default class ReadPage extends Component {
         this.handleGetNovelContent(url)
     }
 
+    handleScrollContent (e) {
+        e.preventDefault()
+        console.log('e is %o', e)
+    }
+
     render() {
-        const { content, title, prevUrl, nextUrl, bgColor, font, isDark } = this.state
+        const { content, title, prevUrl, nextUrl, bgColor, font, isDark, scrollTop = 0 } = this.state
 
         return (
             <View className="container" style={{ backgroundColor: bgColor }}>
@@ -341,12 +378,12 @@ export default class ReadPage extends Component {
                     <View className="at-article__p title">{title}</View>
                 </View>
 
-                <View className="content">
+                <ScrollView className="content" scrollTop={scrollTop} scrollY>
                     <RichText style={{ fontSize: font + 'px', lineHeight: font * 1.5 + 'px' }}
                         className="at-article__p"
                         nodes={content}
-                        onClick={() => this.handleUpdateState({ menuVisible: true, settingVisible: false })}></RichText>
-                </View>
+                        onClick={() => this.handleUpdateState({ menuVisible: true })}></RichText>
+                </ScrollView>
 
                 <View className="at-row footer">
                     <View className='at-col at-col-3 at-col__offset-6'
