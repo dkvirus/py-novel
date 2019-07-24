@@ -58,9 +58,6 @@ def getNovel():
                 author_name = novel.xpath('td[position()=3]/text()')[0]
                 book_name = novel.xpath('td[position()=1]/a/text()')[0]
                 url = novel.xpath('td[position()=1]/a/@href')[0]
-                print(author_name)
-                print(book_name)
-                print(url)
                 result.append({ 'author_name': author_name, 'book_name': book_name, 'url': url })
 
         return jsonify({ 'code': '0000', 'message': '请求数据成功', 'data': result })

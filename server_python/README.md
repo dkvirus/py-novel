@@ -1,8 +1,12 @@
 # SERVER
 
+Python + Flask + Scrapy
+
 ## 概述
 
-目前部分数据库存入本地数据库，部分数据从网上直接爬取转换为 json 结构直接返回，之前放在小程序云函数上的几张表也转移到本地数据库中。
+目前线上用的服务端接口是由 server_node_express 提供的，server_python 已经下线了，仅供学习。
+
+部分数据库存入本地数据库，部分数据从网上直接爬取转换为 json 结构直接返回，之前放在小程序云函数上的几张表也转移到本地数据库中。
 
 在 server/reptile 目录下有 config.py 配置文件，主要是连接数据库的参数，dk 由于使用自己的数据库将该文件忽略上传了，本地启动服务时需要自己添加该文件。格式如下：
 
@@ -20,6 +24,7 @@ db = 'db name'
 
 ```
 |-- server_python
+    |-- scrapyNovel                 # 爬虫
     |-- reptile                     # 爬虫
         |-- db.py                   # 封装数据库操作方法
         |-- novel.py                # 爬小说
@@ -30,8 +35,9 @@ db = 'db name'
     |-- README.md
 ```
 
-## API
+用 scrapy 爬虫框架也写了一版爬虫，具体参见 [scrapyNovel](./scrapyNovel/README.md)
 
+## API
 
 - `/api/gysw/novel`：根据条件查询小说列表
 - `/api/gysw/classify`：查询小说分类
