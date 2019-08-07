@@ -96,7 +96,7 @@ export default class SearchPage extends Component {
             this.setState({ novelList: res })
 
             // 新增一条历史查询记录
-            const userId = Taro.getStorageSync('user_id')
+            const userId = Taro.getStorageSync('userId')
             request({
                 url: api.ADD_SEARCH_HIST,
                 method: 'POST',
