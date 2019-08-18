@@ -5,9 +5,9 @@
 module.exports = function () {
     return function (req, res, next) {
         if (req.originalUrl === '/favicon.ico') { 
-            res.sendStatus(204); 
+            res.sendStatus(204) 
         } else {
-            next();
+            next()
         }
     }
 }

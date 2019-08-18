@@ -18,7 +18,7 @@
 
 module.exports = function (apiPrefix) {
     return function (req, res, next) {
-        req.url = req._parsedUrl.pathname.replace(apiPrefix, '');
-        next();
+        req.url = req._parsedUrl.pathname.replace(apiPrefix, '')
+        next()
     }
 }

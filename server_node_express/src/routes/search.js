@@ -1,110 +1,80 @@
-const iconv = require('iconv-lite');
-const request = require('request');
-const qs = require('querystring');
-const cheerio = require('cheerio');
-const moment = require('moment');
+const searchDao = require('../daos/search')
+const novelDao = require('../daos/novel')
 
 module.exports = {
-
-    /**
-     * 添加搜索历史
-     */
-    addSearchHist: async function (req, res) {
-        // 首先根据当前用户和查询关键字查询是否查过
-        const { user_id, keyword } = req.body;
-
-        try {
-            const querySql = 'select * from gysw_search where keyword = ? and user_id = ?';
-            const queryResult = await dbexec(querySql, [keyword, user_id]);
-
-            if (queryResult.data && queryResult.data.length === 0) {    // 没有查询过，新增
-                const insertSql = 'insert into gysw_search (user_id, keyword, last_update_at) values (?, ?, ?)';
-                const last_update_at = moment(new Date()).format('YYYY-MM-DD');
-                await dbexec(insertSql, [user_id, keyword, last_update_at]);
-            } else {        // 查询过，修改查询次数+1
-                const updateSql = 'update gysw_search set times = ?, last_update_at = ? where user_id = ? and keyword = ?';
-                const times = queryResult.data[0].times + 1;
-                const last_update_at = moment(new Date()).format('YYYY-MM-DD');
-                await dbexec(updateSql, [times, last_update_at, user_id, keyword]);
-            }
-
-            res.json({ code: '0000', message: '添加搜索历史记录成功' });
-        } catch (e) {
-            res.json(e);
-        }
-
-    },
-
     /**
      * 查询当前用户搜索记录
      */
     getSearchHist: async function (req, res) {
-        const sql = 'select keyword from gysw_search where user_id = ? order by last_update_at desc limit 5';
-        const result = await dbexec(sql, req.params.user_id);
-        res.json(result);
+        const { userId } = req.query
+
+        if (!userId) {
+            return res.json({ code: '0000', message: '用户ID(userId)不能为空', data: [] })
+        }
+
+        try {
+            const result = await searchDao.getHistList({ userId })
+            res.json(result)
+        } catch (e) {
+            console.log('[-] routes > search > getSearchHist()', e.message)
+            res.json({ code: '9999', message: '查询搜索历史记录失败', data: [] })
+        }
     },
 
     /**
      * 查询热门搜索
      */
     getSearchHot: async function (req, res) {
-        const sql = `select keyword, convert(sum(times), int) as times 
-            from gysw_search group by keyword order by times desc limit 6`;
-        const result = await dbexec(sql);
-        res.json(result);
+        try {
+            const result = await searchDao.getHotList()
+            res.json(result)
+        } catch (e) {
+            console.log('[-] routes > search > getSearchHot()', e.message)
+            res.json({ code: '9999', message: '查询搜索热门记录失败', data: [] })
+        }
     },
 
     /**
      * 查询小说列表
-     * 查询条件：作者名/小说名    get 请求
+     * 查询条件：作者名/小说名
      */
     getSearchNovel: async function (req, res) {
-        let sql = 'select * from gysw_novel where 1 = 1';
-        const { keyword = '', classify_id } = req.query;
+        const { keyword, userId } = req.query
 
-        if (keyword) {
-            sql += ` and book_name like "%${keyword}%" or author_name like "%${keyword}%"`;
-        }
-        if (classify_id) {
-            sql += ` and classify_id = ${classify_id}`;
+        if (!keyword) {
+            return res.json({ code: '9999', message: '关键字(keyword)不能为空', data: [] })
         }
 
-        const result = await dbexec(sql);
-
-        if (result.code === '0000' && result.data.length > 0) {
-            return res.json(result);
+        if (!userId) {
+            return res.json({ code: '9999', message: '用户ID(userId)不能为空', data: [] })
         }
 
-        const target_url = 'https://www.biquge5200.cc/modules/article/search.php?searchkey=' + qs.escape(keyword);
+        let reptileResult
+        try {
+            reptileResult = await novelDao.reptileNovelList({ keyword })
+            res.json(reptileResult)
+        } catch (e) {
+            console.log('[-] routes > search > getSearchNovel()', e.message)
+            res.json({ code: '9999', message: '没有找到小说', data: [] })
+        }
 
         try {
-            request({
-                url: target_url,
-                encoding: null,
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.37 70.100 Safari/537.36'
+            if (reptileResult.data.length > 0) {
+                // 根据 userId 和 keyword 去搜索表中查数据
+                const histResult = await searchDao.getHistList({ keyword, userId })
+                if (histResult.data.length > 0) {
+                    // 已搜过关键词，更改次数
+                    const times = histResult.data[0].times + 1
+                    await searchDao.updateSearch({ times, userId, keyword })
+                    console.log('更新搜索历史记录成功 userId=%o, keyword=%o', userId, keyword)
+                } else {
+                    // 未搜过关键词，新增
+                    await searchDao.saveSearch({ userId, keyword })
+                    console.log('新增搜索历史记录成功 userId=%o, keyword=%o', userId, keyword)
                 }
-            }, function (err, result, body) {
-                if (err) return res.json({ code: '9999', message: err });
-
-                const html = iconv.decode(body, 'gbk');
-                const $ = cheerio.load(html);
-
-                const $trs = $('tr').slice(1);
-                const arr = [];
-
-                for (let i = 0; i < $trs.length; i++) {
-                    const obj = {};
-                    obj.book_name = $($trs[i]).find('td').eq(0).find('a').text();
-                    obj.author_name = $($trs[i]).find('td').eq(2).text();
-                    obj.book_url = $($trs[i]).find('td').eq(0).find('a').attr('href');
-                    arr.push(obj);
-                }
-
-                res.json({ code: '0000', data: arr });
-            });
+            }
         } catch (e) {
-            res.json({ code: '9999', message: e });
+            console.log('[-] routes > search > getSearchNovel()', e.message)
         }
     },
 }

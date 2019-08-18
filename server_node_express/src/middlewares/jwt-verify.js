@@ -8,66 +8,66 @@
  * exUrl   不包括的请求，并不是所有请求都要做认证的，如注册请求就不需要认证
  * exMethod    实际场景，GET 获取资源一般不做认证，如电商网站未登录状态可以浏览商品，当需要购买时进行登录操作
  */
-const jwt = require('jsonwebtoken');
-const { token_secret } = require('../../config');
+const jwt = require('jsonwebtoken')
+const { tokenSecret } = require('../../config')
 
 module.exports = function (opt) {
     return function (req, res, next) {
-        const { exUrl = [], exMethod = [], inUrl = [] } = opt;
-        const { url, method } = req;
+        const { exUrl = [], exMethod = [] } = opt
+        const { url, method } = req
 
         if (~exUrl.findIndex(item => item === url)) {
-            return next();
+            return next()
         }
 
         if (~exMethod.findIndex(item => String(item).toLowerCase() === String(method).toLowerCase())) {
-            return next();
+            return next()
         }
 
         // 从请求头里获取 token
-        const authorization = req.headers.authorization;
+        const authorization = req.headers.authorization
         if (!authorization) {
-            res.send({ 
+            res.status(401).json({
                 code: '9999',
                 message: '认证失败',
                 data: {},
             })
-            return;
+            return
         }
 
-        const token = authorization.split(' ').pop();
+        const token = authorization.split(' ').pop()
 
         // 校验 token 是否有效
-        jwt.verify(token, token_secret, (error, decode) => {
+        jwt.verify(token, tokenSecret, (error) => {
             if (error) {
                 switch (error.message) {
                     case 'invalid token':
                     case 'invalid signature':
-                        res.send({
+                        res.status(401).json({
                             code: '9999',
                             message: '认证失败：token 不合法',
                             data: {},
-                        });
-                        break;
+                        })
+                        break
                     case 'jwt expired': 
-                        res.send({
+                        res.status(401).json({
                             code: '9999',
                             message: '认证失败：token 过期',
                             data: {},
-                        });
-                        break;
+                        })
+                        break
                     default:
-                        res.send({
+                        res.status(401).json({
                             code: '9999',
                             message: '认证失败',
                             data: {},
-                        });
+                        })
                 }
-                return; 
+                return 
             }
 
             // token 通过
-            next();
-        });
+            next()
+        })
     }
 }
