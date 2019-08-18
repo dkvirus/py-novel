@@ -1,0 +1,25 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true
+    },
+    "extends": "eslint:recommended",
+    "globals": {
+        "Atomics": "readonly",
+        "SharedArrayBuffer": "readonly",
+        "dbexec": true,
+        "redis": true,
+        "sendMail": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2018
+    },
+    "rules": {
+        "no-console": 0,
+        "quotes": [1, "single"],
+        "quote-props":[2, "as-needed"],
+        "semi": [2, "never"],
+        "comma-dangle": [1,"always-multiline"]
+    }
+}
