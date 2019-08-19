@@ -2,12 +2,18 @@ module.exports = {
     /**
      * 根据 username 查询用户信息
      */
-    getUser: async function ({ username, password }) {
-        let sql = 'select id, nickname, avatar_url from gysw_user where username = ?'
-        if (password) {
-            sql += ' and password = ?'
+    getUser: async function ({ username, password, userId }) {
+        let sql = 'select id, username, nickname, avatar_url from gysw_user where 1 = 1'
+        if (username) {
+            sql += ` and username = ${username}`
         }
-        const result = await dbexec(sql, [username, password])
+        if (password) {
+            sql += ` and password = ${password}`
+        }
+        if (userId) {
+            sql += ` and id = ${userId}`
+        }
+        const result = await dbexec(sql)
         result.data = result.data[0] || {}
         return result
     },

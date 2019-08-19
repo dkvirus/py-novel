@@ -5,6 +5,27 @@ const { tokenSecret, tokenExpiresIn } = require('../../config')
 
 module.exports = {
     /**
+     * 拿token
+     */
+    getToken: async function (req, res) {
+        const { userId } = req.query
+
+        if (!userId) {
+            return res.json({ code: '9999', message: '用户名ID(userId)不能为空', data: {} })
+        }
+
+        try {
+            const result = await userDao.getUser({ userId })
+            const username = result.data.username
+            const token = jwt.sign({ username }, tokenSecret, { expiresIn: tokenExpiresIn })
+            res.json({ code: '0000', message: '获取token成功', data: { token } })
+        } catch (e) {
+            console.log('[-] routes getToken()', e.message)
+            res.json({ code: '9999', message: '获取token失败', data: {} })
+        }
+    },
+
+    /**
      * 登录，查询用户
      */
     signin: async function (req, res) {
@@ -22,8 +43,17 @@ module.exports = {
             if (result.data.id) {
                 // jwt 生成 token 返回给用户
                 const token = jwt.sign({ username }, tokenSecret, { expiresIn: tokenExpiresIn })
-                result.data.token = token
-                return res.json(result)
+                const { id, nickname, avatar_url } = result.data
+                return res.json({
+                    code: '0000',
+                    message: '登录成功',
+                    data: {
+                        userId: id,
+                        nickname,
+                        avatarUrl: avatar_url,
+                        token,
+                    },
+                })
             }
 
             res.json({ code: '9999', message: '用户名或密码错误', data: {} }) 

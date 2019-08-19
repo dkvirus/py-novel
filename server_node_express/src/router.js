@@ -24,6 +24,7 @@ module.exports = function (app) {
     app.get('/gysw/novel/chapter', novel.getNovelChapter)              // 查看章节目录
     app.get('/gysw/novel/detail', novel.getNovelIntro)                 // 查看小说详情
     app.get('/gysw/novel/classify', novel.getNovelClassify)            // 查看小说分类 
+    app.get('/gysw/novels', novel.getNovelList)                        // 查看小说列表 
 
     // 认证
     app.post('/gysw/oauth/signin', oauth.signin)                         // 登录
@@ -31,6 +32,7 @@ module.exports = function (app) {
     app.post('/gysw/oauth/vcode', oauth.sendVcode)                       // 发送短信验证码
     app.post('/gysw/oauth/resetpw', oauth.resetpw)                       // 重置密码
     app.post('/gysw/oauth/wxsignup', weapp.signin)                       // 微信小程序登录
+    app.get('/gysw/oauth/token', oauth.getToken)                         // 获取 token
 
     // Not Found
     app.use('*', function (req, res) { res.json({ code: '9999', message: '没有找到对应的路由' }) })

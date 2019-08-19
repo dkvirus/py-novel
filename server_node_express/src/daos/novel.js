@@ -47,9 +47,9 @@ module.exports = {
 
         for (let i = 0; i < $trs.length; i++) {
             const obj = Object.create(null)
-            obj.book_name = $($trs[i]).find('td').eq(0).find('a').text()
-            obj.author_name = $($trs[i]).find('td').eq(2).text()
-            obj.book_url = $($trs[i]).find('td').eq(0).find('a').attr('href')
+            obj.bookName = $($trs[i]).find('td').eq(0).find('a').text()
+            obj.authorName = $($trs[i]).find('td').eq(2).text()
+            obj.bookUrl = $($trs[i]).find('td').eq(0).find('a').attr('href')
             arr.push(obj)
         }
 
