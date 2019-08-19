@@ -7,6 +7,20 @@ import * as api from '../../utils/api'
 import icon_cover from '../../images/cover.png'
 import './index.scss'
 
+interface Hot {
+    keyword: string;
+    value: string;
+}
+
+interface Hist {
+    keyword: string;
+}
+
+interface Novel {
+    authorName: string;
+    bookName: string;
+}
+
 export default class SearchPage extends Component {
     config: Config = {
     }
@@ -26,25 +40,23 @@ export default class SearchPage extends Component {
     /**
      * 查看热门搜索列表
      */
-    handleGetHotList() {
-        request({
+    async handleGetHotList() {
+        const result = await request({
             url: api.GET_SEARCH_HOT,
-        }).then(res => {
-            this.setState({ hotList: res || [] })
         })
+        this.setState({ hotList: result.data || [] })
     }
 
     /**
      * 查看历史记录列表
      */
-    handleGetHistList() {
+    async handleGetHistList() {
         const userId = Taro.getStorageSync('userId')
-        request({
+        const result = await request({
             url: api.GET_SEARCH_HIST,
-            data: { user_id: userId },
-        }).then(res => {
-            this.setState({ histList: res })
+            data: { userId },
         })
+        this.setState({ histList: result.data || [] })
     }
 
     /**
@@ -70,39 +82,30 @@ export default class SearchPage extends Component {
     /**
      * 根据关键词查询
      */
-    handleSearchSubmit(keyword) {
+    async handleSearchSubmit(keyword) {
         if (!keyword) {
-            Taro.showToast({
+            return Taro.showToast({
                 title: '请输入内容',
                 icon: 'none',
             })
-            return
         }
 
         this.setState({ keyword })
 
-        request({
+        const userId = Taro.getStorageSync('userId')
+        const result = await request({
             url: api.GET_SEARCH_NOVEL,
-            data: { keyword },
-        }).then(res => {
-            if (res && res.length === 0) {
-                Taro.showToast({
-                    title: '没有找到小说！',
-                    icon: 'none',
-                })
-                return
-            }
-
-            this.setState({ novelList: res })
-
-            // 新增一条历史查询记录
-            const userId = Taro.getStorageSync('userId')
-            request({
-                url: api.ADD_SEARCH_HIST,
-                method: 'POST',
-                data: { user_id: userId, keyword }
-            })
+            data: { keyword, userId },
         })
+
+        if (result.data && result.data.length === 0) {
+            return Taro.showToast({
+                title: '没有找到小说！',
+                icon: 'none',
+            })
+        }
+
+        this.setState({ novelList: result.data })
     }
 
     /**
@@ -125,15 +128,15 @@ export default class SearchPage extends Component {
      * 渲染热门搜索
      */
     renderHot () {
-        let { hotList } = this.state
-        hotList = hotList.map((item) => {
+        let { hotList }: { hotList: Hot[] } = this.state
+        hotList = hotList.map((item: { value: string, keyword: string }) => {
             item.value = item.keyword
             return item
         })
 
         return (
-            <View className="hot">
-                <View className="at-article__h3 title">热门搜索</View>
+            <View className="search_hot">
+                <View className="at-article__h3 search_title">热门搜索</View>
                 <View style={{ backgroundColor: '#fff' }}>
                     <AtGrid mode='rect' data={hotList} 
                         onClick={(item) => this.handleSearchSubmit(item.value)}/>
@@ -149,11 +152,11 @@ export default class SearchPage extends Component {
         const { histList = [] } = this.state
 
         return (
-            <View className="hist">
-                <View className="at-article__h3 title">搜索历史</View>
+            <View className="search_hist">
+                <View className="at-article__h3 search_title">搜索历史</View>
                 <AtList>
                     {
-                        histList.map(hist => (
+                        histList.map((hist: Hist) => (
                             <AtListItem key={hist.keyword} title={hist.keyword} arrow='right' 
                                 onClick={() => this.handleSearchSubmit(hist.keyword)} />
                         ))
@@ -168,7 +171,7 @@ export default class SearchPage extends Component {
      */
     handleGoIntroPage (novel) {
         Taro.navigateTo({
-            url: `/pages/intro/index?novelUrl=${novel.book_url}`
+            url: `/pages/intro/index?novelUrl=${novel.bookUrl}`
         })
     }
 
@@ -179,21 +182,21 @@ export default class SearchPage extends Component {
         const { novelList = [] } = this.state
 
         return (
-            <View className="novel">
-                <View className="at-article__h3 title">找到了这些书</View>
-                <View className="novel-list">
+            <View className="search_novel">
+                <View className="at-article__h3 search_title">找到了这些书</View>
+                <View className="search_novel-list">
                     {
-                        novelList.map((novel) => (
-                            <View className="novel-item" 
-                                key={novel.book_name} onClick={() => this.handleGoIntroPage(novel)}>
-                                <View className="novel-wrapper">
-                                    <Image src={icon_cover} className="novel-cover"></Image>
+                        novelList.map((novel: Novel) => (
+                            <View className="search_novel-item" 
+                                key={novel.bookName} onClick={() => this.handleGoIntroPage(novel)}>
+                                <View className="search_novel-wrapper">
+                                    <Image src={icon_cover} className="search_novel-cover"></Image>
 
-                                    <View className="novel-novelname">
-                                        {novel.book_name}
+                                    <View className="search_novel-novelname">
+                                        {novel.bookName}
                                     </View>
-                                    <View className="novel-authorname">
-                                        {novel.author_name}
+                                    <View className="search_novel-authorname">
+                                        {novel.authorName}
                                     </View>
                                 </View>
                             </View>
@@ -215,7 +218,7 @@ export default class SearchPage extends Component {
                 </View>
 
                 {this.renderSearch()}
-                { novelList.length && keyword && this.renderNovel() }
+                { Boolean(novelList.length) && Boolean(keyword) && this.renderNovel() }
                 {this.renderHot()}
                 {this.renderHist()}
             </View>

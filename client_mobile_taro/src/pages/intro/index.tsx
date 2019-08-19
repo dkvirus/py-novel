@@ -49,74 +49,73 @@ export default class IntroPage extends Component {
     /**
      * 获取小说详情
      */
-    handleGetNovelDetail(url) {
-        request({
+    async handleGetNovelDetail(url) {
+        const result = await request({
             url: api.GET_NOVEL_INTRO,
             data: { url }
-        }).then(res => {
-            if (!res.recent_chapter_url) {
-                Taro.showToast({
-                    title: '网络波动',
-                })
-                this.handleGetNovelDetail(url)
-                return
-            }
+        })
 
-            this.setState({
-                bookName: res.book_name,
-                authorName: res.author_name,
-                classifyName: res.classify_name,
-                lastUpdateAt: res.last_update_at,
-                bookDesc: res.book_desc,
-                recentChapterUrl: res.recent_chapter_url,
+        const { bookName, authorName, classifyName, lastUpdateAt, bookDesc, recentChapterUrl } = result.data
+        if (!recentChapterUrl) {
+            Taro.showToast({
+                title: '网络波动',
+                icon: 'none',
             })
+            await this.handleGetNovelDetail(url)
+            return
+        }
+
+        this.setState({
+            bookName,
+            authorName,
+            classifyName,
+            lastUpdateAt,
+            bookDesc,
+            recentChapterUrl,
         })
     }
 
     /**
-     * 获取小说章节
-     */
-    /**
      * 查询目录
      */
-    handleGetChapterList(url) {
-        request({
+    async handleGetChapterList(url) {
+        const result = await request({
             url: api.GET_CHAPTER,
             data: { url },
-        }).then(res => {
-            // 拼接分页数据  288 => 2、88,,,,2880 => 28、80
-            const integer = Math.floor(res.length / 100)        // 整数部分
-            const remainder = res.length % 100                  // 小数部分
+        })
 
-            const page: Array<Page> = []
+        // 拼接分页数据  288 => 2、88,,,,2880 => 28、80
+        const integer = Math.floor(result.data.length / 100)        // 整数部分
+        const remainder = result.data.length % 100                  // 小数部分
 
-            /**
-             * start、end  下标从 0 开始
-             * page    0-99、100-199、200-299
-             */
-            for (let i = 0; i <= integer; i++) {
-                const obj = Object.create(null)
-                obj.id = String(i)
-                obj.start = i * 100
+        const page: Array<Page> = []
 
-                if (integer === 0) {   // 只有一页，0 - 88
-                    obj.end = remainder - 1
-                } else if (i === integer) {  // 最后一页
-                    obj.end = i * 100 + remainder - 1
-                } else {
-                    obj.end = (i + 1) * 100 - 1
-                }
+        /**
+         * start、end  下标从 0 开始
+         * page    0-99、100-199、200-299
+         */
+        for (let i = 0; i <= integer; i++) {
+            const obj = Object.create(null)
+            obj.id = String(i)
+            obj.start = i * 100
 
-                obj.desc = `${obj.start + 1} - ${obj.end + 1}`
-
-                page.push(obj)
+            if (integer === 0) {   // 只有一页，0 - 88
+                obj.end = remainder - 1
+            } else if (i === integer) {  // 最后一页
+                obj.end = i * 100 + remainder - 1
+            } else {
+                obj.end = (i + 1) * 100 - 1
             }
 
-            this.setState({
-                all: res,
-                page,
-                list: res.slice(0, 100),
-            })
+            obj.desc = `${obj.start + 1} - ${obj.end + 1}`
+
+            page.push(obj)
+        }
+
+        this.setState({
+            all: result.data,
+            page,
+            list: result.data.slice(0, 100),
         })
     }
 
@@ -153,27 +152,27 @@ export default class IntroPage extends Component {
                 show={chapterVisible}
                 mask
             >
-                <View className="chapter">
-                    <View className="bookname chapter-header">
+                <View className="intro_chapter">
+                    <View className="intro_chapter-header">
                         {bookName}(共 {all.length} 章)
                     </View>
 
-                    <View className="at-row chapter-menus">
-                        <View className="at-col align-center">目录</View>
-                        <View className="at-col align-center"
+                    <View className="at-row intro_chapter-menus">
+                        <View className="at-col intro_align-center">目录</View>
+                        <View className="at-col intro_align-center"
                             onClick={() => this.handleUpdateState({ isShowPage: !isShowPage })}>切换翻页</View>
                         {
-                            !isShowPage && <View className="at-col align-center"
+                            !isShowPage && <View className="at-col intro_align-center"
                                 onClick={() => this.handleOrderChapter()}>排序</View>
                         }
                     </View>
 
-                    <ScrollView scrollY={true} className="chapter-list">
+                    <ScrollView scrollY={true} className="intro_chapter-list">
                         {
                             isShowPage ? (
                                 page.map((item: Page) => (
                                     <View
-                                        className="chapter-item"
+                                        className="intro_chapter-item"
                                         key={item.id}
                                         onClick={() => this.handleUpdateState({ isShowPage: !isShowPage, list: all.slice(item.start, item.end + 1) })}
                                     >{item.desc}</View>
@@ -181,7 +180,7 @@ export default class IntroPage extends Component {
                             ) : (
                                     list.map((item: Chapter) => (
                                         <View
-                                            className="chapter-item"
+                                            className="intro_chapter-item"
                                             key={item.uuid}>{item.name}</View>
                                     ))
                                 )
@@ -202,47 +201,33 @@ export default class IntroPage extends Component {
     /**
      * 加入书架
      */
-    handleJoinShelf () {
+    async handleJoinShelf () {
         const userId = Taro.getStorageSync('userId')
         const { bookName, authorName, bookDesc, recentChapterUrl } = this.state
 
-        request({
-            url: api.GET_SHELF,
+        const result = await request({
+            url: api.ADD_SHELF,
+            method: 'POST',
             data: {
-                user_id: userId,
-                book_name: bookName,
-                author_name: authorName,
-            }
-        }).then(res => {
-            if (res.length > 0) {
-                Taro.showToast({
-                    title: '已加入书架',
-                    icon: 'none',
-                })
-                return  
-            }
+                userId,
+                bookName,
+                authorName,
+                bookDesc,
+                bookCoverUrl: 'https://novel.dkvirus.top/images/cover.png',
+                recentChapterUrl,
+            },
+            oauth2: true,
+        })
 
-            request({
-                url: api.ADD_SHELF,
-                method: 'POST',
-                data: {
-                    user_id: userId,
-                    book_name: bookName,
-                    author_name: authorName,
-                    book_desc: bookDesc,
-                    book_cover_url: 'https://novel.dkvirus.top/images/cover.png',
-                    recent_chapter_url: recentChapterUrl,
-                }
-            }).then(res => {
-                Taro.switchTab({
-                    url: '/pages/shelf/index' 
-                })
-            }).catch(err => {
-                Taro.showToast({
-                    title: '加入书架失败',
-                    icon: 'none'
-                })
+        if (result.code !== '0000') {
+            return Taro.showToast({
+                title: result.message,
+                icon: 'none',
             })
+        }
+        
+        Taro.switchTab({
+            url: '/pages/shelf/index' 
         })
     }
 
@@ -250,39 +235,39 @@ export default class IntroPage extends Component {
         const { bookName, authorName, lastUpdateAt, classifyName, bookDesc } = this.state
 
         return (
-            <View className="container">
+            <View className="intro_container">
                 <View className="navbar">
                     <AtIcon value="chevron-left" onClick={() => this.handleBack()}></AtIcon>
                     公羊阅读
                 </View>
 
-                <View className="at-row info">
+                <View className="at-row intro_info">
                     <View className="at-col at-col-3">
-                        <Image className="cover" src={icon_cover}></Image>
+                        <Image className="intro_cover" src={icon_cover}></Image>
                     </View>
 
-                    <View className="at-col at-col-9 right">
-                        <View className="bookname">{bookName}</View>
-                        <View className="authorname">作者：{authorName}</View>
+                    <View className="at-col at-col-9 intro_right">
+                        <View className="intro_bookname">{bookName}</View>
+                        <View className="intro_authorname">作者：{authorName}</View>
                     </View>
                 </View>
 
-                <View className="classify">
+                <View className="intro_classify">
                     <View>最后更新时间:{lastUpdateAt}</View>
                     <View>分类:{classifyName}</View>
                 </View>
 
-                <View className="desc">
+                <View className="intro_desc">
                     <View className="at-article__h2">小说简介</View>
                     <View className="at-article__p">
                         {bookDesc}
                     </View>
                 </View>
 
-                <View className="at-row btn-groups">
-                    <View className="at-col btn-item btn-chapter"
+                <View className="at-row intro_btn-groups">
+                    <View className="at-col intro_btn-item intro_btn-chapter"
                         onClick={() => this.handleUpdateState({ chapterVisible: true })}>查看目录</View>
-                    <View className="at-col btn-item btn-shelf"
+                    <View className="at-col intro_btn-item intro_btn-shelf"
                         onClick={() => this.handleJoinShelf()}>加入书架</View>
                 </View>
 

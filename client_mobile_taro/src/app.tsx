@@ -1,5 +1,6 @@
 import Taro, { Component, Config } from '@tarojs/taro'
-import Index from './pages/shelf/index'
+import '@tarojs/async-await'
+import Index from './pages/shelf'
 
 import './app.scss'
 
@@ -25,6 +26,9 @@ class App extends Component {
       'pages/search/index',
       'pages/intro/index',
       'pages/read/index',
+      'pages/oauth/signin/index',
+      'pages/oauth/signup/index',
+      'pages/oauth/forgetpw/index',
     ],
     window: {
       backgroundTextStyle: 'light',

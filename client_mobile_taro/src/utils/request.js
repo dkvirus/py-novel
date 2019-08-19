@@ -2,94 +2,157 @@ import Taro from '@tarojs/taro'
 import * as api from './api'
 import { apiPrefix } from './config'
 
-/**
- * edit by dkvirus:
- * 封装 Taro 原生请求方法，统一打印响应日志
- */
-function request (opts = {}) {
-    return new Promise(function (resolve, reject) {
-        const { method = 'GET' } = opts
-        const { url, data } = handleRestful(opts.url, opts.data)
-        const token = Taro.getStorageSync('token')
-        Taro.showLoading({ mask: true, title: '拼命加载中....' })
+const commons = {
+    regexUrl: (url, data) => {
+        const obj = JSON.parse(JSON.stringify(data))
 
-        Taro.request({
-            url: apiPrefix + url,
-            data,
-            method,
-            header: {
-                Authorization: `Bearer ${token}`,
-            },
-        })
-        .then(res => {
-            console.log(`请求【${method} ${url}】成功，响应数据：%o`, res)
-            Taro.hideLoading();
-
-            // 认证失败，token 不存在或者过期
-            if (res.data.code === '9999' && res.data.message.indexOf('认证') !== -1) {
-                const openId = Taro.getStorageSync('openId')
-                getToken(openId).then(res => {
-                    const token = res.token
-                    Taro.setStorageSync('token', token)
-                    return request(opts)
-                }).then(res => {
-                    resolve(res)
-                }).catch(err => {
-                    reject(err)
-                })
-            } else if (res.data.code === '0000') {
-                resolve(res.data.data)
-            } else {
-                reject(res)
+        for (let i in obj) {
+            if (url.indexOf(`{${i}}`) !== -1) {
+                url = url.replace(`{${i}}`, obj[i])
             }
-        }).catch(err => {
-            console.log(`请求【${opts.method} ${url}】失败，响应数据：%o`, res)
-            Taro.hideLoading();
-            reject(err)
-        })
-    })
+        }
+        return { originUrl: url, originData: obj }
+    },
 }
 
-/**
- * 拿 token
- */
-function getToken(openId) {
-    return new Promise(function (resolve, reject) {
-        if (!openId) {
-            resolve({ code: '9999', message: '拿token失败，openId为空', token: '' })
-        } else {
-            Taro.request({
-                url: apiPrefix + api.GET_TOKEN,
-                method: 'POST',
-                data: {
-                    client_type: 'OPENID',
-                    username: openId,
-                },
-            }).then(res => {
-                if (!res.data.data) return
-                resolve({ code: '0000', message: '拿token成功', token: res.data.data.token })
-            }).catch(err => {
-                resolve({ code: '9999', message: '拿token失败, 网络请求异常', token: '' })
+const weappRequest = {
+    apiPrefix: 'http://localhost:4000/api/v1',
+    request: function ({ url, method = 'GET', data = {}, header = {}, oauth2=false }) {
+        /**
+         * 网路请求
+         * 业务请求
+         */
+        return new Promise(async function (resolve, reject) {
+            // 处理请求头
+            if (oauth2) {
+                const token = Taro.getStorageSync('token')
+                header['Authorization'] = `Bearer ${token}`
+            }  
+            
+            // 处理 restful 请求
+            const { originUrl, originData } = commons.regexUrl(url, data)
+
+            await Taro.showLoading({ title: '加载中...' })
+            const result = await Taro.request({
+                url: weappRequest.apiPrefix + originUrl, 
+                method, 
+                data: originData, 
+                header,
             })
-        }
-    })
-}
+            await Taro.hideLoading()
 
-/**
- * edit by dkvirus:
- * 处理 restful 接口，示例：/user/{id}/stop/{xx}       参数为 { id: '1': xx: '2' }
- * 处理之后返回值    /user/1/stop/2
- */
-function handleRestful(url, data = {}, isRemove = false) {
-    for (const i in data) {
-        if (url.indexOf(`{${i}}`) !== -1) {
-            url = url.replace(`{${i}}`, data[i])
-            if (isRemove === true) {
-                delete data[i]
+            if (result.statusCode >= 200 || result.statusCode < 400) {
+                // if (result.data.code === '9999' && result.data.message.indexOf('认证') !== -1) {
+                //     const openId = Taro.getStorageSync('openId')
+                    // 重新拿 token
+                    // const result = await weappRequest.getToken(openId)
+                    // console.log('token is %o', token)
+                // } else {
+                    
+                // }
+
+                resolve(result.data)
+            } else  {
+                // 跳转到登录页面
+                Taro.navigateTo({
+                    url: '/pages/oauth/signin/index'
+                })
+                resolve({
+                    code: '0000',
+                    message: 'token失效，请登录',
+                    data: {},
+                })
             }
-        }
-    }
-    return { url, data }
+        })
+    },
+
+    signin: async function () {
+        const { code } = await Taro.login()
+        const result = await Taro.request({
+            url: weappRequest.apiPrefix + '/gysw/oauth/wxsignup',
+            data: { code },
+        })
+    },
 }
 
-export default request
+const h5Request = {
+    request: function ({ url, method = 'GET', data = {}, header = {}, oauth2=false }) {
+        /**
+         * 网路请求
+         * 业务请求
+         */
+        return new Promise(async function (resolve, reject) {
+            const userId = Taro.getStorageSync('userId')
+            if (!userId) {
+                Taro.redirectTo({
+                    url: '/pages/oauth/signin/index'
+                })
+                return resolve({ code: '0000', message: '跳转到登录页', data: {} })
+            }
+
+            // 处理请求头
+            if (oauth2) {
+                const token = Taro.getStorageSync('token')
+                header['Authorization'] = `Bearer ${token}`
+            }  
+
+            if (method === 'POST') {
+                header['Content-Type'] = 'application/json'
+            }
+            
+            // 处理 restful 请求
+            const { originUrl, originData } = commons.regexUrl(url, data)
+
+            await Taro.showLoading({ title: '加载中...' })
+            const result = await Taro.request({
+                url: originUrl, 
+                method, 
+                data: originData, 
+                header,
+            })
+            await Taro.hideLoading()
+
+            if (result.statusCode === 401) {
+                // 未认证，重新请求 token
+                await h5Request.getToken()
+                const result = await h5Request.request({ url, method, data, header, oauth2 })
+                if (result.code !== '0000') {
+                    Taro.showToast({
+                        title: result.message,
+                        icon: 'none',
+                    })
+                } else {
+                    Taro.redirectTo({
+                        url: '/pages/shelf/index'
+                    })
+                }
+                resolve({})
+            } else if (result.statusCode >= 200 && result.statusCode < 400) {
+                resolve(result.data)
+            } else  {
+                reject({
+                    code: '9999',
+                    message: '服务端出错',
+                    data: {},
+                })
+            }
+        })
+    },
+    getToken: async function () {
+        const userId = Taro.getStorageSync('userId')
+        const result = await Taro.request({
+            url: api.GET_TOKEN,
+            method: 'GET',
+            data: { userId },
+        })
+        Taro.setStorageSync('token', result.data.data.token)
+    },
+}
+
+let request
+const reqeusts = {
+    h5: h5Request.request,
+    weapp: weappRequest.request,
+}
+
+export default reqeusts[process.env.TARO_ENV]

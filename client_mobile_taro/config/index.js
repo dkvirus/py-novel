@@ -70,6 +70,16 @@ const config = {
   h5: {
     publicPath: '/',
     staticDirectory: 'static',
+    devServer: {
+      host: 'localhost',
+      port: 10086,
+      proxy: {
+          '/api/v1': {
+              target: 'http://localhost:4000/',
+              changeOrigin: true
+          }
+      }
+    },
     module: {
       postcss: {
         autoprefixer: {

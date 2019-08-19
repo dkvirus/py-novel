@@ -1,24 +1,24 @@
-.menu {
+.read_menu {
   padding: 40px 0;
   font-size: 28px;
 }
 
-.container {
+.read_container {
   height: 100vh;
   display: flex;
   flex-direction: column;
 
-  .title {
+  .read_title {
     display: inline-block;
   }
 
-  .content {
+  .read_content {
     height: calc(100vh - 210px);
     box-sizing: border-box;
     padding: 10px 30px;
   }
 
-  .footer {
+  .read_footer {
     height: 60px;
     line-height: 60px;
     box-shadow: 0 -1px 10px #cccccc;
@@ -26,13 +26,13 @@
   }
 }
 
-.chapter {
+.read_chapter {
   display: flex;
   height: 100vh;
   flex-direction: column;
   overflow: hidden;
 
-  .chapter-header {
+  .read_chapter-header {
     height: 100px;
     line-height: 100px;
     color: rgb(81, 81, 81);
@@ -42,17 +42,17 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .chapter-menus {
+  .read_chapter-menus {
     height: 60px;
     box-sizing: border-box;
     font-size: 30px;
     color: rgb(52, 52, 52);
 
-    .align-center {
+    .read_align-center {
       text-align: center;
     }
   }
-  .chapter-list {
+  .read_chapter-list {
     flex: 1;
     overflow: auto;
     font-size: 32px;
@@ -60,17 +60,17 @@
     box-sizing: border-box;
     border-top: 2px solid rgb(234, 234, 234);
 
-    .chapter-item {
+    .read_chapter-item {
       padding: 18px 40px;
     }
 
-    .chapter-active {
+    .read_chapter-active {
       color: rgb(171, 34, 39);
     }
   }
 }
 
-.setting {
+.read_setting {
   background: rgb(15, 15, 15);
   padding: 20px 30px;
   box-sizing: border-box;
@@ -78,30 +78,20 @@
   flex-direction: column;
   justify-content: space-around;
 
-  .font {
+  .read_font {
     height: 120px;
     display: flex;
     justify-content: space-around;
     align-items: center;
 
-    .label {
+    .read_label {
       width: 60px;
       color: rgb(107, 115, 117);
       font-size: 30px;
     }
-
-    .btn-font {
-      width: 25%;
-      border: 2px solid rgb(107, 115, 117);
-      border-radius: 10px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
   }
 
-  .bg {
+  .read_bg {
     width: 100%;
     white-space: nowrap;
     display: flex;
@@ -109,7 +99,7 @@
     margin-top: 30px;
     margin-bottom: 30px;
 
-    .bg-box {
+    .read_bg-box {
       width: 155px;
       height: 80px;
       border-radius: 10px;

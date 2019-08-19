@@ -1,12 +1,12 @@
-.header {
-  height: 160rpx;
+.shelf_header {
+  height: 160px;
   width: 100%;
   background-color: rgb(244, 243, 249);
   display: flex;
   align-items: center;
   justify-content: space-around;
 
-  .btn-user {
+  .shelf_btn-user {
     background: transparent;
     border: none;
     width: 80%;
@@ -14,7 +14,7 @@
   }
 }
 
-.shelf-list {
+.shelf_list {
   width: 90%;
   margin: 20px auto;
   padding: 20px;
@@ -22,7 +22,7 @@
   background: #fff;
   border-radius: 10px;
 
-  .shelf-item {
+  .shelf_item {
     width: 50%;
     box-sizing: border-box;
     height: 400px;
@@ -30,7 +30,7 @@
     float: left;
     position: relative;
 
-    .icon-del {
+    .icon_del {
       position: absolute;
       top: 0;
       right: 0;
@@ -40,20 +40,20 @@
       background-color: #fff;
     }
 
-    .shelf-wrapper {
+    .shelf_wrapper {
       width: 100%;
       height: 100%;
       position: relative;
 
-      .shelf-cover {
+      .shelf_cover {
         width: 100%;
         height: 100%;
         box-shadow: 6px 10px 6px #ccc;
         border-radius: 16px;
       }
 
-      .shelf-novelname {
-        font-size: 34rpx;
+      .shelf_novelname {
+        font-size: 34px;
         position: absolute;
         left: 10%;
         top: 20%;
@@ -63,8 +63,8 @@
         -webkit-box-orient:vertical;
         -webkit-line-clamp:2;
       }
-      .shelf-authorname {
-        font-size: 26rpx;
+      .shelf_authorname {
+        font-size: 26px;
         position: absolute;
         top: 70%;
         right: 10%;

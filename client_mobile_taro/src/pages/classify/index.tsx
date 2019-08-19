@@ -40,29 +40,25 @@ export default class ClassifyPage extends Component {
     /**
      * 查询所有分类列表
      */
-    handleGetClassifyList() {
-        request({
+    async handleGetClassifyList() {
+        const result = await request({
             url: api.GET_CLASSIFY,
-        }).then(res => {
-            const classifyList = res.map(item => {
-                item.title = item.desc
-                return item
-            })
-            this.setState({ classifyList })
-
-            this.handleGetNovelList(classifyList[0].id)
         })
+        this.setState({ classifyList: result.data })
+        this.handleGetNovelList(result.data[0].id)
     }
 
     /**
      * 根据分类查询小说列表
      */
-    handleGetNovelList(classifyId) {
-        request({
-            url: api.GET_SEARCH_NOVEL,
-            data: { classify_id: classifyId },
-        }).then(res => {
-            this.setState({ novelList: res, selectedClassify: classifyId })
+    async handleGetNovelList(classifyId: number) {
+        const result = await request({
+            url: api.NOVEL_LIST,
+            data: { classifyId },
+        })
+        this.setState({ 
+            novelList: result.data, 
+            selectedClassify: classifyId, 
         })
     }
 
@@ -70,14 +66,10 @@ export default class ClassifyPage extends Component {
      * 点击分类
      */
     handleClickClassify (classify: Classify) {
-        if (classify.id === this.state.selectedClassify) {
-            return
-        }
-
+        if (classify.id === this.state.selectedClassify) return
         this.setState({
             selectedClassify: classify.id
         })
-
         this.handleGetNovelList(classify.id)
     }
 
@@ -103,41 +95,41 @@ export default class ClassifyPage extends Component {
         const { selectedClassify, classifyList = [], novelList = [] } = this.state
 
         return (
-            <View className="container">
+            <View className="classify_container">
                 <View className="navbar">
                     公羊阅读
                 </View>
 
-                <View className="search">
-                    <View className="input" onClick={() => this.handleGoSearchPage()}>
+                <View className="classify_search">
+                    <View className="classify_input" onClick={() => this.handleGoSearchPage()}>
                         <View className="at-icon at-icon-search"></View>
                         <View style={{ marginLeft: '20px' }}>搜索</View>
                     </View>
                 </View>
 
-                <View className="body">
-                    <ScrollView className="classify" scrollY={true}>
+                <View className="classify_body">
+                    <ScrollView className="classify_classify" scrollY={true}>
                         {
                             classifyList.map((classify: Classify) => (
                                 <View key={classify.id} 
-                                    className={`classify-item ${classify.id === selectedClassify ? 'classify-active' : ''}`}
+                                    className={`classify_classify-item ${classify.id === selectedClassify ? 'classify_classify-active' : ''}`}
                                     onClick={() => this.handleClickClassify(classify)}>{classify.desc}</View>
                             ))
                         }
                     </ScrollView>
 
-                    <ScrollView className="novel" scrollY={true}>
+                    <ScrollView className="classify_novel" scrollY={true}>
                         {
                             novelList.map((novel: Novel) => (
-                                <View className="novel-item" 
+                                <View className="classify_novel-item" 
                                     key={novel.book_name} onClick={() => this.handleGoIntroPage(novel)}>
-                                    <View className="novel-wrapper">
-                                        <Image src={icon_cover} className="novel-cover"></Image>
+                                    <View className="classify_novel-wrapper">
+                                        <Image src={icon_cover} className="classify_novel-cover"></Image>
 
-                                        <View className="novel-novelname">
+                                        <View className="classify_novel-novelname">
                                             {novel.book_name}
                                         </View>
-                                        <View className="novel-authorname">
+                                        <View className="classify_novel-authorname">
                                             {novel.author_name}
                                         </View>
                                     </View>

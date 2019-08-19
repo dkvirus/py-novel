@@ -1,15 +1,15 @@
-.container {
+.classify_container {
   display: flex;
   flex-direction: column;
   height: 100vh;
 
-  .search {
+  .classify_search {
     padding: 12px 18px;
     background-color: #fff;
     overflow: hidden;
     position: relative;
 
-    .input {
+    .classify_input {
       width: 100%;
       height: 74px;
       background-color: #f7f7f7;
@@ -23,17 +23,17 @@
     }
   }
 
-  .body {
+  .classify_body {
     flex: 1;
     position: relative;
 
-    .classify {
+    .classify_classify {
       height: 100%;
       width: 180px;
       background: #fff;
       float: left;
 
-      .classify-item {
+      .classify_classify-item {
         padding: 24px;
         text-align: center;
         color: #333;
@@ -43,13 +43,13 @@
         overflow: hidden;
       }
 
-      .classify-active {
+      .classify_classify-active {
         background: #0068C4;
         color: #fff;
       }
     }
 
-    .novel {
+    .classify_novel {
       height: 100%;
       width: calc(100vw - 180px);
       box-sizing: border-box;
@@ -57,26 +57,26 @@
       left: 180px;
       padding: 20px;
 
-      .novel-item {
+      .classify_novel-item {
         width: 50%;
         box-sizing: border-box;
         height: 300px;
         padding: 20px 30px;
         float: left;
 
-        .novel-wrapper {
+        .classify_novel-wrapper {
           width: 100%;
           height: 100%;
           position: relative;
 
-          .novel-cover {
+          .classify_novel-cover {
             width: 100%;
             height: 100%;
             box-shadow: 6px 10px 6px #ccc;
             border-radius: 16px;
           }
 
-          .novel-novelname {
+          .classify_novel-novelname {
             font-size: 34px;
             position: absolute;
             left: 10%;
@@ -88,7 +88,7 @@
             -webkit-line-clamp:2;
           }
 
-          .novel-authorname {
+          .classify_novel-authorname {
             font-size: 26px;
             position: absolute;
             top: 70%;

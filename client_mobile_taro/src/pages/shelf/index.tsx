@@ -11,6 +11,8 @@ import './index.scss'
 interface Shelf {
     book_name: string;
     author_name: string;
+    id: number;
+    recent_chapter_url: string;
 }
 
 interface UserInfo {
@@ -26,46 +28,36 @@ interface UserInfo {
 interface State {
     shelfList: Array<Shelf>;
     settingEnable: boolean;
-    userInfo: object;
-    gretting: string;
+    userInfo: UserInfo;
+    greeting: string;
 }
 
-export default class Index extends Component<{}, State> {
+export default class Index extends Component {
     config: Config = {
         navigationBarTitleText: '首页'
     }
 
-    state = {
+    state: State = {
         shelfList: [],            // 小说书架列表
         settingEnable: false,     // 是否编辑
-        userInfo: {},
-        greeting: '',             // 问候语         
+        greeting: '',             // 问候语    
+        userInfo: {
+            nickName: '',
+            gender: 0,
+            language: '',
+            city: '',
+            province: '',
+            country: '',
+            avatarUrl: '',
+        },     
     }
 
-    componentWillMount() {
-        Taro.login().then(res => {
-            if (res.code) {
-                request({
-                    url: api.GET_USER_WXINFO,
-                    data: { code: res.code },
-                }).then(res => {
-                    const { nickName = '', avatarUrl = '' } = res
-                    this.setState({ 
-                        userInfo: {
-                            nickName, avatarUrl,
-                        } 
-                    })
-                    Taro.setStorageSync('userId', res.userId)
-                    Taro.setStorageSync('openId', res.openId)
-                    this.handleGetShelfList()
-                })
-            } else {
-                Taro.showToast({
-                    title: '登录失败',
-                    icon: 'none',
-                })
-            }
-        })
+    async componentWillMount() {
+        if (process.env.TARO_ENV !== 'weapp' && !Taro.getStorageSync('userId')) {
+            Taro.redirectTo({
+                url: '/pages/oauth/signin/index'
+            })
+        }
         
         this.handleGeneGreeting()
     }
@@ -77,15 +69,14 @@ export default class Index extends Component<{}, State> {
     /**
      * 查询小说列表
      */
-    handleGetShelfList() {
+    async handleGetShelfList() {
         const userId = Taro.getStorageSync('userId')
-        if (!userId) return
-        request({
+        const result = await request({
             url: api.GET_SHELF,
-            data: { user_id: userId }
-        }).then(res => {
-            this.setState({ shelfList: res, settingEnable: false })
-        }).catch(err => { })
+            data: { userId },
+        })
+
+        this.setState({ shelfList: result.data, settingEnable: false })
     }
 
     /**
@@ -123,7 +114,7 @@ export default class Index extends Component<{}, State> {
     /**
      * 跳转到阅读页面
      */
-    handleGoReadPage({ recent_chapter_url, book_name, id }) {
+    handleGoReadPage({ recent_chapter_url, book_name, id }: Shelf) {
         Taro.navigateTo({
             url: `/pages/read/index?chapterUrl=${recent_chapter_url}&bookName=${book_name}&novelId=${id}`
         })
@@ -132,7 +123,7 @@ export default class Index extends Component<{}, State> {
     /**
      * 更新用户信息。昵称、头像
      */
-    handleUpdateUserInfo (e) {
+    async handleUpdateUserInfo (e) {
         let { avatarUrl, city, country, gender, nickName, province } = e.detail.userInfo
         const address = `${country}、${province}、${city}`
         const genderObj = {
@@ -153,7 +144,7 @@ export default class Index extends Component<{}, State> {
         const userId = Taro.getStorageSync('userId')
         if (!userId) return
 
-        request({
+        await request({
             url: api.EDIT_USER_INFO,
             method: 'put',
             data: { 
@@ -163,8 +154,6 @@ export default class Index extends Component<{}, State> {
                 gender,
                 address,
             },
-        }).then(res => {
-            console.log(res)
         })
     }
 
@@ -172,10 +161,28 @@ export default class Index extends Component<{}, State> {
      * 渲染头部
      */
     renderHeader() {
-        const { userInfo, settingEnable, greeting } = this.state
+        const { userInfo, settingEnable, greeting }: State = this.state
+
+        if (process.env.TARO_ENV !== 'weapp') {
+            const nickname = Taro.getStorageSync('nickname')
+
+            return (
+                <View className="shelf_header at-row">
+                    <AtAvatar circle image={icon_avatar}></AtAvatar>
+
+                    <View className="at-col at-col-6">
+                        {greeting}{nickname}
+                    </View>
+
+                    <AtIcon value='settings'
+                        size='28' color='#707070'
+                        onClick={() => this.handleUpdateState({ settingEnable: !settingEnable })}></AtIcon>
+                </View>
+            )
+        }
 
         return (
-            <View className="header at-row">
+            <View className="shelf_header at-row">
                 <AtAvatar circle image={userInfo.avatarUrl || icon_avatar}></AtAvatar>
 
                 {
@@ -185,7 +192,7 @@ export default class Index extends Component<{}, State> {
                         </View>
                     ) : (
                         <View className="at-col at-col-6">
-                            <Button className="btn-user" 
+                            <Button className="shelf_btn-user" 
                                 open-type="getUserInfo"
                                 onGetUserInfo={(e) => this.handleUpdateUserInfo(e)}>获取微信昵称</Button>
                         </View>
@@ -202,17 +209,17 @@ export default class Index extends Component<{}, State> {
     /**
      * 删除书架
      */
-    handleDelShelf(id) {
-        request({
+    async handleDelShelf(id: number) {
+        await request({
             url: api.DEL_SHELF,
             method: 'DELETE',
             data: { id },
-        }).then(res => {
-            this.setState({ settingEnable: false })
-            this.handleGetShelfList()
-            Taro.showToast({
-                title: '删除成功',
-            })
+            oauth2: true,
+        })
+        this.setState({ settingEnable: false })
+        this.handleGetShelfList()
+        Taro.showToast({
+            title: '删除成功',
         })
     }
 
@@ -223,24 +230,24 @@ export default class Index extends Component<{}, State> {
         const { shelfList, settingEnable } = this.state
 
         return (
-            <View className="shelf-list">
+            <View className="shelf_list">
                 {
-                    shelfList.map((shelf) => (
-                        <View className="shelf-item" key={shelf.book_name}>
-                            <View className="shelf-wrapper" onClick={() => this.handleGoReadPage(shelf)}>
-                                <Image src={icon_cover} className="shelf-cover"></Image>
+                    shelfList.map((shelf: Shelf) => (
+                        <View className="shelf_item" key={shelf.book_name}>
+                            <View className="shelf_wrapper" onClick={() => this.handleGoReadPage(shelf)}>
+                                <Image src={icon_cover} className="shelf_cover"></Image>
 
-                                <View className="shelf-novelname">
+                                <View className="shelf_novelname">
                                     {shelf.book_name}
                                 </View>
-                                <View className="shelf-authorname">
+                                <View className="shelf_authorname">
                                     {shelf.author_name}
                                 </View>
                             </View>
 
                             {
                                 settingEnable && (
-                                    <View className="icon-del">
+                                    <View className="icon_del">
                                         <AtIcon value='close-circle'
                                             size='30' color='#707070'
                                             onClick={() => this.handleDelShelf(shelf.id)}></AtIcon>
@@ -273,8 +280,8 @@ export default class Index extends Component<{}, State> {
                 </View>
 
                 {this.renderHeader()}
-                {shelfList.length && this.renderShelfList()}
-                {shelfList.length === 0 && this.renderEmptyShelf()}
+                {Boolean(shelfList.length) && this.renderShelfList()}
+                {!Boolean(shelfList.length) && this.renderEmptyShelf()}
             </View>
         )
     }
