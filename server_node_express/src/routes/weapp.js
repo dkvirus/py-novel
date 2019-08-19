@@ -8,7 +8,7 @@ module.exports = {
      * 微信小程序登录接口
      */
     signin: async function (req, res) {
-        const { code } = req.query
+        const { code } = req.body
 
         if (!code) {
             return res.json({ code: '9999', message: '登录码(code)不能为空', data: {} })
@@ -50,7 +50,7 @@ module.exports = {
                 })
             }
         } catch (e) {
-            console.log('[-] routes > weapp > login()', e.message)
+            console.log('[-] routes > weapp > signin()', e.message)
             res.json({ code: '9999', message: '获取用户信息失败', data: {} })
         }
     },

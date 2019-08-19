@@ -5,10 +5,10 @@ module.exports = {
     getUser: async function ({ username, password, userId }) {
         let sql = 'select id, username, nickname, avatar_url from gysw_user where 1 = 1'
         if (username) {
-            sql += ` and username = ${username}`
+            sql += ` and username = "${username}"`
         }
         if (password) {
-            sql += ` and password = ${password}`
+            sql += ` and password = "${password}"`
         }
         if (userId) {
             sql += ` and id = ${userId}`
@@ -30,9 +30,15 @@ module.exports = {
     /**
      * 修改用户信息
      */
-    updateUser: async function ({ nickname, avatarUrl, username, password, gender, address, birth, remark }) {
+    updateUser: async function ({ nickname, avatarUrl, username, password, gender, address, birth, remark, userId }) {
 
-        let sql = `update gysw_user set username = ${username}`
+        let sql = 'update gysw_user'
+        if (username) {
+            sql += ` set username = "${username}"`
+        }
+        if (userId) {
+            sql += ` set id = ${userId}`
+        }
         if (nickname) {
             sql += `, nickname = "${nickname}"`
         }
@@ -54,7 +60,13 @@ module.exports = {
         if (password) {
             sql += `, password = "${password}"`
         }
-        sql += `, last_update_at = now() where username = ${username}`
+        sql += ', last_update_at = now() where 1 = 1'
+        if (username) {
+            sql += ` and username = "${username}"`
+        } 
+        if (userId) {
+            sql += ` and id = ${userId}`
+        }
 
         const result = await dbexec(sql)
         return result

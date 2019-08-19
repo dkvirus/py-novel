@@ -48,7 +48,7 @@ module.exports = {
      * 小说书架页面，删除书架中的一本书
      */
     removeShelf: async function (req, res) {
-        const { id } = req.params
+        const { id } = req.body
 
         if (!id) {
             return res.json({ code: '9999', message: '书架书籍ID(id)不能为空', data: {} })

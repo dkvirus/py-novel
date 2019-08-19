@@ -107,8 +107,7 @@ exports.tokenExMethod = ['GET'];               // 不做认证的请求方法
 
 - `GET http://localhost:4000/api/v1/gysw/shelf` 查询书架中所有小说
 - `POST http://localhost:4000/api/v1/gysw/shelf` 往书架中新增一本小说
-- `DELETE http://localhost:4000/api/v1/gysw/shelf/:id` 删除书架中的一本小说
-- `PUT http://localhost:4000/api/v1/gysw/shelf/:id` 更新书架中的一本小说，通常是更新阅读章节
+- `DELETE http://localhost:4000/api/v1/gysw/shelf` 删除书架中的一本小说
 
 ### 搜索相关接口
 
