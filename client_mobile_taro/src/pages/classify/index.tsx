@@ -2,7 +2,7 @@ import Taro, { Component, Config } from '@tarojs/taro'
 import { View, ScrollView, Image } from '@tarojs/components'
 
 import request from '../../utils/request'
-import * as api from '../../utils/api'
+import * as api from '../../configs/api'
 import icon_cover from '../../images/cover.png'
 import './index.scss'
 
@@ -42,7 +42,7 @@ export default class ClassifyPage extends Component {
      */
     async handleGetClassifyList() {
         const result = await request({
-            url: api.GET_CLASSIFY,
+            url: api.NOVEL_CLASSIFY_GET,
         })
         this.setState({ classifyList: result.data })
         this.handleGetNovelList(result.data[0].id)
@@ -53,7 +53,7 @@ export default class ClassifyPage extends Component {
      */
     async handleGetNovelList(classifyId: number) {
         const result = await request({
-            url: api.NOVEL_LIST,
+            url: api.NOVEL_LIST_GET,
             data: { classifyId },
         })
         this.setState({ 

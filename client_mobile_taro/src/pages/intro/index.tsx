@@ -3,7 +3,7 @@ import { View, ScrollView, Image } from '@tarojs/components'
 import { AtDrawer, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
-import * as api from '../../utils/api'
+import * as api from '../../configs/api'
 import icon_cover from '../../images/cover.png'
 import './index.scss'
 
@@ -51,7 +51,7 @@ export default class IntroPage extends Component {
      */
     async handleGetNovelDetail(url) {
         const result = await request({
-            url: api.GET_NOVEL_INTRO,
+            url: api.NOVEL_INTRO_GET,
             data: { url }
         })
 
@@ -80,7 +80,7 @@ export default class IntroPage extends Component {
      */
     async handleGetChapterList(url) {
         const result = await request({
-            url: api.GET_CHAPTER,
+            url: api.NOVEL_CHAPTER_GET,
             data: { url },
         })
 
@@ -206,7 +206,7 @@ export default class IntroPage extends Component {
         const { bookName, authorName, bookDesc, recentChapterUrl } = this.state
 
         const result = await request({
-            url: api.ADD_SHELF,
+            url: api.SHELF_ADD,
             method: 'POST',
             data: {
                 userId,
@@ -224,11 +224,11 @@ export default class IntroPage extends Component {
                 title: result.message,
                 icon: 'none',
             })
+        } else {
+            Taro.switchTab({
+                url: '/pages/shelf/index'
+            })
         }
-        
-        Taro.switchTab({
-            url: '/pages/shelf/index' 
-        })
     }
 
     render() {

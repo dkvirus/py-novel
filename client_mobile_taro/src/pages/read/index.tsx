@@ -3,7 +3,7 @@ import { View, RichText, ScrollView } from '@tarojs/components'
 import { AtDrawer, AtActionSheet, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
-import * as api from '../../utils/api'
+import * as api from '../../configs/api'
 import './index.scss'
 
 interface Page {
@@ -61,7 +61,7 @@ export default class ReadPage extends Component {
      */
     async handleGetChapterList(url) {
         const result = await request({
-            url: api.GET_CHAPTER,
+            url: api.NOVEL_CHAPTER_GET,
             data: { url },
         })
 
@@ -107,7 +107,7 @@ export default class ReadPage extends Component {
         const { novelId } = this.state
 
         const result = await request({
-            url: api.GET_CONTENT,
+            url: api.NOVEL_CONTENT_GET,
             data: { url, shelfId: novelId },
         })
         

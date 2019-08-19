@@ -2,7 +2,7 @@ import Taro, { Component, Config } from '@tarojs/taro'
 import { View, Input, Button, Form, Text, Image } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 
-import * as api from '../../../utils/api'
+import * as api from '../../../configs/api'
 import './index.scss'
 import img_oauth_header from '../../../images/logo.png'
 

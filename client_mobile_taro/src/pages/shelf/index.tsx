@@ -3,7 +3,7 @@ import { View, Image, Button } from '@tarojs/components'
 import { AtAvatar, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
-import * as api from '../../utils/api'
+import * as api from '../../configs/api'
 import icon_cover from '../../images/cover.png'
 import icon_avatar from '../../images/default_avatar.png'
 import './index.scss'
@@ -15,21 +15,12 @@ interface Shelf {
     recent_chapter_url: string;
 }
 
-interface UserInfo {
-    nickName: string;
-    gender: number;
-    language: string;
-    city: string;
-    province: string;
-    country: string;
-    avatarUrl: string;
-}
-
 interface State {
     shelfList: Array<Shelf>;
     settingEnable: boolean;
-    userInfo: UserInfo;
     greeting: string;
+    nickname: string;
+    avatarUrl: string;
 }
 
 export default class Index extends Component {
@@ -41,15 +32,8 @@ export default class Index extends Component {
         shelfList: [],            // 小说书架列表
         settingEnable: false,     // 是否编辑
         greeting: '',             // 问候语    
-        userInfo: {
-            nickName: '',
-            gender: 0,
-            language: '',
-            city: '',
-            province: '',
-            country: '',
-            avatarUrl: '',
-        },     
+        nickname: '',
+        avatarUrl: '',   
     }
 
     async componentWillMount() {
@@ -58,7 +42,7 @@ export default class Index extends Component {
                 url: '/pages/oauth/signin/index'
             })
         }
-        
+
         this.handleGeneGreeting()
     }
 
@@ -72,11 +56,14 @@ export default class Index extends Component {
     async handleGetShelfList() {
         const userId = Taro.getStorageSync('userId')
         const result = await request({
-            url: api.GET_SHELF,
+            url: api.SHELF_GET,
             data: { userId },
         })
 
-        this.setState({ shelfList: result.data, settingEnable: false })
+        const nickname = Taro.getStorageSync('nickname')
+        const avatarUrl = Taro.getStorageSync('avatarUrl')
+
+        this.setState({ shelfList: result.data, nickname, avatarUrl, settingEnable: false })
     }
 
     /**
@@ -134,26 +121,28 @@ export default class Index extends Component {
 
         // 保存到 data 中
         this.setState({
-            userInfo: {
-                nickName,
-                avatarUrl,
-            }
+            nickname: nickName,
+            avatarUrl
         })
+
+        Taro.setStorageSync('nickname', nickName)
+        Taro.setStorageSync('avatarUrl', avatarUrl)
 
         // 更新到库中
         const userId = Taro.getStorageSync('userId')
         if (!userId) return
 
         await request({
-            url: api.EDIT_USER_INFO,
-            method: 'put',
+            url: api.USER_EDIT,
+            method: 'PUT',
             data: { 
-                user_id: userId,
+                userId,
                 nickname: nickName,
-                avatar_url: avatarUrl,
+                avatarUrl,
+                address, 
                 gender,
-                address,
             },
+            oauth2: true,
         })
     }
 
@@ -161,7 +150,7 @@ export default class Index extends Component {
      * 渲染头部
      */
     renderHeader() {
-        const { userInfo, settingEnable, greeting }: State = this.state
+        const { nickname, avatarUrl, settingEnable, greeting }: State = this.state
 
         if (process.env.TARO_ENV !== 'weapp') {
             const nickname = Taro.getStorageSync('nickname')
@@ -183,12 +172,12 @@ export default class Index extends Component {
 
         return (
             <View className="shelf_header at-row">
-                <AtAvatar circle image={userInfo.avatarUrl || icon_avatar}></AtAvatar>
+                <AtAvatar circle image={avatarUrl || icon_avatar}></AtAvatar>
 
                 {
-                    userInfo.nickName ? (
+                    nickname ? (
                         <View className="at-col at-col-6">
-                            {greeting}{userInfo.nickName}
+                            {greeting}{nickname}
                         </View>
                     ) : (
                         <View className="at-col at-col-6">
@@ -211,7 +200,7 @@ export default class Index extends Component {
      */
     async handleDelShelf(id: number) {
         await request({
-            url: api.DEL_SHELF,
+            url: api.SHELF_DEL,
             method: 'DELETE',
             data: { id },
             oauth2: true,

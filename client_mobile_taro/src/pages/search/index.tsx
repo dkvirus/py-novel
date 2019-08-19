@@ -3,7 +3,7 @@ import { View, Image } from '@tarojs/components'
 import { AtSearchBar, AtGrid, AtList, AtListItem, AtIcon } from 'taro-ui'
 
 import request from '../../utils/request'
-import * as api from '../../utils/api'
+import * as api from '../../configs/api'
 import icon_cover from '../../images/cover.png'
 import './index.scss'
 
@@ -42,7 +42,7 @@ export default class SearchPage extends Component {
      */
     async handleGetHotList() {
         const result = await request({
-            url: api.GET_SEARCH_HOT,
+            url: api.SEARCH_HOT_GET,
         })
         this.setState({ hotList: result.data || [] })
     }
@@ -53,7 +53,7 @@ export default class SearchPage extends Component {
     async handleGetHistList() {
         const userId = Taro.getStorageSync('userId')
         const result = await request({
-            url: api.GET_SEARCH_HIST,
+            url: api.SEARCH_HIST_GET,
             data: { userId },
         })
         this.setState({ histList: result.data || [] })
@@ -94,7 +94,7 @@ export default class SearchPage extends Component {
 
         const userId = Taro.getStorageSync('userId')
         const result = await request({
-            url: api.GET_SEARCH_NOVEL,
+            url: api.SEARCH_NOVEL_GET,
             data: { keyword, userId },
         })
 
