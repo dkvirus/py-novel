@@ -18,7 +18,7 @@ dk 本人很喜欢看小说，so，开了这个工程，将遇到的感兴趣的
 - [x] 微信小程序：看小说大多数情况还是在手机上看的，移动客户端再开发一个微信小程序端；[小程序客户端详情+图示](./client_mobile_miniapp)
 - [x] 移动端：Android 原生-Java；[安卓原生Java端详情+图示](./client_mobile_android)
 - [x] 移动端：Flutter。[移动端混合开发Flutter详情+图示](./client_mobile_flutter)
-- [x] 移动端：Taro。[移动端混合开发Taro详情+图示](./client_mobile_taro)
+- [x] 移动端：Taro。(兼容 h5 版本)[移动端混合开发Taro详情+图示](./client_mobile_taro) 
 - [ ] 移动端：React-native。
 - [ ] 移动端：Weex。
 - [ ] 移动端：Android 原生-Kotlin。
