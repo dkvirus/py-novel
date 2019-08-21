@@ -46,8 +46,15 @@ export default class Index extends Component {
         this.handleGeneGreeting()
     }
 
-    componentDidShow () {
-        this.handleGetShelfList()
+    async onPullDownRefresh () {
+        await this.handleGetShelfList()    
+    }
+
+    /**
+     * h5 不会触发该方法
+     */
+    async componentDidShow () {
+        await this.handleGetShelfList()
     }
 
     /**
@@ -206,7 +213,7 @@ export default class Index extends Component {
             oauth2: true,
         })
         this.setState({ settingEnable: false })
-        this.handleGetShelfList()
+        await this.handleGetShelfList()
         Taro.showToast({
             title: '删除成功',
         })
@@ -259,6 +266,15 @@ export default class Index extends Component {
         )
     }
 
+    /**
+     * 跳转到登录页面
+     */
+    handleGoSigninPage () {
+        Taro.redirectTo({
+            url: '/pages/oauth/signin/index'
+        })
+    }
+
     render() {
         const shelfList: Array<Shelf> = this.state.shelfList
 
@@ -269,6 +285,10 @@ export default class Index extends Component {
                 </View>
 
                 {this.renderHeader()}
+                {
+                    process.env.TARO_ENV !== 'weapp' && <View className="shelf_signin"
+                    onClick={() => this.handleGoSigninPage()}>如操作异常，请点我重新登录。</View>
+                }
                 {Boolean(shelfList.length) && this.renderShelfList()}
                 {!Boolean(shelfList.length) && this.renderEmptyShelf()}
             </View>

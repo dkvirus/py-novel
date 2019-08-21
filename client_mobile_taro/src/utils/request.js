@@ -1,6 +1,6 @@
 import Taro from '@tarojs/taro'
 import * as api from '../configs/api'
-import { weappApiPrefix } from '../configs/config'
+import { weappApiPrefix, h5ApiPrefix } from '../configs/config'
 
 const weappRequest = {
     apiPrefix: weappApiPrefix,
@@ -49,7 +49,7 @@ const weappRequest = {
     signin: async function () {
         const { code } = await Taro.login()
         const result = await Taro.request({
-            url: weappRequest.apiPrefix + api.SIGNIN_WX,
+            url: weappRequest.apiPrefix + api.OAUTH_SIGNIN_WX,
             data: { code },
             method: 'POST',
         })
@@ -63,7 +63,7 @@ const weappRequest = {
     getToken: async function () {
         const userId = Taro.getStorageSync('userId')
         const result = await Taro.request({
-            url: weappRequest.apiPrefix + api.TOKEN_GET,
+            url: weappRequest.apiPrefix + api.OAUTH_TOKEN_GET,
             method: 'GET',
             data: { userId },
         })
@@ -72,6 +72,7 @@ const weappRequest = {
 }
 
 const h5Request = {
+    apiPrefix: h5ApiPrefix,
     request: function ({ url, method = 'GET', data = {}, header = {}, oauth2=false }) {
         return new Promise(async function (resolve, reject) {
             const userId = Taro.getStorageSync('userId')
@@ -88,13 +89,13 @@ const h5Request = {
                 header['Authorization'] = `Bearer ${token}`
             }  
 
-            if (method === 'POST') {
+            if (method !== 'GET') {
                 header['Content-Type'] = 'application/json'
             }
             
             await Taro.showLoading({ title: '加载中...' })
             const result = await Taro.request({
-                url, 
+                url: h5Request.apiPrefix + url, 
                 method, 
                 data, 
                 header,
@@ -120,7 +121,7 @@ const h5Request = {
     getToken: async function () {
         const userId = Taro.getStorageSync('userId')
         const result = await Taro.request({
-            url: api.TOKEN_GET,
+            url: h5Request.apiPrefix + api.OAUTH_TOKEN_GET,
             method: 'GET',
             data: { userId },
         })

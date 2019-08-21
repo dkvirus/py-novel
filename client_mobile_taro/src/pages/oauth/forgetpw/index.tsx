@@ -3,6 +3,8 @@ import { View, Input, Button, Form, Text, Image } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 
 import './index.scss'
+import * as api from '../../../configs/api'
+import { h5ApiPrefix } from '../../../configs/config'
 import img_oauth_header from '../../../images/logo.png'
 
 export default class Index extends Component<{}, {}> {
@@ -45,53 +47,48 @@ export default class Index extends Component<{}, {}> {
     /**
      * 提交表单
      */
-    handleSubmit (e) {
-        const { verifyId } = this.state
-        if (!verifyId) {
-            return Taro.showToast({
-                title: '验证码过期，请重新获取短信验证码',
-                icon: 'none',
-            })
-        }
+    async handleSubmit (e) {
+        const { username, password, vcode } = e.detail.value
 
-        const { mobile, authCertiPlain, verifyCode } = e.detail.value
-
-        if (!mobile) {
+        if (!username) {
             return Taro.showToast({ title: '手机号不能为空', icon: 'none' })
-        } else if (!(/^1[34578]\d{9}$/.test(String(mobile)))) {
+        } else if (!(/^1[34578]\d{9}$/.test(String(username)))) {
             return Taro.showToast({ title: '手机号格式有误', icon: 'none' })
         }
 
-        if (!authCertiPlain) {
+        if (!password) {
             return Taro.showToast({ title: '密码不能为空', icon: 'none' })
         }
 
-        if (!verifyCode) {
+        if (!vcode) {
             return Taro.showToast({ title: '验证码不能为空', icon: 'none' })
         }
 
-        Taro.request({
-            url: '/api/v1/user/password/reset',
+        const result = await Taro.request({
+            url: h5ApiPrefix + api.OAUTH_RESET_PW,
             method: 'POST',
-            data: {
-                authCertiPlain,
-                authIdent: mobile,
-                verifyCode,
-                verifyId,
-            },
-            success: () => {
-                // 重置密码完成后，跳转登录页面
-                Taro.navigateTo({
-                    url: '/pages/oauth/signin/index'
-                })
+            data: { username, password, vcode },
+            header: {
+                'Content-Type': 'application/json'
             }
         })
+
+        if (result.data.code !== '0000') {
+            Taro.showToast({
+                title: result.data.message,
+                icon: 'none',
+            })
+        } else {
+            Taro.redirectTo({
+                url: '/pages/oauth/signin/index'
+            })
+        }
     }
 
     /**
      * 发送验证码
      */
-    handleSendVscode () {
+    async handleSendVscode () {
         const { vscodeTxt, mobile } = this.state
         if (vscodeTxt !== '获取验证码') {
             return
@@ -113,53 +110,35 @@ export default class Index extends Component<{}, {}> {
             })
         }
 
-        // 根据手机号验证用户是否注册
-        const that = this
-        Taro.request({
-            url: '/api/v1/user/registered',
-            method: 'GET',
-            data: { mobile },
-            success: (res) => {
-                if (res.data && res.data.data && !res.data.data.guid) {
-                    Taro.showToast({
-                        title: '手机号未注册，请直接注册用户',
-                        icon: 'none',
-                    })
-                } else {
-                    // 60s 倒计时
-                    let second = 5
-                    const timer = setInterval(() => {
-                        if (second === 0) {
-                            this.setState({
-                                vscodeTxt: '获取验证码'
-                            })
-                            clearInterval(timer)
-                        } else {
-                            this.setState({
-                                vscodeTxt: second,
-                            })
-                            second--
-                        }
-                    }, 1000)
-
-                    Taro.request({
-                        url: '/api/v1/user/verify/apply',
-                        method: 'POST',
-                        data: {
-                            verifyCarrier: mobile,
-                            verifyPurpose: '重置密码',
-                            verifyType: 'PHONE',
-                        },
-                        success: res2 => {
-                            if (res2.data && res2.data.data && res2.data.data.verifyId) {
-                                that.setState({
-                                    verifyId: res2.data.data.verifyId
-                                })
-                            }
-                        }
-                    })
-                }
+        const result = await Taro.request({
+            url: h5ApiPrefix + api.OAUTH_VCODE_GET,
+            method: 'POST',
+            data: { username: mobile, type: 'resetpw' },
+            header: {
+                'Content-Type': 'application/json'
             }
+        })
+
+        if (result.data && result.data.code === '0000') {
+            let second = 60
+            const timer = setInterval(() => {
+                if (second === 0) {
+                    this.setState({
+                        vscodeTxt: '获取验证码'
+                    })
+                    clearInterval(timer)
+                } else {
+                    this.setState({
+                        vscodeTxt: second,
+                    })
+                    second--
+                }
+            }, 1000)
+        }
+
+        Taro.showToast({
+            title: result.data.message,
+            icon: 'none',
         })
     }
 
@@ -184,17 +163,17 @@ export default class Index extends Component<{}, {}> {
                 <Form onSubmit={(e) => this.handleSubmit(e)}>
                     <View className="form-control">
                         <AtIcon value='phone' size='20' color='#ccc'></AtIcon>
-                        <Input name="mobile" className="form-input" onInput={(e) => this.handleMobileChange(e)} type="text" placeholder="手机号"></Input>
+                        <Input name="username" className="form-input" onInput={(e) => this.handleMobileChange(e)} type="text" placeholder="手机号"></Input>
                     </View>
                     
                     <View className="form-control">
                         <AtIcon value='lock' size='20' color='#ccc'></AtIcon>
-                        <Input name="authCertiPlain" className="form-input" type="text" placeholder="密码"></Input>
+                        <Input name="password" className="form-input" type="text" placeholder="密码"></Input>
                     </View>
 
                     <View className="form-control vcode-wrap">
                         <AtIcon value='lock' size='20' color='#ccc'></AtIcon>
-                        <Input name="verifyCode" className="form-input" type="text" placeholder="验证码"></Input>
+                        <Input name="vcode" className="form-input" type="text" placeholder="验证码"></Input>
                         <View className="btn-vcode" onClick={() => this.handleSendVscode()}>{vscodeTxt}</View>
                     </View>
                     

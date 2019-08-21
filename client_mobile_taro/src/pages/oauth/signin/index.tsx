@@ -3,6 +3,7 @@ import { View, Input, Button, Form, Text, Image } from '@tarojs/components'
 import { AtIcon } from 'taro-ui'
 
 import * as api from '../../../configs/api'
+import { h5ApiPrefix } from '../../../configs/config'
 import './index.scss'
 import img_oauth_header from '../../../images/logo.png'
 
@@ -52,7 +53,7 @@ export default class Index extends Component<{}, {}> {
         }
 
         const result = await Taro.request({
-            url: api.SIGNIN,
+            url: h5ApiPrefix + api.OAUTH_SIGNIN,
             method: 'POST',
             data: { username, password },
             header: {

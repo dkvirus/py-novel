@@ -1,6 +1,6 @@
 module.exports = {
   env: {
-    NODE_ENV: '"production"'
+    NODE_ENV: '"production"',
   },
   defineConstants: {
   },
@@ -14,5 +14,9 @@ module.exports = {
      *     .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
      * }
      */
-  }
+    // webpackChain (chain) {
+    //   chain.plugin('analyzer')
+    //      .use(require('webpack-bundle-analyzer').BundleAnalyzerPlugin, [])
+    // },
+  },
 }
