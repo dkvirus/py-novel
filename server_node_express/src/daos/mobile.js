@@ -11,14 +11,14 @@ module.exports = {
         try {
             const result = await mobileUtil.sendMobileSms(mobile, [code, deadline])
 
-            if (result.code === '0000') {
-                console.log('短信验证码：', code)
-                await redis.hmsetAsync(`user${mobile}`, { mobile: code })
-                return { code: '8888', message: '已发送短信验证码', data: {} }
+            if (result.code !== '0000') {
+                console.log('[-] daos sendVcode()', result)
+                return { code: '9999', message: '发送短信验证码失败', data: {} }
             } 
-            
-            console.log('[-] daos sendVcode()', result)
-            return { code: '9999', message: '发送短信验证码失败', data: {} }
+
+            console.log('短信验证码：', code)
+            await redis.hmsetAsync(`user${mobile}`, { mobile: code })
+            return { code: '0000', message: '已发送短信验证码', data: {} }
         } catch (e) {
             console.log('[-] daos > mobile > sendVcode()', e.message)
             return { code: '9999', message: '发送短信验证码失败', data: {} }
@@ -40,7 +40,7 @@ module.exports = {
     
             // 校验成功之后要置空校验码值
             await redis.hmsetAsync(`user${mobile}`, { mobile: '' })
-            return { code: '8888', message: '短信校验码验证成功' }
+            return { code: '0000', message: '短信校验码验证成功' }
         } catch (e) {
             console.log('[-] daos > mobile > validateVcode()', e.message)
             return { code: '9999', message: '短信校验码验证失败' }

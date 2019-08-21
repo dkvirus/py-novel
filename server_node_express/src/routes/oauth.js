@@ -160,6 +160,7 @@ module.exports = {
 
     /**
      * 发送短信验证码
+     * type: 'signup' | 'resetpw'
      */
     sendVcode: async function (req, res) {
         const { username, type } = req.body
